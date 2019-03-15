@@ -33,3 +33,13 @@ function log(target) {
 }
 
 'aaa'.includes('a')
+
+// 1) js 中创建图片来引入
+import './index.css'
+import logo from './logo.png'
+let image = new Image()
+console.log(logo)
+image.src = logo
+document.body.appendChild(image)
+// 2) css 中引入 background()
+// 3) <img src='' />

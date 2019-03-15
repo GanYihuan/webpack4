@@ -1,5 +1,5 @@
 Arguments: 
-  /Users/ganyihuan/.nvm/versions/node/v10.15.0/bin/node /usr/local/Cellar/yarn/1.12.1/libexec/bin/yarn.js add @babel/runtime @bable/polyfill -S
+  /Users/ganyihuan/.nvm/versions/node/v10.15.0/bin/node /usr/local/Cellar/yarn/1.12.1/libexec/bin/yarn.js add file-loader html-withing-loader -D
 
 PATH: 
   /Users/ganyihuan/.nvm/versions/node/v10.15.0/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Users/ganyihuan/.rvm/bin
@@ -14,7 +14,7 @@ Platform:
   darwin x64
 
 Trace: 
-  Error: https://registry.npm.taobao.org/@bable%2fpolyfill: Not found
+  Error: https://registry.npm.taobao.org/html-withing-loader: Not found
       at Request.params.callback [as _callback] (/usr/local/Cellar/yarn/1.12.1/libexec/lib/cli.js:63139:18)
       at Request.self.callback (/usr/local/Cellar/yarn/1.12.1/libexec/lib/cli.js:124547:22)
       at Request.emit (events.js:182:13)
@@ -49,6 +49,8 @@ npm manifest:
       "dev-server": "^0.1.0",
       "eslint": "^5.15.1",
       "eslint-loader": "^2.1.2",
+      "expose-loader": "^0.7.5",
+      "file-loader": "^3.0.1",
       "html-webpack-plugin": "^3.2.0",
       "less": "^3.9.0",
       "less-loader": "^4.1.0",
@@ -64,6 +66,11 @@ npm manifest:
       "webpack": "^4.29.6",
       "webpack-cli": "^3.2.3",
       "webpack-dev-server": "^3.2.1"
+    },
+    "dependencies": {
+      "@babel/polyfill": "^7.2.5",
+      "@babel/runtime": "^7.3.4",
+      "jquery": "^3.3.1"
     }
   }
 
@@ -629,6 +636,14 @@ Lockfile:
       "@babel/helper-regex" "^7.0.0"
       regexpu-core "^4.1.3"
   
+  "@babel/polyfill@^7.2.5":
+    version "7.2.5"
+    resolved "http://registry.npm.taobao.org/@babel/polyfill/download/@babel/polyfill-7.2.5.tgz#6c54b964f71ad27edddc567d065e57e87ed7fa7d"
+    integrity sha1-bFS5ZPca0n7d3FZ9Bl5X6H7X+n0=
+    dependencies:
+      core-js "^2.5.7"
+      regenerator-runtime "^0.12.0"
+  
   "@babel/preset-env@^7.3.4":
     version "7.3.4"
     resolved "http://registry.npm.taobao.org/@babel/preset-env/download/@babel/preset-env-7.3.4.tgz#887cf38b6d23c82f19b5135298bdb160062e33e1"
@@ -677,6 +692,13 @@ Lockfile:
       invariant "^2.2.2"
       js-levenshtein "^1.1.3"
       semver "^5.3.0"
+  
+  "@babel/runtime@^7.3.4":
+    version "7.3.4"
+    resolved "http://registry.npm.taobao.org/@babel/runtime/download/@babel/runtime-7.3.4.tgz#73d12ba819e365fcf7fd152aed56d6df97d21c83"
+    integrity sha1-c9ErqBnjZfz3/RUq7VbW35fSHIM=
+    dependencies:
+      regenerator-runtime "^0.12.0"
   
   "@babel/template@^7.1.0", "@babel/template@^7.1.2", "@babel/template@^7.2.2":
     version "7.2.2"
@@ -1944,7 +1966,7 @@ Lockfile:
     resolved "http://registry.npm.taobao.org/copy-descriptor/download/copy-descriptor-0.1.1.tgz#676f6eb3c39997c2ee1ac3a924fd6124748f578d"
     integrity sha1-Z29us8OZl8LuGsOpJP1hJHSPV40=
   
-  core-js@^2.4.0, core-js@^2.5.0:
+  core-js@^2.4.0, core-js@^2.5.0, core-js@^2.5.7:
     version "2.6.5"
     resolved "http://registry.npm.taobao.org/core-js/download/core-js-2.6.5.tgz#44bc8d249e7fb2ff5d00e0341a7ffb94fbf67895"
     integrity sha1-RLyNJJ5/sv9dAOA0Gn/7lPv2eJU=
@@ -2793,6 +2815,11 @@ Lockfile:
     dependencies:
       homedir-polyfill "^1.0.1"
   
+  expose-loader@^0.7.5:
+    version "0.7.5"
+    resolved "http://registry.npm.taobao.org/expose-loader/download/expose-loader-0.7.5.tgz#e29ea2d9aeeed3254a3faa1b35f502db9f9c3f6f"
+    integrity sha1-4p6i2a7u0yVKP6obNfUC25+cP28=
+  
   express@^4.16.2, express@^4.16.4:
     version "4.16.4"
     resolved "http://registry.npm.taobao.org/express/download/express-4.16.4.tgz#fddef61926109e24c515ea97fd2f1bdbf62df12e"
@@ -2929,6 +2956,14 @@ Lockfile:
     integrity sha1-yg9u+m3T1WEzP7FFFQZcL6/fQ5w=
     dependencies:
       flat-cache "^2.0.1"
+  
+  file-loader@^3.0.1:
+    version "3.0.1"
+    resolved "http://registry.npm.taobao.org/file-loader/download/file-loader-3.0.1.tgz#f8e0ba0b599918b51adfe45d66d1e771ad560faa"
+    integrity sha1-+OC6C1mZGLUa3+RdZtHnca1WD6o=
+    dependencies:
+      loader-utils "^1.0.2"
+      schema-utils "^1.0.0"
   
   fill-range@^4.0.0:
     version "4.0.0"
@@ -4020,6 +4055,11 @@ Lockfile:
     version "0.1.2"
     resolved "http://registry.npm.taobao.org/isstream/download/isstream-0.1.2.tgz#47e63f7af55afa6f92e1500e690eb8b8529c099a"
     integrity sha1-R+Y/evVa+m+S4VAOaQ64uFKcCZo=
+  
+  jquery@^3.3.1:
+    version "3.3.1"
+    resolved "http://registry.npm.taobao.org/jquery/download/jquery-3.3.1.tgz#958ce29e81c9790f31be7792df5d4d95fc57fbca"
+    integrity sha1-lYzinoHJeQ8xvneS311NlfxX+8o=
   
   js-base64@^2.1.8:
     version "2.5.1"
@@ -5901,6 +5941,11 @@ Lockfile:
     version "0.11.1"
     resolved "http://registry.npm.taobao.org/regenerator-runtime/download/regenerator-runtime-0.11.1.tgz#be05ad7f9bf7d22e056f9726cee5017fbf19e2e9"
     integrity sha1-vgWtf5v30i4Fb5cmzuUBf78Z4uk=
+  
+  regenerator-runtime@^0.12.0:
+    version "0.12.1"
+    resolved "http://registry.npm.taobao.org/regenerator-runtime/download/regenerator-runtime-0.12.1.tgz#fa1a71544764c036f8c49b13a08b2594c9f8a0de"
+    integrity sha1-+hpxVEdkwDb4xJsToIsllMn4oN4=
   
   regenerator-transform@^0.13.4:
     version "0.13.4"

@@ -89,6 +89,30 @@ module.exports = { // 开发服务器配置
             loader: 'less-loader'
           }
         ]
+      },
+      {
+        test: /\.(png|jpg|jpeg|gif)$/,
+        // use: [
+        //   {
+        //     loader: 'file-loader' // 默认会在内部生成一张图片到 build 目录把生成的图片名字返回回来
+        //   },
+        // ]
+        use: [
+          {
+            loader: 'url-loader',
+            options: {
+              limit: 200*1024 // 小于设置值时用 base64 来转化
+            }
+          }
+        ]
+      },
+      {
+        test: /\.html$/,
+        use: [
+          {
+            loader: 'html-withimg-loader'
+          }
+        ]
       }
     ]
   },
