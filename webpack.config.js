@@ -1,4 +1,5 @@
-﻿let path = require('path')
+﻿let webpack = require('webpack')
+let path = require('path')
 let HtmlWebpackPlugin = require('html-webpack-plugin')
 let MiniCssExtractPlugin = require('mini-css-extract-plugin') // 抽离出 css 样式为一个文件
 let OptimizeCssAssetsWebpackPlugin = require('optimize-css-assets-webpack-plugin') // css 压缩
@@ -27,8 +28,15 @@ module.exports = { // 开发服务器配置
     contentBase: './build', // 指向 build 文件找到文件夹
     compress: true, // 压缩
   },
+  // externals: { // webpack 不处理依赖库
+  //   jquery: '$'
+  // },
   module: {
     rules: [ // 后往前 右往左 执行
+      // {
+      //   test: require.resolve('jquery'),
+      //   use: 'expose-loader?$' // 暴露全局的 loader 内联 loader
+      // },
       {
         test: /\.js$/,
         use: [
@@ -96,6 +104,9 @@ module.exports = { // 开发服务器配置
     }),
     new MiniCssExtractPlugin({ // 抽离出 css 样式
       filename: 'mani.css'
+    }),
+    new webpack.ProvidePlugin({ // 在每个模块中都注入 $
+      $: 'jquery'
     })
   ]
 }

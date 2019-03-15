@@ -1,4 +1,15 @@
-﻿require('@babel/polyfill')
+﻿// expose-loader
+// import $ from 'jquery'
+// console.log(window.$)
+
+// ProvidePlugin
+console.log($)
+
+// cdn
+// import $ from 'jquery'
+// console.log($)
+
+require('@babel/polyfill')
 
 console.log('hello')
 
