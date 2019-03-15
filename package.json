@@ -8,9 +8,18 @@
     "dev": "webpack-dev-server --open"
   },
   "devDependencies": {
+    "@babel/core": "^7.3.4",
+    "@babel/plugin-proposal-class-properties": "^7.3.4",
+    "@babel/plugin-proposal-decorators": "^7.3.0",
+    "@babel/plugin-transform-runtime": "^7.3.4",
+    "@babel/preset-env": "^7.3.4",
     "autoprefixer": "^9.4.10",
+    "babel-core": "^6.26.3",
+    "babel-loader": "^8.0.5",
     "css-loader": "^2.1.1",
     "dev-server": "^0.1.0",
+    "eslint": "^5.15.1",
+    "eslint-loader": "^2.1.2",
     "html-webpack-plugin": "^3.2.0",
     "less": "^3.9.0",
     "less-loader": "^4.1.0",
@@ -26,5 +35,9 @@
     "webpack": "^4.29.6",
     "webpack-cli": "^3.2.3",
     "webpack-dev-server": "^3.2.1"
+  },
+  "dependencies": {
+    "@babel/polyfill": "^7.2.5",
+    "@babel/runtime": "^7.3.4"
   }
 }

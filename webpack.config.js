@@ -30,6 +30,26 @@ module.exports = { // 开发服务器配置
   module: {
     rules: [ // 后往前 右往左 执行
       {
+        test: /\.js$/,
+        use: [
+          {
+            loader: 'babel-loader',
+            options: {
+              presets: [ // es6 -> es5
+                '@babel/preset-env'
+              ],
+              plugins: [
+                ['@babel/plugin-proposal-decorators', { 'legacy': true }], // 类和对象装饰器
+                ['@babel/plugin-proposal-class-properties', { 'loose': true }], // 属性初始化
+                ['@babel/plugin-transform-runtime']
+              ]
+            }
+          }
+        ],
+        include: path.resolve(__dirname, 'src'),
+        exclude: '/node_modules'
+      },
+      {
         test: /\.css$/,
         use: [
           MiniCssExtractPlugin.loader, // 抽离出的 css 文件用 link 标签引入
