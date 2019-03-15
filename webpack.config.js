@@ -100,7 +100,7 @@ module.exports = { // 开发服务器配置
         // ]
         use: [
           {
-            loader: 'url-loader',
+            loader: 'url-loader', // 将文件转换为base64
             options: {
               limit: 1, // 小于设置值时用 base64 来转化
               outputPath: '/img/', // 放置在 img 目录下
@@ -113,7 +113,7 @@ module.exports = { // 开发服务器配置
         test: /\.html$/,
         use: [
           {
-            loader: 'html-withimg-loader'
+            loader: 'html-withimg-loader' // html中直接使用img标签src加载图片的话，因为没有被依赖，图片将不会被打包。这个loader解决这个问题，图片会被打包，而且路径也处理妥当
           }
         ]
       }
