@@ -11,6 +11,7 @@ module.exports = { // 开发服务器配置
   output: {
     filename: 'bundle.[hash:5].js', // 打包后文件名, 加入 hash 5位
     path: path.resolve(__dirname, 'build') // 打包后文件放哪里, 路径必须是一个绝对路径, path.resolve 相对路径解析成绝对路径
+    // publicPath: 'http://www.zhihu.cn' // 引入资源路径前面加的前缀
   },
   optimization: { // 优化项
     minimizer: [
@@ -101,7 +102,9 @@ module.exports = { // 开发服务器配置
           {
             loader: 'url-loader',
             options: {
-              limit: 200*1024 // 小于设置值时用 base64 来转化
+              limit: 1, // 小于设置值时用 base64 来转化
+              outputPath: '/img/', // 放置在 img 目录下
+              publicPath: 'http://wwww.zhihu.cn' // 引入资源路径前面加的前缀
             }
           }
         ]
@@ -127,7 +130,7 @@ module.exports = { // 开发服务器配置
       hash: true // 引入文件名称加上 hash
     }),
     new MiniCssExtractPlugin({ // 抽离出 css 样式
-      filename: 'mani.css'
+      filename: 'css/main.css'
     }),
     new webpack.ProvidePlugin({ // 在每个模块中都注入 $
       $: 'jquery'
