@@ -43,3 +43,13 @@ image.src = logo
 document.body.appendChild(image)
 // 2) css 中引入 background()
 // 3) <img src='' />
+
+// 跨域处理
+let xhr = new XMLHttpRequest()
+// 默认访问 http://localhost:8080 webpack-dev-server 转发到 3000
+xhr.open('GET', '/api/user', true) // 1)
+// xhr.open('GET', '/user', true) // 2)
+xhr.onload = function () {
+  console.log(xhr.response)
+}
+xhr.send()
