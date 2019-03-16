@@ -49,6 +49,7 @@ module.exports = { // 开发服务器配置
         res.json({name: 'ganbefore'})
       })
     }
+    // 3) 服务端启动 webpack
   },
   // externals: { // webpack 不处理依赖库
   //   jquery: '$'
