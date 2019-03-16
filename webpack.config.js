@@ -38,11 +38,11 @@ module.exports = { // 开发服务器配置
     contentBase: './build', // 指向 build 文件找到文件夹
     compress: true, // 压缩
     proxy: { // 1) 重写方式把请求代理到 express 服务上
-      '/api': 'http://localhost:3000' // 配置代理
-      // '/api': {
-      //   target: 'http://localhost:3000', // 配置代理
-      //   pathRewrite: {'/api':''} // 重写路径
-      // }
+      // '/api': 'http://localhost:3000' // 配置代理
+      '/api': {
+        target: 'http://localhost:3000', // 配置代理
+        pathRewrite: {'/api':''} // 重写路径
+      }
     }
     // before(app) { // 2) 提供的钩子，前端模拟数据
     //   app.get('/user', (req, res) => {

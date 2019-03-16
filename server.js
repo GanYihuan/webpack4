@@ -8,7 +8,7 @@ let app = express()
 
 // app.unsubscribe(middle(compiler)) // 3)
 
-app.get('/api/user', (req, res) => {
+app.get('/user', (req, res) => {
   res.json({name: 'gan1'})
 })
 
