@@ -23,6 +23,7 @@ module.exports = { // 开发服务器配置
       new OptimizeCssAssetsWebpackPlugin({})
     ]
   },
+  devtool: 'cheap-module-source-map',
   devServer: {
     port: 8080,
     progress: true,
