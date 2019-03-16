@@ -23,7 +23,13 @@ module.exports = { // 开发服务器配置
       new OptimizeCssAssetsWebpackPlugin({})
     ]
   },
-  devtool: 'cheap-module-source-map',
+  watch: true, // 实时监控打包
+  watchOptions: {
+    poll: 1000, // 监听间隔
+    aggregateTimeout: 500, // 防抖
+    ignored: /node_modules/ // 不需要监控
+  },
+  devtool: 'cheap-module-source-map', // 源码映射会单独生成一个 sourcemap 文件 出错了会标识当前报错位置
   devServer: {
     port: 8080,
     progress: true,
