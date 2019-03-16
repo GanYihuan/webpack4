@@ -1,5 +1,6 @@
-﻿let path = require('path')
-let HtmlWebpackPlugin = require('html-webpack-plugin')
+﻿const path = require('path')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+const CleanWebpackPlugin = require('clean-webpack-plugin') // 每次打包都会删掉原来的并重新打包
 
 module.exports = {
   mode: 'development',
@@ -21,6 +22,7 @@ module.exports = {
       template: './src/test.html', // 模板
       filename: 'other.html', // 打包后的文件名
       chunks: ['other'] // 放入的模块
-    })
+    }),
+    new CleanWebpackPlugin()
   ]
 }

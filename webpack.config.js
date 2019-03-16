@@ -1,9 +1,11 @@
-﻿let webpack = require('webpack')
-let path = require('path')
-let HtmlWebpackPlugin = require('html-webpack-plugin')
-let MiniCssExtractPlugin = require('mini-css-extract-plugin') // 抽离出 css 样式为一个文件
-let OptimizeCssAssetsWebpackPlugin = require('optimize-css-assets-webpack-plugin') // css 压缩
-let UglifyJsWebpackPlugin = require('uglifyjs-webpack-plugin') // js 压缩
+﻿const webpack = require('webpack')
+const path = require('path')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin') // 抽离出 css 样式为一个文件
+const OptimizeCssAssetsWebpackPlugin = require('optimize-css-assets-webpack-plugin') // css 压缩
+const UglifyJsWebpackPlugin = require('uglifyjs-webpack-plugin') // js 压缩
+const CleanWebpackPlugin = require('clean-webpack-plugin') // 每次打包都会删掉原来的并重新打包
+const CopyWebpackPlugin = require('copy-webpack-plugin') // 拷贝文件
 
 module.exports = { // 开发服务器配置
   mode: 'production',
@@ -141,6 +143,14 @@ module.exports = { // 开发服务器配置
     }),
     new webpack.ProvidePlugin({ // 在每个模块中都注入 $
       $: 'jquery'
-    })
+    }),
+    new CleanWebpackPlugin(),
+    new CopyWebpackPlugin([
+      {
+        from: './doc',
+        to: './'
+      }
+    ]),
+    new webpack.BannerPlugin('ganyihuan 2019') // 版权信息
   ]
 }
