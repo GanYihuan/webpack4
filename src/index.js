@@ -47,8 +47,8 @@ document.body.appendChild(image)
 // 跨域处理
 let xhr = new XMLHttpRequest()
 // 默认访问 http://localhost:8080 webpack-dev-server 转发到 3000
-xhr.open('GET', '/api/user', true) // 1)
-// xhr.open('GET', '/user', true) // 2)
+// xhr.open('GET', '/api/user', true) // 1)
+xhr.open('GET', '/user', true) // 2)
 xhr.onload = function () {
   console.log(xhr.response)
 }
