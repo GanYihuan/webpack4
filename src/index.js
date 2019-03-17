@@ -65,3 +65,11 @@ if (DEV === 'dev') {
 console.log(url)
 console.log(typeof FLAG)
 console.log(EXPRESSION)
+
+import jquery from 'jquery'
+import moment from 'moment' // 时间格式化
+import 'moment/locale/zh-cn' // 手动引入
+
+moment.locale('zh-cn') // 设置语言
+let r = moment().endOf('day').fromNow()
+console.log(r)

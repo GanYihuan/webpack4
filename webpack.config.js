@@ -40,6 +40,7 @@ module.exports = { // 开发服务器配置
       bootstrap: 'bootstrap/dist/css/bootstrap.css'
     }
   },
+  noParse: /jquery/, // 不需要解析
   devtool: 'cheap-module-source-map', // 源码映射会单独生成一个 sourcemap 文件 出错了会标识当前报错位置
   devServer: {
     port: 8080,
@@ -178,6 +179,7 @@ module.exports = { // 开发服务器配置
       DEV: JSON.stringify('production'), // string production
       FLAG: 'true', // boolean
       EXPRESSION: '1+1' // 2
-    })
+    }),
+    new webpack.IgnorePlugin('/\.\/locale/', /moment/) // 忽略 moment 里的 locale 包
   ]
 }
