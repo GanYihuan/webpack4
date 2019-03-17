@@ -53,3 +53,15 @@ xhr.onload = function () {
   console.log(xhr.response)
 }
 xhr.send()
+
+import 'bootstrap'
+
+let url = ''
+if (DEV === 'dev') {
+  url = 'http://localhost:3000'
+} else {
+  url = 'http://www.zhufengxueyuan.cn'
+}
+console.log(url)
+console.log(typeof FLAG)
+console.log(EXPRESSION)

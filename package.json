@@ -16,6 +16,7 @@
     "autoprefixer": "^9.4.10",
     "babel-core": "^6.26.3",
     "babel-loader": "^8.0.5",
+    "bootstrap": "^4.3.1",
     "clean-webpack-plugin": "^2.0.1",
     "copy-webpack-plugin": "^5.0.1",
     "css-loader": "^2.1.1",

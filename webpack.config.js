@@ -31,6 +31,15 @@ module.exports = { // 开发服务器配置
     aggregateTimeout: 500, // 防抖
     ignored: /node_modules/ // 不需要监控
   },
+  resolve: { // 解析第三方包
+    modules: [path.resolve('node_modules')], // 找文件的位置
+    mainFields: ['style', 'main'], // 先找 style 再找 main
+    mainFiles: [], // 入口文件名字 index.js
+    extensions: ['js', 'css', 'json'], // 引入文件的后缀依次解析
+    alias: { // 别名
+      bootstrap: 'bootstrap/dist/css/bootstrap.css'
+    }
+  },
   devtool: 'cheap-module-source-map', // 源码映射会单独生成一个 sourcemap 文件 出错了会标识当前报错位置
   devServer: {
     port: 8080,
@@ -164,6 +173,11 @@ module.exports = { // 开发服务器配置
         to: './'
       }
     ]),
-    new webpack.BannerPlugin('ganyihuan 2019') // 版权信息
+    new webpack.BannerPlugin('ganyihuan 2019'), // 版权信息
+    new webpack.DefinePlugin({ // 定义环境变量
+      DEV: JSON.stringify('production'), // string production
+      FLAG: 'true', // boolean
+      EXPRESSION: '1+1' // 2
+    })
   ]
 }
