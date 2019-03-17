@@ -33,9 +33,9 @@ module.exports = { // 开发服务器配置
   },
   resolve: { // 解析第三方包
     modules: [path.resolve('node_modules')], // 找文件的位置
+    extensions: ['.js', '.css', '.json'], // 引入文件的后缀依次解析
     mainFields: ['style', 'main'], // 先找 style 再找 main
-    mainFiles: [], // 入口文件名字 index.js
-    extensions: ['js', 'css', 'json'], // 引入文件的后缀依次解析
+    // mainFiles: [], // 入口文件名字 index.js
     alias: { // 别名
       bootstrap: 'bootstrap/dist/css/bootstrap.css'
     }
