@@ -181,6 +181,9 @@ module.exports = { // 开发服务器配置
       FLAG: 'true', // boolean
       EXPRESSION: '1+1' // 2
     }),
-    new webpack.IgnorePlugin(/\.\/locale/, /moment/) // 忽略 moment 里的 locale 包
+    new webpack.IgnorePlugin(/\.\/locale/, /moment/), // 忽略 moment 里的 locale 包
+    // new webpack.DllReferencePlugin({ // 引入 Dll 的函数名
+    //   manifest: path.resolve(__dirname, 'dist', 'manifest.json')
+    // })
   ]
 }
