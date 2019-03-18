@@ -204,7 +204,8 @@ module.exports = { // 开发服务器配置
             plugins: [
               ['@babel/plugin-proposal-decorators', { 'legacy': true }], // 类和对象装饰器
               ['@babel/plugin-proposal-class-properties', { 'loose': true }], // 属性初始化
-              ['@babel/plugin-transform-runtime']
+              ['@babel/plugin-transform-runtime'],
+              ['@babel/plugin-syntax-dynamic-import']
             ]
           }
         }

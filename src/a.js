@@ -1,6 +1,6 @@
 ﻿import $ from 'jquery'
 
-module.exports = 'a------'
+// module.exports = 'a------'
 
 class B {
 }

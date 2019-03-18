@@ -92,3 +92,14 @@ import one from './one'
 import $ from 'jquery'
 
 console.log('index.js----')
+
+let button = document.createElement('button')
+button.innerHTML = 'button'
+button.addEventListener('click', function() {
+  console.log('click')
+  // @babel/plugin-syntax-dynamic-import 懒加载
+  import('./source.js').then(data => {
+    console.log(data.default)
+  })
+})
+document.body.appendChild(button)
