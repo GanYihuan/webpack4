@@ -62,6 +62,7 @@ module.exports = { // 开发服务器配置
   },
   devtool: 'cheap-module-source-map', // 源码映射会单独生成一个 sourcemap 文件 出错了会标识当前报错位置
   devServer: {
+    hot: true, // 启动热更新
     port: 8080,
     open: true, // 自动打开浏览器
     progress: true,
@@ -142,8 +143,8 @@ module.exports = { // 开发服务器配置
             loader: 'url-loader', // 将文件转换为base64
             options: {
               limit: 1, // 小于设置值时用 base64 来转化
-              outputPath: '/img/', // 放置在 img 目录下
-              publicPath: 'http://wwww.zhihu.cn' // 引入资源路径前面加的前缀
+              outputPath: '/img/' // 放置在 img 目录下
+              // publicPath: 'http://wwww.zhihu.cn' // 引入资源路径前面加的前缀
             }
           }
         ]
@@ -210,6 +211,8 @@ module.exports = { // 开发服务器配置
           }
         }
       ]
-    })
+    }),
+    new webpack.HotModuleReplacementPlugin(), // 热更新插件
+    new webpack.NamedModulesPlugin() // 打印更新的模块路径
   ]
 }

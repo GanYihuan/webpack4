@@ -103,3 +103,11 @@ button.addEventListener('click', function() {
   })
 })
 document.body.appendChild(button)
+
+if(module.hot) {
+  module.hot.accept('./source', () => {
+    console.log('accept hot')
+    let source = require('./source')
+    console.log(source)
+  })
+}
