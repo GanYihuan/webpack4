@@ -78,3 +78,11 @@ import React from 'react'
 import {render} from 'react-dom'
 
 // render(<h1>jsx</h1>, window.root)
+
+// import 在生产环境中会自动去掉没用的代码
+// scope hosting 作用域提升
+let a = 1
+let b = 2
+let c = 3
+let d = a + b + c
+console.log(d, '-------') // 打包结果 console.log(6, '------') 简化代码
