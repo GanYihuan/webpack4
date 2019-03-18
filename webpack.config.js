@@ -6,6 +6,7 @@ const OptimizeCssAssetsWebpackPlugin = require('optimize-css-assets-webpack-plug
 const UglifyJsWebpackPlugin = require('uglifyjs-webpack-plugin') // js 压缩
 const CleanWebpackPlugin = require('clean-webpack-plugin') // 每次打包都会删掉原来的并重新打包
 const CopyWebpackPlugin = require('copy-webpack-plugin') // 拷贝文件
+const Happypack  = require('happypack')
 
 module.exports = { // 开发服务器配置
   mode: 'production',
@@ -73,23 +74,9 @@ module.exports = { // 开发服务器配置
       // },
       {
         test: /\.js$/,
-        use: [
-          {
-            loader: 'babel-loader',
-            options: {
-              presets: [ // es6 -> es5
-                '@babel/preset-env'
-              ],
-              plugins: [
-                ['@babel/plugin-proposal-decorators', { 'legacy': true }], // 类和对象装饰器
-                ['@babel/plugin-proposal-class-properties', { 'loose': true }], // 属性初始化
-                ['@babel/plugin-transform-runtime']
-              ]
-            }
-          }
-        ],
+        use: 'Happypack/loader?id=js',
         include: path.resolve(__dirname, 'src'),
-        exclude: '/node_modules'
+        exclude: '/node_modules',
       },
       {
         test: /\.css$/,
@@ -185,5 +172,24 @@ module.exports = { // 开发服务器配置
     // new webpack.DllReferencePlugin({ // 引入 Dll 的函数名
     //   manifest: path.resolve(__dirname, 'dist', 'manifest.json')
     // })
+    new Happypack({ // js 用 Happypack 打包
+      id: 'js',
+      use: [
+        {
+          loader: 'babel-loader',
+          options: {
+            presets: [
+              '@babel/preset-env',
+              '@babel/preset-react'
+            ],
+            plugins: [
+              ['@babel/plugin-proposal-decorators', { 'legacy': true }], // 类和对象装饰器
+              ['@babel/plugin-proposal-class-properties', { 'loose': true }], // 属性初始化
+              ['@babel/plugin-transform-runtime']
+            ]
+          }
+        }
+      ]
+    })
   ]
 }
