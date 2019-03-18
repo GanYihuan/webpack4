@@ -10,10 +10,13 @@ const Happypack  = require('happypack')
 
 module.exports = { // 开发服务器配置
   mode: 'production',
-  entry: './src/index.js', // 入口
+  entry: {
+    index: './src/index.js', // 入口
+    other: './src/other.js'
+  },
   output: {
-    filename: 'bundle.[hash:5].js', // 打包后文件名, 加入 hash 5位
-    path: path.resolve(__dirname, 'build') // 打包后文件放哪里, 路径必须是一个绝对路径, path.resolve 相对路径解析成绝对路径
+    filename: '[name].[hash:5].js', // 打包后文件名, 加入 hash 5位
+    path: path.resolve(__dirname, 'dist') // 打包后文件放哪里, 路径必须是一个绝对路径, path.resolve 相对路径解析成绝对路径
     // publicPath: 'http://www.zhihu.cn' // 引入资源路径前面加的前缀
   },
   optimization: { // 优化项
@@ -24,7 +27,23 @@ module.exports = { // 开发服务器配置
         sourceMap: true // 监控错误
       }),
       new OptimizeCssAssetsWebpackPlugin({})
-    ]
+    ],
+    splitChunks: { // 多页面 分割代码
+      cacheGroups: { // 缓存组
+        common: { // 公共模块
+          chunks: 'initial', // 刚开始
+          minSize: 0, // 超过 0 个字节
+          minChunks: 2 // 用了 2 次以上
+        },
+        vendor: { // 第三方模块
+          priority: 1, // 先执行 权限高
+          test: /node_modules/,
+          chunks: 'initial', // 刚开始
+          minSize: 0, // 超过 0 个字节
+          minChunks: 2 // 用了 2 次以上
+        }
+      }
+    }
   },
   watch: true, // 实时监控打包
   watchOptions: {

@@ -1,1 +1,2 @@
-﻿console.log('one')
+﻿import $ from 'jquery'
+console.log('one-----')

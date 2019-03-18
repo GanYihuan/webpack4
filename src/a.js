@@ -1,4 +1,6 @@
-﻿module.exports = 'gan'
+﻿import $ from 'jquery'
+
+module.exports = 'a------'
 
 class B {
 }

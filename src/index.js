@@ -81,8 +81,14 @@ import {render} from 'react-dom'
 
 // import 在生产环境中会自动去掉没用的代码
 // scope hosting 作用域提升
-let a = 1
-let b = 2
-let c = 3
-let d = a + b + c
-console.log(d, '-------') // 打包结果 console.log(6, '------') 简化代码
+let aa = 1
+let bb = 2
+let cc = 3
+let dd = aa + bb + cc
+console.log(dd, '-------') // 打包结果 console.log(6, '------') 简化代码
+
+import aaa from './a'
+import one from './one'
+import $ from 'jquery'
+
+console.log('index.js----')
