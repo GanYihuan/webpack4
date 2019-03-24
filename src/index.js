@@ -58,24 +58,26 @@ document.body.appendChild(image)
 // 3) <img src='' />
 
 // 跨域处理
-// let xhr = new XMLHttpRequest()
+/* eslint-disable no-undef */
+let xhr = new XMLHttpRequest()
 // 默认访问 http://localhost:8080 webpack-dev-server 转发到 3000
-// xhr.open('GET', '/api/user', true) // 1)
-// xhr.open('GET', '/user', true) // 2)
-// xhr.onload = function () {
-//   console.log(xhr.response)
-// }
-// xhr.send()
+xhr.open('GET', '/api/user', true) // 1)
+xhr.open('GET', '/user', true) // 2)
+xhr.onload = function () {
+  console.log(xhr.response)
+}
+xhr.send()
 
+// new webpack.DefinePlugin({ // 定义环境变量
 let url = ''
-// if (DEV === 'dev') {
-//   url = 'http://localhost:3000'
-// } else {
-//   url = 'http://www.zhufengxueyuan.cn'
-// }
+if (DEV === 'dev') {
+  url = 'http://localhost:3000'
+} else {
+  url = 'http://www.zhufengxueyuan.cn'
+}
 console.log(url)
 console.log(typeof FLAG)
-// console.log(EXPRESSION) // 手动引入
+console.log(EXPRESSION)
 
 moment.locale('zh-cn') // 设置语言
 let r = moment().endOf('day').fromNow()

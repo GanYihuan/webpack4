@@ -53,8 +53,8 @@ module.exports = { // 开发服务器配置
   },
   resolve: { // 解析第三方包
     modules: [path.resolve('node_modules')], // 找文件的位置
-    extensions: ['.js', '.css', '.json'], // 引入文件的后缀依次解析
-    mainFields: ['style', 'main'], // 先找 style 再找 main
+    extensions: ['.js', '.css', '.json', '.vue'], // 引入文件的后缀依次解析
+    mainFields: ['style', 'main'], // 先找 **package.json** style 再找 main
     // mainFiles: [], // 入口文件名字 index.js
     alias: { // 别名
       bootstrap: 'bootstrap/dist/css/bootstrap.css'
@@ -68,14 +68,14 @@ module.exports = { // 开发服务器配置
     progress: true, // 运行过程
     contentBase: './build', // 指向 build 文件
     compress: true, // 压缩
-    // proxy: { // 1) 重写方式把请求代理到 express 服务上
-    //   '/api': 'http://localhost:3000' // 配置代理
-    //   '/api': {
+    // proxy: { // 重写方式把请求代理到 express 服务上
+    //   '/api': 'http://localhost:3000' // 1) 配置代理
+    //   '/api': { // 2
     //     target: 'http://localhost:3000', // 配置代理
     //     pathRewrite: {'/api':''} // 重写路径
     //   }
     // }
-    before(app) { // 2) 提供的钩子，前端模拟数据
+    before(app) { // 提供的钩子，前端模拟数据
       app.get('/user', (req, res) => {
         res.json({ name: 'ganbefore' })
       })
