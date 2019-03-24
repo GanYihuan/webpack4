@@ -63,13 +63,13 @@ module.exports = { // 开发服务器配置
   devtool: 'cheap-module-source-map', // 源码映射会单独生成一个 sourcemap 文件 出错了会标识当前报错位置
   devServer: {
     hot: true, // 启动热更新
-    port: 8080,
+    port: 8080, // 启动端口
     open: true, // 自动打开浏览器
-    progress: true,
-    contentBase: './build', // 指向 build 文件找到文件夹
+    progress: true, // 运行过程
+    contentBase: './build', // 指向 build 文件
     compress: true, // 压缩
     // proxy: { // 1) 重写方式把请求代理到 express 服务上
-    //   // '/api': 'http://localhost:3000' // 配置代理
+    //   '/api': 'http://localhost:3000' // 配置代理
     //   '/api': {
     //     target: 'http://localhost:3000', // 配置代理
     //     pathRewrite: {'/api':''} // 重写路径
@@ -85,7 +85,7 @@ module.exports = { // 开发服务器配置
   // externals: { // webpack 不处理依赖库
   //   jquery: '$'
   // },
-  module: {
+  module: { // 模块, css, img... 转换为模块
     noParse: /jquery/, // 不需要解析
     rules: [ // 后往前 右往左 执行
       // {
@@ -102,32 +102,31 @@ module.exports = { // 开发服务器配置
         test: /\.css$/,
         use: [
           MiniCssExtractPlugin.loader, // 抽离出的 css 文件用 link 标签引入
-          { // 让 js 能 @ import css 文件进来
-            loader: 'css-loader'
+          {
+            loader: 'css-loader' // 解析 @import 语法
           },
           {
-            loader: 'postcss-loader'
+            loader: 'postcss-loader' // css 处理, autoprefixer: 加前缀
           }
         ]
       },
       {
         test: /\.less$/,
         use: [
-          { // style-loader 动态创建 style 标签，塞到 head 标签里
-            loader: 'style-loader',
+          {
+            loader: 'style-loader', // style-loader 动态创建 style 标签，塞到 head 标签里
             options: {
               insertAt: 'top' // 插入到顶部
             }
           },
-          { // 让 js 能 @ import css 文件进来
-            loader: 'css-loader'
-          },
-          { // css 处理, autoprefixer: 加前缀
-            loader: 'postcss-loader'
+          {
+            loader: 'css-loader' // 解析 @import 语法
           },
           {
-            // less -> css
-            loader: 'less-loader'
+            loader: 'postcss-loader' // css 处理, autoprefixer: 加前缀
+          },
+          {
+            loader: 'less-loader' // less -> css
           }
         ]
       },
@@ -165,7 +164,7 @@ module.exports = { // 开发服务器配置
       filename: 'index.html', // 打包后的文件名
       minify: { // 压缩
         removeAttributeQuotes: true, // 删除双引号
-        collapseWhitespace: true
+        collapseWhitespace: true // 变成一行
       },
       hash: true // 引入文件名称加上 hash
     }),
