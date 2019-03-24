@@ -6,7 +6,7 @@ const OptimizeCssAssetsWebpackPlugin = require('optimize-css-assets-webpack-plug
 const UglifyJsWebpackPlugin = require('uglifyjs-webpack-plugin') // js 压缩
 const CleanWebpackPlugin = require('clean-webpack-plugin') // 每次打包都会删掉原来的并重新打包
 const CopyWebpackPlugin = require('copy-webpack-plugin') // 拷贝文件
-const Happypack  = require('happypack')
+const Happypack = require('happypack')
 
 module.exports = { // 开发服务器配置
   mode: 'production',
@@ -21,12 +21,12 @@ module.exports = { // 开发服务器配置
   },
   optimization: { // 优化项
     minimizer: [
-      new UglifyJsWebpackPlugin({
+      new UglifyJsWebpackPlugin({ // js 压缩
         cache: true, // 缓存
-        parallel: true, // 并发压缩
+        parallel: true, // js 并发压缩
         sourceMap: true // 监控错误
       }),
-      new OptimizeCssAssetsWebpackPlugin({})
+      new OptimizeCssAssetsWebpackPlugin({}) // css 压缩
     ],
     splitChunks: { // 多页面 分割代码
       cacheGroups: { // 缓存组
@@ -77,14 +77,14 @@ module.exports = { // 开发服务器配置
     // }
     before(app) { // 2) 提供的钩子，前端模拟数据
       app.get('/user', (req, res) => {
-        res.json({name: 'ganbefore'})
+        res.json({ name: 'ganbefore' })
       })
     }
     // 3) 服务端启动 webpack
   },
-  // externals: { // webpack 不处理依赖库
-  //   jquery: '$'
-  // },
+  externals: { // webpack 不处理相关依赖库
+    jquery: '$'
+  },
   module: { // 模块, css, img... 转换为模块
     noParse: /jquery/, // 不需要解析
     rules: [ // 后往前 右往左 执行
@@ -96,8 +96,20 @@ module.exports = { // 开发服务器配置
         test: /\.js$/,
         use: 'Happypack/loader?id=js',
         include: path.resolve(__dirname, 'src'),
-        exclude: '/node_modules',
+        exclude: '/node_modules'
       },
+      // {
+      //   test: /\.js$/,
+      //   use: [
+      //     {
+      //       loader: 'eslint-loader',
+      //       options: {
+      //         formatter: require('eslint-friendly-formatter')
+      //       },
+      //       enforce: 'pre' // 先执行, post 后执行
+      //     }
+      //   ]
+      // },
       {
         test: /\.css$/,
         use: [
@@ -204,10 +216,17 @@ module.exports = { // 开发服务器配置
             plugins: [
               ['@babel/plugin-proposal-decorators', { 'legacy': true }], // 类和对象装饰器
               ['@babel/plugin-proposal-class-properties', { 'loose': true }], // 属性初始化
-              ['@babel/plugin-transform-runtime'],
+              ['@babel/plugin-transform-runtime'], // 能写 es6+ 新方法
               ['@babel/plugin-syntax-dynamic-import']
             ]
           }
+        },
+        {
+          loader: 'eslint-loader', // 放置 babel-loader 之后, eslint 校验代码格式
+          options: {
+            formatter: require('eslint-friendly-formatter') // 报错时输入内容的格式更友好
+          },
+          enforce: 'pre' // 先执行, post 后执行
         }
       ]
     }),

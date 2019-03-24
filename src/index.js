@@ -3,7 +3,24 @@
 // console.log(window.$)
 
 // ProvidePlugin
-console.log($)
+// 1) js 中创建图片来引入
+import './index.css'
+import logo from './logo.png'
+
+import 'bootstrap'
+
+// import jquery from 'jquery'
+import moment from 'moment' // 时间格式化
+import 'moment/locale/zh-cn'
+
+import React from 'react'
+import { render } from 'react-dom' // 打包结果 console.log(6, '------') 简化代码
+
+import aaa from './a'
+import one from './one'
+import $ from 'jquery'
+
+console.log($, aaa, one, React, render)
 
 // cdn
 // import $ from 'jquery'
@@ -27,17 +44,13 @@ class A {
 }
 let a = new A()
 console.log(a.a)
-
 function log(target) {
   console.log(target, '23')
 }
 
 'aaa'.includes('a')
-
-// 1) js 中创建图片来引入
-import './index.css'
-import logo from './logo.png'
-let image = new Image()
+/* eslint-disable no-undef */
+let image = new Image(100, 200)
 console.log(logo)
 image.src = logo
 document.body.appendChild(image)
@@ -45,37 +58,28 @@ document.body.appendChild(image)
 // 3) <img src='' />
 
 // 跨域处理
-let xhr = new XMLHttpRequest()
+// let xhr = new XMLHttpRequest()
 // 默认访问 http://localhost:8080 webpack-dev-server 转发到 3000
 // xhr.open('GET', '/api/user', true) // 1)
-xhr.open('GET', '/user', true) // 2)
-xhr.onload = function () {
-  console.log(xhr.response)
-}
-xhr.send()
-
-import 'bootstrap'
+// xhr.open('GET', '/user', true) // 2)
+// xhr.onload = function () {
+//   console.log(xhr.response)
+// }
+// xhr.send()
 
 let url = ''
-if (DEV === 'dev') {
-  url = 'http://localhost:3000'
-} else {
-  url = 'http://www.zhufengxueyuan.cn'
-}
+// if (DEV === 'dev') {
+//   url = 'http://localhost:3000'
+// } else {
+//   url = 'http://www.zhufengxueyuan.cn'
+// }
 console.log(url)
 console.log(typeof FLAG)
-console.log(EXPRESSION)
-
-import jquery from 'jquery'
-import moment from 'moment' // 时间格式化
-import 'moment/locale/zh-cn' // 手动引入
+// console.log(EXPRESSION) // 手动引入
 
 moment.locale('zh-cn') // 设置语言
 let r = moment().endOf('day').fromNow()
 console.log(r)
-
-import React from 'react'
-import {render} from 'react-dom'
 
 // render(<h1>jsx</h1>, window.root)
 
@@ -85,11 +89,7 @@ let aa = 1
 let bb = 2
 let cc = 3
 let dd = aa + bb + cc
-console.log(dd, '-------') // 打包结果 console.log(6, '------') 简化代码
-
-import aaa from './a'
-import one from './one'
-import $ from 'jquery'
+console.log(dd, '-------')
 
 console.log('index.js----')
 
@@ -104,7 +104,7 @@ button.addEventListener('click', function() {
 })
 document.body.appendChild(button)
 
-if(module.hot) {
+if (module.hot) {
   module.hot.accept('./source', () => {
     console.log('accept hot')
     let source = require('./source')

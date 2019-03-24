@@ -1,2 +1,2 @@
 ﻿import $ from 'jquery'
-console.log('one-----')
+console.log('one-----', $)

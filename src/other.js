@@ -2,4 +2,4 @@
 import b from './one'
 import $ from 'jquery'
 
-console.log('other.js----')
+console.log('other.js----', a, b, $)
