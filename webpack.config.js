@@ -1,6 +1,6 @@
 ﻿const webpack = require('webpack')
 const path = require('path')
-const HtmlWebpackPlugin = require('html-webpack-plugin')
+const HtmlWebpackPlugin = require('html-webpack-plugin') // 生成 html, 即使 css, js 文件名称变化 , 能自动加载配对的 css, js 文件
 const MiniCssExtractPlugin = require('mini-css-extract-plugin') // 抽离出 css 样式为一个文件
 const OptimizeCssAssetsWebpackPlugin = require('optimize-css-assets-webpack-plugin') // css 压缩
 const UglifyJsWebpackPlugin = require('uglifyjs-webpack-plugin') // js 压缩
@@ -171,7 +171,7 @@ module.exports = { // 开发服务器配置
     ]
   },
   plugins: [ // 放置 webpack 插件
-    new HtmlWebpackPlugin({
+    new HtmlWebpackPlugin({ // 生成 html, 即使 css, js 文件名称变化 , 能自动加载配对的 css, js 文件
       template: './src/index.html', // 模板
       filename: 'index.html', // 打包后的文件名
       minify: { // 压缩
