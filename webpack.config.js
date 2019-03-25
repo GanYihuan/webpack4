@@ -88,28 +88,16 @@ module.exports = { // 开发服务器配置
   module: { // 模块, css, img... 转换为模块
     noParse: /jquery/, // 不需要解析
     rules: [ // 后往前 右往左 执行
-      // {
-      //   test: require.resolve('jquery'),
-      //   use: 'expose-loader?$' // 暴露全局的 loader 内联 loader
-      // },
+      {
+        test: require.resolve('jquery'),
+        use: 'expose-loader?$' // 暴露全局的 loader 内联 loader
+      },
       {
         test: /\.js$/,
-        use: 'Happypack/loader?id=js',
+        use: 'Happypack/loader?id=js', // 多线打包
         include: path.resolve(__dirname, 'src'),
         exclude: '/node_modules'
       },
-      // {
-      //   test: /\.js$/,
-      //   use: [
-      //     {
-      //       loader: 'eslint-loader',
-      //       options: {
-      //         formatter: require('eslint-friendly-formatter')
-      //       },
-      //       enforce: 'pre' // 先执行, post 后执行
-      //     }
-      //   ]
-      // },
       {
         test: /\.css$/,
         use: [
@@ -171,6 +159,9 @@ module.exports = { // 开发服务器配置
     ]
   },
   plugins: [ // 放置 webpack 插件
+    new webpack.DllReferencePlugin({ // 引入 DllPlugin 打包出来的资源
+      manifest: path.resolve(__dirname, 'dist', 'manifest.json')
+    }),
     new HtmlWebpackPlugin({ // 生成 html, 即使 css, js 文件名称变化 , 能自动加载配对的 css, js 文件
       template: './src/index.html', // 模板
       filename: 'index.html', // 打包后的文件名
@@ -217,7 +208,7 @@ module.exports = { // 开发服务器配置
               ['@babel/plugin-proposal-decorators', { 'legacy': true }], // 类和对象装饰器
               ['@babel/plugin-proposal-class-properties', { 'loose': true }], // 属性初始化
               ['@babel/plugin-transform-runtime'], // 能写 es6+ 新方法
-              ['@babel/plugin-syntax-dynamic-import']
+              ['@babel/plugin-syntax-dynamic-import'] // 动态加载 import
             ]
           }
         },
@@ -231,6 +222,6 @@ module.exports = { // 开发服务器配置
       ]
     }),
     new webpack.HotModuleReplacementPlugin(), // 热更新插件
-    new webpack.NamedModulesPlugin() // 打印更新的模块路径
+    new webpack.NamedModulesPlugin() // module 的版本号从数字改成相对路径 有利于长缓存优化
   ]
 }

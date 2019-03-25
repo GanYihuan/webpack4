@@ -22,10 +22,6 @@ import $ from 'jquery'
 
 console.log($, aaa, one, React, render)
 
-// cdn
-// import $ from 'jquery'
-// console.log($)
-
 require('@babel/polyfill')
 
 console.log('hello')

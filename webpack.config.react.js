@@ -1,5 +1,5 @@
-﻿let path = require('path')
-let webpack = require('webpack')
+﻿let webpack = require('webpack')
+let path = require('path')
 
 module.exports = {
   mode: 'development',
@@ -8,14 +8,14 @@ module.exports = {
   },
   output: {
     filename: '_dll_[name].js', // 产生的文件名
-    path: path.resolve(__dirname, 'dist'),
-    library: '_dll_[name]', // _dll_react
-    // libraryTarget: 'var'
+    path: path.resolve(__dirname, 'build'),
+    library: '_dll_[name]' // 将你的 bundle 暴露为名为全局变量，通过此名称来 import
+    // libraryTarget: 'var' // 控制以不同形式暴露
   },
   plugins: [
-    new webpack.DllPlugin({ // name == library
+    new webpack.DllPlugin({ // 某种方法实现了拆分 bundles
       name: '_dll_[name]', // 暴露出的 Dll 的函数名
-      path: path.resolve(__dirname, 'dist', 'manifest.json')
+      path: path.resolve(__dirname, 'build', 'manifest.json')
     })
   ]
 }
