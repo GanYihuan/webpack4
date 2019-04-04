@@ -1,7 +1,7 @@
 ﻿const webpack = require('webpack')
 const path = require('path')
-const HtmlWebpackPlugin = require('html-webpack-plugin') // 生成 html, 即使 css, js 文件名称变化 , 能自动加载配对的 css, js 文件
-const MiniCssExtractPlugin = require('mini-css-extract-plugin') // 抽离出 css 样式为一个文件
+const HtmlWebpackPlugin = require('html-webpack-plugin') // 简化 HTML 文件的创建, 生成 html, 即使 css, js 文件名称变化 , 能自动加载配对的 css, js 文件
+const MiniCssExtractPlugin = require('mini-css-extract-plugin') // 抽离出 css 样式生成一个文件
 const OptimizeCssAssetsWebpackPlugin = require('optimize-css-assets-webpack-plugin') // css 压缩
 const UglifyJsWebpackPlugin = require('uglifyjs-webpack-plugin') // js 压缩
 const CleanWebpackPlugin = require('clean-webpack-plugin') // 每次打包都会删掉原来的并重新打包
@@ -9,12 +9,12 @@ const CopyWebpackPlugin = require('copy-webpack-plugin') // 拷贝文件
 const Happypack = require('happypack')
 
 module.exports = { // 开发服务器配置
-  mode: 'production', // development
-  entry: {
-    index: './src/index.js', // 入口
+  mode: 'production', // 开发模式 development/production
+  entry: { // 入口
+    index: './src/index.js',
     other: './src/other.js'
   },
-  output: {
+  output: { // 出口
     filename: '[name].[hash:5].js', // 打包后文件名, 加入 hash 5位
     path: path.resolve(__dirname, 'dist') // 打包后文件放哪里, 路径必须是一个绝对路径, path.resolve 相对路径解析成绝对路径
     // publicPath: 'http://www.zhihu.cn' // 引入资源路径前面加的前缀
@@ -61,12 +61,12 @@ module.exports = { // 开发服务器配置
     }
   },
   devtool: 'cheap-module-source-map', // 源码映射会单独生成一个 sourcemap 文件 出错了会标识当前报错位置
-  devServer: {
+  devServer: { // 开发服务器配置
     hot: true, // 启动热更新
     port: 8080, // 启动端口
-    open: true, // 自动打开浏览器
     progress: true, // 运行过程
-    contentBase: './build', // 指向 build 文件
+    contentBase: './build', // 指向 ./build 文件作为静态服务
+    open: true, // 自动打开浏览器
     compress: true, // 压缩
     // proxy: { // 重写方式把请求代理到 express 服务上
     //   '/api': 'http://localhost:3000' // 1) 配置代理
@@ -101,9 +101,9 @@ module.exports = { // 开发服务器配置
       {
         test: /\.css$/,
         use: [
-          MiniCssExtractPlugin.loader, // 抽离出的 css 文件用 link 标签引入
+          MiniCssExtractPlugin.loader, // 抽离出的 css 文件用 <link /> 标签引入
           {
-            loader: 'css-loader' // 解析 @import 语法
+            loader: 'css-loader' // 处理 css 文件, 如解析 @import 语法, 解析路径等
           },
           {
             loader: 'postcss-loader' // css 处理, autoprefixer: 加前缀
@@ -114,19 +114,19 @@ module.exports = { // 开发服务器配置
         test: /\.less$/,
         use: [
           {
-            loader: 'style-loader', // style-loader 动态创建 style 标签，塞到 head 标签里
+            loader: 'style-loader', // 动态创建 style 标签，塞到 <head></head> 标签里
             options: {
-              insertAt: 'top' // 插入到顶部
+              insertAt: 'top' // 插入到 HTML 文件的顶部
             }
           },
           {
-            loader: 'css-loader' // 解析 @import 语法
+            loader: 'css-loader' // 处理 css 文件, 如解析 @import 语法, 解析路径等
           },
           {
-            loader: 'postcss-loader' // css 处理, autoprefixer: 加前缀
+            loader: 'postcss-loader' // css 处理, autoprefixer: 加前缀等功能
           },
           {
-            loader: 'less-loader' // less -> css
+            loader: 'less-loader' // less 转化为 css
           }
         ]
       },
@@ -162,17 +162,17 @@ module.exports = { // 开发服务器配置
     new webpack.DllReferencePlugin({ // 引入 DllPlugin 打包出来的资源
       manifest: path.resolve(__dirname, 'dist', 'manifest.json')
     }),
-    new HtmlWebpackPlugin({ // 生成 html, 即使 css, js 文件名称变化 , 能自动加载配对的 css, js 文件
+    new HtmlWebpackPlugin({
       template: './src/index.html', // 模板
       filename: 'index.html', // 打包后的文件名
-      minify: { // 压缩
+      minify: { // 压缩 html
         removeAttributeQuotes: true, // 删除双引号
         collapseWhitespace: true // 变成一行
       },
-      hash: true // 引入文件名称加上 hash
+      hash: true // html 里引入文件路径的名称加上 hash
     }),
     new MiniCssExtractPlugin({ // 抽离出 css 样式
-      filename: 'css/main.css'
+      filename: 'css/main.css' // 抽离出的样式名称
     }),
     new webpack.ProvidePlugin({ // 在每个模块中都注入 $
       $: 'jquery'
