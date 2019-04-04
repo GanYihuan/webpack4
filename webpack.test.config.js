@@ -9,7 +9,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin') // 拷贝文件
 const Happypack = require('happypack')
 
 module.exports = { // 开发服务器配置
-  mode: 'production',
+  mode: 'production', // development
   entry: {
     index: './src/index.js', // 入口
     other: './src/other.js'
