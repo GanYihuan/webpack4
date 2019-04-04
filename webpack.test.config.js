@@ -90,7 +90,7 @@ module.exports = { // 开发服务器配置
     rules: [ // 后往前 右往左 执行
       {
         test: require.resolve('jquery'),
-        use: 'expose-loader?$' // 暴露全局的 loader 内联 loader
+        use: 'expose-loader?$' // 暴露全局的 loader
       },
       {
         test: /\.js$/,
@@ -139,9 +139,9 @@ module.exports = { // 开发服务器配置
         // ]
         use: [
           {
-            loader: 'url-loader', // 将文件转换为base64
+            loader: 'url-loader', // 将图片转换为 base64
             options: {
-              limit: 1, // 小于设置值时用 base64 来转化
+              limit: 3000, // 小于设置值时用 base64 来转化
               outputPath: '/img/' // 放置在 img 目录下
               // publicPath: 'http://wwww.zhihu.cn' // 引入资源路径前面加的前缀
             }
@@ -217,7 +217,7 @@ module.exports = { // 开发服务器配置
           options: {
             formatter: require('eslint-friendly-formatter') // 报错时输入内容的格式更友好
           },
-          enforce: 'pre' // 先执行, post 后执行
+          enforce: 'pre' // pre 先执行, post 后执行
         }
       ]
     }),
