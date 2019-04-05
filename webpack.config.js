@@ -31,16 +31,16 @@ module.exports = { // 开发服务器配置
     splitChunks: { // 多页面 分割代码
       cacheGroups: { // 缓存组
         common: { // 公共模块
-          chunks: 'initial', // 刚开始
-          minSize: 0, // 超过 0 个字节
-          minChunks: 2 // 用了 2 次以上
+          chunks: 'initial', // 这表示将选择哪些块进行优化。当提供一个字符串时，有效值是all、async和initial
+          minSize: 0, // 超过 0 个字节, 生成块的最小大小(以字节为单位)。
+          minChunks: 2 // 用了 2 次以上, 模块分割前必须共享的最小块数。
         },
         vendor: { // 第三方模块
           priority: 1, // 先执行 权限高
           test: /node_modules/,
-          chunks: 'initial', // 刚开始
-          minSize: 0, // 超过 0 个字节
-          minChunks: 2 // 用了 2 次以上
+          chunks: 'initial', // 这表示将选择哪些块进行优化。当提供一个字符串时，有效值是all、async和initial
+          minSize: 0, // 超过 0 个字节, 生成块的最小大小(以字节为单位)。
+          minChunks: 2 // 用了 2 次以上, 模块分割前必须共享的最小块数。
         }
       }
     }
@@ -62,12 +62,12 @@ module.exports = { // 开发服务器配置
   },
   devtool: 'cheap-module-source-map', // 源码映射会单独生成一个 sourcemap 文件 出错了会标识当前报错位置
   devServer: { // 开发服务器配置
-    hot: true, // 启动热更新
     port: 8080, // 启动端口
     progress: true, // 运行过程
-    contentBase: './build', // 指向 ./build 文件作为静态服务
+    hot: true, // 启动热更新
     open: true, // 自动打开浏览器
     compress: true, // 压缩
+    contentBase: './build', // 指向 ./build 文件作为静态服务
     // proxy: { // 重写方式把请求代理到 express 服务上
     //   '/api': 'http://localhost:3000' // 1) 配置代理
     //   '/api': { // 2
@@ -159,6 +159,11 @@ module.exports = { // 开发服务器配置
     ]
   },
   plugins: [ // 放置 webpack 插件
+    // **webpack.config.react.js**
+    // new webpack.DllPlugin({ // 某种方法实现了拆分 bundles
+    //   name: '_dll_[name]', // 暴露出的 Dll 的函数名
+    //   path: path.resolve(__dirname, 'build', 'manifest.json')
+    // })
     new webpack.DllReferencePlugin({ // 引入 DllPlugin 打包出来的资源
       manifest: path.resolve(__dirname, 'dist', 'manifest.json')
     }),
