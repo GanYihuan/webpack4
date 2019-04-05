@@ -1,5 +1,95 @@
 ﻿# webpack4
 
+## 插件
+
+entry: 某段代码入口 , 打包入口
+output: 输出
+loaders: 文件转化为模块
+plugins: 参与打包过程
+chunk: 代码块
+bundle: 打包生成的文件
+module : 模块 , css, img 转换为模块
+
+```js
+// package.json
+  "scripts" : {
+    "build" : "webpack --config webpack.config.js" ,
+    "dev" : "webpack-dev-server --open"
+  },
+```
+
+````node
+cd project file
+yarn init -y
+yarn add webpack webpack-cli -D
+npx webpack
+npx webpack --config webpack.config.my.js // 运行自定义名称配置文件 ```
+
+```node
+yarn add
+webpack
+webpack-cli
+webpack-dev—server
+webpack-dev-middleware
+webpack—merge
+webpack-hot-middleware
+imports-loader
+css-loader
+style-loader
+url-loader
+file-loader
+less
+less-loader
+sass-loader
+node-sass
+stylus
+stylus-loader
+mini-css-webpack-plugin
+postcss
+postcss-loader
+autoprefixer
+cssnano
+postcss-cssnext
+optimize-css-assets-webpack-plugin
+uglifyjs-webpack-plugin
+babel-core
+babel-loader
+@babel/core
+@babel/preset-env
+@babel/plugin-proposal-class-properties
+@babel/plugin-proposal-decorators
+@babel/plugin-transform-runtime
+@babel/plugin-syntax-dynamic—import
+eslint
+eslint-loader
+eslint-friendly-formatter
+eslint-plugin-html
+babel-eslint
+html-withimg-loader
+clean-webpack-plugin
+copy-webpack-plugin
+http-proxy-middleware
+connect-history-api-fallback
+parallel-webpack
+bootstrap
+moment
+jquery
+express
+opn
+react
+react-dom
+happypack
+tapable
+-D
+````
+
+```node
+yarn add
+@babel/runtime
+@babel/polyfill
+- S
+```
+
 ## 编译 ES6/ES7
 
 - babel-loader
