@@ -15,8 +15,8 @@ module.exports = { // 开发服务器配置
     other: './src/other.js'
   },
   output: { // 出口
-    filename: '[name].[hash:5].js', // 打包后文件名, 加入 hash 5位
-    path: path.resolve(__dirname, 'dist') // 打包后文件放哪里, 路径必须是一个绝对路径, path.resolve 相对路径解析成绝对路径
+    filename: '[name].[hash:5].js', // 打包后文件名, 加入 hash 5位, [name] 对应 entry 定义的文件名称
+    path: path.resolve(__dirname, 'dist') // 打包后文件放哪里, path.resolve 相对路径解析成绝对路径
     // publicPath: 'http://www.zhihu.cn' // 引入资源路径前面加的前缀
   },
   optimization: { // 优化项

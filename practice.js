@@ -1,10 +1,9 @@
-﻿
-const webpack = require('webpack')
+﻿const webpack = require('webpack')
 const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const OptimizeCssAssetsWebpackPlugin = require('optimize-css-assets-webpack-plugin')
-const UglifyJSWebpackPlugin = require('uglifyjs-webpack-plugin')
+const UglifyJsWebpackPlugin = require('uglifyjs-webpack-plugin')
 const CleanWebpackPlugin = require('clean-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const HappyPack = require('happypack')
@@ -12,8 +11,8 @@ const HappyPack = require('happypack')
 module.exports = {
   mode: 'production',
   entry: {
-    index: '',
-    other: ''
+    index: './src/index.js',
+    other: './src/other.js'
   },
   output: {
     filename: '[name].[hash:5].js',
@@ -21,7 +20,7 @@ module.exports = {
   },
   optimization: {
     minimizer: [
-      new UglifyJSWebpackPlugin({
+      new UglifyJsWebpackPlugin({
         cache: true,
         parallel: true,
         sourceMap: true
@@ -32,11 +31,11 @@ module.exports = {
       cacheGroups: {
         common: {
           chunks: 'initial',
-          miniSize: 0,
-          miniChunks: 2
+          minSize: 0,
+          minChunks: 2
         },
         vendor: {
-          prioprity: 1,
+          priority: 1,
           test: /node_modules/,
           chunks: 'initial',
           minSize: 0,
@@ -54,21 +53,21 @@ module.exports = {
   resolve: {
     modules: [path.resolve('node_modules')],
     extension: ['.js', '.css', '.json', '.vue'],
-    mainFields: ['style', 'main'],
+    maniFields: ['style', 'main'],
     alias: {
-      bootstrap: ''
+      jquery: ''
     }
   },
   devtool: 'cheap-module-source-map',
   devServer: {
     port: 8080,
-    hot: true,
     progress: true,
-    open: true,
+    hot: true,
     compress: true,
-    contentBase: './build',
+    open: true,
+    contentbase: './build',
     proxy: {
-      'api': {
+      '/api': {
         target: 'http://localhost:3000',
         pathRewrite: { '/api': '' }
       }
@@ -117,7 +116,7 @@ module.exports = {
             }
           },
           {
-            loader: 'css-loader'
+            loader: 'css-laoder'
           },
           {
             loader: 'postcss-laoder'
@@ -128,7 +127,7 @@ module.exports = {
         ]
       },
       {
-        test: /\.(png|jpg|jpeg|gif)$/,
+        test: /\.(png|jpeg|gif)$/,
         use: [
           {
             loader: 'file-loader'
@@ -153,15 +152,15 @@ module.exports = {
     ]
   },
   plugins: [
+    new webpack.DllPlugin({
+      name: '[name]',
+      path: path.resolve(__dirname, 'build', 'manifest.json')
+    }),
     new webpack.DllReferencePlugin({
       manifest: path.resolve(__dirname, 'dist', 'manifest.json')
     }),
-    new webpack.DllPlugin({
-      name: '__dll_[name]',
-      path: path.resolve(__dirname, 'build', 'manifest.json')
-    }),
     new HtmlWebpackPlugin({
-      template: './src/index.html',
+      tempalte: './src/index.html',
       filename: 'index.html',
       minify: {
         removeAttributeQuotes: true,
@@ -205,7 +204,7 @@ module.exports = {
         {
           loader: 'eslint-loader',
           options: {
-            formatter: require('eslint-firendly-formatter')
+            formatter: require('eslint-friendly-formaater')
           },
           enforece: 'pre'
         }
