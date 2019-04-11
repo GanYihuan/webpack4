@@ -2,13 +2,13 @@
 
 ## 插件
 
-entry: 某段代码入口 , 打包入口
-output: 输出
-loaders: 文件转化为模块
-plugins: 参与打包过程
-chunk: 代码块
-bundle: 打包生成的文件
-module : 模块 , css, img 转换为模块
+- entry: 某段代码入口 , 打包入口
+- output: 输出
+- loaders: 文件转化为模块
+- plugins: 参与打包过程
+- chunk: 代码块
+- bundle: 打包生成的文件
+- module: 模块, css, img 转换为模块
 
 ```js
 // package.json
