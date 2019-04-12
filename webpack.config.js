@@ -18,10 +18,13 @@ module.exports = { // 开发服务器配置
     publicPath: 'http://www.zhihu.cn', // 引入资源路径前面加的前缀
     filename: '[name].[hash:5].js', // 打包后文件名, 加入 hash 5位, [name] 对应 entry 定义的文件名称
     path: path.resolve(__dirname, 'dist'), // 打包后文件放哪里, path.resolve 相对路径解析成绝对路径
-    library: 'webpackNumbers' , // 暴露library 让你的 library 能够在各种使用环境中可用
+    library: 'webpackNumbers', // 暴露library 让你的 library 能够在各种使用环境中可用
     libraryTarget: 'umd' // 在 AMD 或 CommonJS require 之后可访问
   },
   optimization: { // 优化项
+    runtimeChunk: { // manifest 抽离放入 runtime 文件中
+      name: 'runtime'
+    },
     minimizer: [
       new UglifyJsWebpackPlugin({ // js 压缩
         cache: true, // 缓存
@@ -31,18 +34,28 @@ module.exports = { // 开发服务器配置
       new OptimizeCssAssetsWebpackPlugin({}) // css 压缩
     ],
     splitChunks: { // 多页面 分割代码
+      chunks: 'all', // 这表示将选择哪些块进行优化。当提供一个字符串时，有效值是 all 、 async 和 initial
+      minSize: 30000, // 大于该值才分割
+      minChunks: 1, // 模块被使用了多少次后才进行代码分割
+      maxAsyncRequests: 5, // 同时加载的模块数最多是
+      maxInitialRequests: 3, // 入口文件进行加载时, 入口文件引入的库最多分割几个
+      automaticNameDelimiter: '~', // 分割生成的文件之间的连接符
+      name: true, // 让 cacheGroups 里面的名字有效
       cacheGroups: { // 缓存组
-        common: { // 公共模块
-          chunks: 'initial', // 这表示将选择哪些块进行优化。当提供一个字符串时，有效值是all、async和initial
-          minSize: 0, // 超过 0 个字节, 生成块的最小大小(以字节为单位)。
-          minChunks: 2 // 用了 2 次以上, 模块分割前必须共享的最小块数。
+        vendors: { // 第三方模块
+          priority: 1,
+          test: /[\\/]node_modules[\\/]/, // import 的文件是否来自 node_modules
+          filename: 'vendors.js', // 代码分割后生成文件名字
+          chunks: 'initial',
+          minSize: 0,
+          minChunks: 2
         },
-        vendor: { // 第三方模块
-          priority: 1, // 先执行 权限高
-          test: /node_modules/,
+        default: { // 公共模块
+          priority: -1, // 优先级对比 vendors 低
           chunks: 'initial', // 这表示将选择哪些块进行优化。当提供一个字符串时，有效值是all、async和initial
           minSize: 0, // 超过 0 个字节, 生成块的最小大小(以字节为单位)。
-          minChunks: 2 // 用了 2 次以上, 模块分割前必须共享的最小块数。
+          minChunks: 2, // 用了 2 次以上, 模块分割前必须共享的最小块数。
+          reuseExistingChunk: true // 如果模块被打包了，会忽略该模块
         }
       }
     }
@@ -208,7 +221,7 @@ module.exports = { // 开发服务器配置
           loader: 'babel-loader',
           options: {
             presets: [
-              '@babel/preset-env',
+              ['@babel/preset-env', { useBuiltIns: 'usage' }], // 按需处理
               '@babel/preset-react'
             ],
             plugins: [
