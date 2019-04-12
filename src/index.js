@@ -22,7 +22,7 @@ import $ from 'jquery'
 
 console.log($, aaa, one, React, render)
 
-require('@babel/polyfill')
+// require('@babel/polyfill')
 
 console.log('hello')
 
