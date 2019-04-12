@@ -99,7 +99,7 @@ module.exports = {
     }
     // 3) 服务端启动 webpack
   },
-  externals: { // webpack 不处理相关依赖库
+  externals: { // webpack 不处理相关依赖库, 如 CDN 引入的 jquery, require 引入但不希望 webpack 将其编译进文件中
     jquery: '$'
   },
   module: { // 模块, css, img... 转换为模块
@@ -161,7 +161,7 @@ module.exports = {
           }
         ]
       },
-      {
+      { // 处理图片
         test: /\.(png|jpg|jpeg|gif)$/,
         // use: [
         //   {
@@ -181,8 +181,20 @@ module.exports = {
           }
         ]
       },
-      {
-        // 压缩图片
+      { // 处理字体文件
+        test: /\.(eot|woff2?|ttf|svg)$/,
+        use: [
+          {
+            loader: 'url-loader',
+            options: {
+              name: '[name]-[hash:5].[ext]',
+              limit: 5000,
+              outputPath: 'assets/imgs/'
+            }
+          }
+        ]
+      },
+      { // 压缩图片
         loader: 'img-loader',
         options: {
           pngquant: { // .png 图片处理
@@ -190,11 +202,22 @@ module.exports = {
           }
         }
       },
-      {
+      { // 处理 html
         test: /\.html$/,
         use: [
           {
             loader: 'html-withimg-loader' // html中直接使用 img 标签 src 加载图片的话，因为没有被依赖，图片将不会被打包。这个 loader 解决这个问题，图片会被打包，而且路径也处理妥当
+          }
+        ]
+      },
+      { // 第三方库处理
+        test: path.resolve(__dirname, './src/app.js'),
+        use: [
+          { // use modules that depend on specific global variables
+            loader: 'imports-loader',
+            options: {
+              $: 'jquery'
+            }
           }
         ]
       }
@@ -241,9 +264,6 @@ module.exports = {
       EXPRESSION: '1+1' // 2
     }),
     new webpack.IgnorePlugin(/\.\/locale/, /moment/), // 忽略 moment 里的 locale 包
-    // new webpack.DllReferencePlugin({ // 引入 Dll 的函数名
-    //   manifest: path.resolve(__dirname, 'dist', 'manifest.json')
-    // })
     new Happypack({ // js 用 Happypack 打包
       id: 'js',
       use: [
