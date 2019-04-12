@@ -15,9 +15,11 @@ module.exports = { // 开发服务器配置
     other: './src/other.js'
   },
   output: { // 出口
+    publicPath: 'http://www.zhihu.cn', // 引入资源路径前面加的前缀
     filename: '[name].[hash:5].js', // 打包后文件名, 加入 hash 5位, [name] 对应 entry 定义的文件名称
-    path: path.resolve(__dirname, 'dist') // 打包后文件放哪里, path.resolve 相对路径解析成绝对路径
-    // publicPath: 'http://www.zhihu.cn' // 引入资源路径前面加的前缀
+    path: path.resolve(__dirname, 'dist'), // 打包后文件放哪里, path.resolve 相对路径解析成绝对路径
+    library: 'webpackNumbers' , // 暴露library 让你的 library 能够在各种使用环境中可用
+    libraryTarget: 'umd' // 在 AMD 或 CommonJS require 之后可访问
   },
   optimization: { // 优化项
     minimizer: [
@@ -164,9 +166,9 @@ module.exports = { // 开发服务器配置
     //   name: '_dll_[name]', // 暴露出的 Dll 的函数名
     //   path: path.resolve(__dirname, 'build', 'manifest.json')
     // })
-    new webpack.DllReferencePlugin({ // 引入 DllPlugin 打包出来的资源
-      manifest: path.resolve(__dirname, 'dist', 'manifest.json')
-    }),
+    // new webpack.DllReferencePlugin({ // 引入 DllPlugin 打包出来的资源
+    //   manifest: path.resolve(__dirname, 'dist', 'manifest.json')
+    // }),
     new HtmlWebpackPlugin({
       template: './src/index.html', // 模板
       filename: 'index.html', // 打包后的文件名
