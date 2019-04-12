@@ -26,12 +26,12 @@ module.exports = {
     runtimeChunk: { // manifest 抽离放入 runtime 文件中
       name: 'runtime'
     },
-    usedExports: true, // 那些模块导出的模块被使用了才打包
+    usedExports: true, // 导出的模块被使用了才打包
     minimizer: [
       new UglifyJsWebpackPlugin({ // js 压缩
+        sourceMap: true, // 监控错误
         cache: true, // 缓存
-        parallel: true, // js 并发压缩
-        sourceMap: true // 监控错误
+        parallel: true // js 并发压缩
       }),
       new OptimizeCssAssetsWebpackPlugin({}) // css 压缩
     ],
@@ -77,14 +77,32 @@ module.exports = {
       bootstrap: 'bootstrap/dist/css/bootstrap.css'
     }
   },
-  devtool: 'cheap-module-source-map', // 源码映射会单独生成一个 sourcemap 文件 出错了会标识当前报错位置
+  devtool: 'cheap-module-source-map', // 生产选择, 不会产生列，是一个单独的映射文件
+  // devtool: 'cheap-module—eval-source-map', // 开发选择, 不会产生文件和列，集成在在打包后的文件中
   devServer: { // 开发服务器配置
     port: 8080, // 启动端口
+    inline: false, // 构建消息将会出现在浏览器控制台
     progress: true, // 运行过程
     hot: true, // 启动热更新
-    open: true, // 自动打开浏览器
+    hotOnly: true, // 启用热模块替换，在构建失败时不刷新页面作为回退
+    open: true, // 告诉 dev-server 在 server 启动后打开浏览器
+    openPage: '', // 指定打开浏览器时的导航页面
+    https: true, // 默认情况下，dev-server 通过 HTTP 提供服务 使用自签名证书
+    overlay: true, // 当出现编译器错误或警告时，在浏览器中显示全屏覆盖层
+    lazy: true, // 在请求时才编译包 webpack 不会监视任何文件改动
     compress: true, // 压缩
     contentBase: './build', // 指向 ./build 文件作为静态服务
+    historyApiFallback: { // 当使用 HTML5 History API 时，任意的 404 响应都可能需要被替代为 index.html
+      // htmlAcceptHeaders: ['text/html', 'application/xhtml+xml'], // 指定文件类型, 匹配了才重定向
+      rewrites: [ // 重定向规则
+        {
+          from: /^\/([a-zA-Z0-9]+\/?)([a-zA-Z0-9]+)/,
+          to: function(context) {
+            return '/' + context.match[1] + context.match[2] + '.html'
+          }
+        }
+      ]
+    },
     // proxy: { // 重写方式把请求代理到 express 服务上
     //   '/api': 'http://localhost:3000' // 1) 配置代理
     //   '/api': { // 2
@@ -92,6 +110,19 @@ module.exports = {
     //     pathRewrite: {'/api':''} // 重写路径
     //   }
     // }
+    proxy: { // 如果你有单独的后端开发服务器 API，并且希望在同域名下发送 API 请求 ，那么代理某些 URL 会很有用
+      '/': {
+        target: 'https://m.weibo.cn', // 请求远端服务器
+        changeOrigin: true, // 默认情况下代理时保留主机头的原点，您可以将changeOrigin设置为true以覆盖此行为
+        headers: { // http 请求头
+          Cookie: 'M_WEIBOCN_PARAMS=luicode%3D20000174%26lfid%3D102803_ctg1_7978_-_ctg1_7978%26uicode%3D20000174%26fid%3D102803_ctg1_7978_-_ctg1_7978; expires=Sun, 25-Nov-2018 16:18:59 GMT; Max-Age=600; path=/; domain=.weibo.cn; HttpOnly'
+        },
+        logLevel: 'debug', // 控制台显示代理信息
+        pathRewrite: { // 重定向接口请求
+          '^/container': '/api/container'
+        }
+      }
+    },
     before(app) { // 提供的钩子，前端模拟数据
       app.get('/user', (req, res) => {
         res.json({ name: 'ganbefore' })
