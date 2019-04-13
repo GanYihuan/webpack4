@@ -93,7 +93,7 @@ module.exports = {
     compress: true, // 压缩
     contentBase: './build', // 指向 ./build 文件作为静态服务
     historyApiFallback: { // 当使用 HTML5 History API 时，任意的 404 响应都可能需要被替代为 index.html
-      // htmlAcceptHeaders: ['text/html', 'application/xhtml+xml'], // 指定文件类型, 匹配了才重定向
+      htmlAcceptHeaders: ['text/html', 'application/xhtml+xml'], // 指定文件类型, 匹配了才重定向
       rewrites: [ // 重定向规则
         {
           from: /^\/([a-zA-Z0-9]+\/?)([a-zA-Z0-9]+)/,
@@ -103,14 +103,14 @@ module.exports = {
         }
       ]
     },
-    // proxy: { // 重写方式把请求代理到 express 服务上
+    // proxy: {
     //   '/api': 'http://localhost:3000' // 1) 配置代理
     //   '/api': { // 2
     //     target: 'http://localhost:3000', // 配置代理
     //     pathRewrite: {'/api':''} // 重写路径
     //   }
     // }
-    proxy: { // 如果你有单独的后端开发服务器 API，并且希望在同域名下发送 API 请求 ，那么代理某些 URL 会很有用
+    proxy: { // 重写方式把请求代理到 express 服务上
       '/': {
         target: 'https://m.weibo.cn', // 请求远端服务器
         changeOrigin: true, // 默认情况下代理时保留主机头的原点，您可以将changeOrigin设置为true以覆盖此行为
@@ -323,6 +323,7 @@ module.exports = {
       ]
     }),
     new webpack.HotModuleReplacementPlugin(), // 热更新插件
-    new webpack.NamedModulesPlugin() // module 的版本号从数字改成相对路径 有利于长缓存优化
+    new webpack.NamedModulesPlugin(), // module 的版本号从数字改成相对路径 有利于长缓存优化
+    new webpack.NamedChunksPlugin() // chunk 的版本号从数字改成文件名字
   ]
 }
