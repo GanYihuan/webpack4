@@ -36,7 +36,7 @@ module.exports = {
       new OptimizeCssAssetsWebpackPlugin({}) // css 压缩
     ],
     splitChunks: { // 多页面分割代码
-      chunks: 'all', // 这表示将选择哪些块进行优化。当提供一个字符串时，有效值是 all 、 async 和 initial
+      chunks: 'all', // 这表示将选择哪些块进行优化。当提供一个字符串时，有效值是 all async initial
       minSize: 30000, // 大于该值才分割
       minChunks: 1, // 模块被使用了多少次后才进行代码分割 Infinity 不会将任何模块打包进去
       maxAsyncRequests: 5, // 同时加载的模块数最多是
