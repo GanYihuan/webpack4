@@ -2,8 +2,8 @@
 const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
-const OptmizeCssAssetsWebpackPlugin = require('optimize-css-assets-webpack-plugin')
-const UglifyJSWebpackPLugin = require('uglifyjs-webpack-plugin')
+const OptimizeCssAsssetsWebpackPlugin = require('optimize-css-assets-webpack-plugin')
+const UglifyJsWebpackPlugin = require('uglifyjs-webpack-plugin')
 const CleanWebpackPlugin = require('clean-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const Happypack = require('happypack')
@@ -26,35 +26,35 @@ module.exports = {
     },
     usedExports: true,
     minimizer: [
-      new UglifyJSWebpackPLugin({
-        cache: true,
+      new UglifyJsWebpackPlugin({
         sourceMap: true,
+        cache: true,
         parallel: true
       }),
-      new OptmizeCssAssetsWebpackPlugin({})
+      new OptimizeCssAsssetsWebpackPlugin({})
     ],
     splitChunks: {
       chunks: 'all',
       minSize: 30000,
       minChunks: 1,
-      maxAsyncRequests: 5,
-      maxInitialRequests: 3,
-      automatcNameDelimter: '~',
+      maxAsyncRequests: true,
+      maxIntialRequests: true,
+      automaticNameDelimiter: '~',
       name: true,
       cacheGroups: {
         vendors: {
-          prority: 1,
-          test: /node_modules/,
-          filename: 'vendors',
+          priority: 1,
+          test: /node_moduels/,
+          filename: 'vendors.js',
           chunks: 'initial',
           minSize: 0,
-          minChunmks: 2
+          minChunks: 2
         },
         default: {
-          prority: -1,
-          chunks: 'initial',
+          priority: -1,
           minSize: 0,
           minChunks: 2,
+          chunks: 'initial',
           reuseExistingChunk: true
         }
       }
@@ -62,14 +62,14 @@ module.exports = {
   },
   watch: true,
   watchOptions: {
-    poll: 1000,
+    poll: true,
     aggregateTimeout: 500,
-    ignord: /node_modules/
+    ignored: /node_modules/
   },
   resolve: {
     modules: [path.resolve('node_modules')],
-    extension: ['.js', '.css', '.json'],
-    mainFields: ['style', 'main'],
+    extensions: ['.js'],
+    mainFields: ['style'],
     alias: {
       bootstrap: ''
     }
@@ -87,56 +87,57 @@ module.exports = {
     overlay: true,
     lazy: true,
     compress: true,
+    contentBase: './build',
     historyApiFallback: {
-      htmlAcceptHeaders: [],
+      htmlAcceptHeaders: [''],
       rewrites: [
         {
           from: '',
           to: ''
         }
       ]
-    }
-  },
-  proxy: {
-    '/': {
-      target: '',
-      changeOrigin: true,
-      headers: {
-        Cookie: ''
-      },
-      logLevel: 'debug',
-      pathRewrite: {
-        '': ''
+    },
+    proxy: {
+      '/': {
+        target: '',
+        changeOrigin: true,
+        headers: {
+          Cookie: ''
+        },
+        logLevel: 'debug',
+        pathRewrite: {
+          '': ''
+        }
       }
     },
     before(app) {
       app.get('/user', (req, res) => {
-        res.json({ name: '' })
+        res.json({ name: 'gan' })
       })
     }
   },
-  extrenals: {
+  externals: {
     jquery: '$'
   },
   module: {
     noParse: /jquery/,
     rules: [
       {
-        test: require.resolve('jqueyr'),
+        test: require.resolve('jquery'),
         use: 'expose-laoder?$'
       },
       {
         test: /\.js$/,
-        use: 'Happypack/loader?id=js',
+        use: 'Happack/loader?id=js',
         include: path.resolve(__dirname, 'src'),
-        exclude: '/node_modules/'
+        exclude: '/node_modules'
       },
       {
         test: /\.css$/,
         use: [
           MiniCssExtractPlugin.loader,
           {
-            loader: 'css-loader'
+            loader: 'css-laoder'
           },
           {
             loader: 'postcss-loader'
@@ -153,14 +154,14 @@ module.exports = {
               singleton: true,
               insertAt: 'top',
               insertInto: '#app',
-              transform: ''
+              tranform: ''
             }
           },
           {
             loader: 'css-loader',
             options: {
               sourceMap: true,
-              improtLoaders: 2
+              importLoaders: 2
             }
           },
           {
@@ -181,24 +182,9 @@ module.exports = {
         test: /\.(png)$/,
         use: [
           {
-            laoder: 'url-loader',
-            options: {
-              name: '[name]-[hash:5].[ext]',
-              limit: 2040,
-              publicPath: '',
-              outputPath: 'dist/',
-              useRelativePath: true
-            }
-          }
-        ]
-      },
-      {
-        test: /\.(eot)$/,
-        use: [
-          {
             loader: 'url-loader',
             options: {
-              name: '[name].[hash:5].[ext]',
+              name: '[name]-[hash:5].[ext]',
               limit: 5000,
               outputPath: ''
             }
@@ -222,7 +208,7 @@ module.exports = {
         ]
       },
       {
-        test: path.resolve(__dirname, ''),
+        test: path.resolve(__dirname, './src/app.js'),
         use: [
           {
             loader: 'imports-loader',
@@ -236,7 +222,7 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: '',
+      tempalte: '',
       filename: '',
       minify: {
         removeAttributeQuotes: true,
@@ -248,32 +234,31 @@ module.exports = {
       filename: ''
     }),
     new webpack.ProvidePlugin({
-      $: 'jqueyr'
+      $: 'jquery'
     }),
     new CleanWebpackPlugin(),
-    new CopyWebpackPlugin({
+    new CopyWebpackPlugin([
       {
         from: '',
         to: ''
       }
-    }),
-    new webpack.BannerPlugin('gan'),
+    ]),
+    new webpack.BannerPlugin(''),
     new webpack.DefinePlugin({
       DEV: JSON.stringify('')
     }),
-    new webpack.IgnorePlugin(/lcoal/, /node_modules/),
+    new webpack.IgnorePlugin(/node_modules/, /moment/),
     new Happypack({
       id: 'js',
       use: [
         {
           loader: 'babel-loader',
           options: {
-            presets: [
-              ['@babel/preset-env', {useBuiltIns: 'usage'}],
-              '@bable/preset-env'
+            presetes: [
+              '@babel/preset-env'
             ],
             plugins: [
-              ['@babel/plugin-proposal-decorators', {'legacy': true}]
+              ['@babel/', {'legacy':true}]
             ]
           }
         },
@@ -288,6 +273,6 @@ module.exports = {
     }),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NamedChunksPlugin(),
-    new wbepack.NamedChunksPlugin()
+    new webpack.NamedChunksPlugin()
   ]
 }
