@@ -309,3 +309,505 @@ if (page === 'subPageA') {
   import(/* webpackChunkName: 'subpageA */ './subPageA').then(function())
 }
 ```
+
+## 处理 HTML
+
+```js
+// html 中直接使用 img 标签 src 加载图片的话，因为没有被依赖，图片将不会被打包。这个 loader 解决这个问题，图片会被打包，而且路径也处理妥当
+      {
+        test: /\.html$/ ,
+        use: [
+          {
+            loader: 'html-withimg-loader' // html 中直接使用 img 标签 src 加载图片的话，因为没有被依赖，图片将不会被打包。这个 loader 解决这个问题，图片会被打包，而且路径也处理妥当
+          }
+        ]
+      }
+```
+
+## 处理 CSS
+
+- style-loader
+
+```js
+        use: [ // 处理过程 , 从后往前
+          {
+            loader: 'style-loader', // 动态创建 style 标签，塞到 head 标签里
+            options: {
+              sourceMap: true, // singleton 会阻止 sourceMap
+              singleton: true, // singleton( 是否只使用一个 style 标签 )
+              insertAt: 'top', // 插入到 HTML 文件的顶部
+              insertInto: '#app', // 插入 dom 位置
+              transform: './css.transform.js' // 插入页面前执行
+            }
+          },
+```
+
+- style-loader/url
+
+```js
+        use: [ // 处理过程 , 从后往前
+          {
+            loader: 'style-loader/url', // 在最后生成的 js 文件中进行处理，动态创建 link 标签，塞到 head 标签里 , 不能处理多样式
+```
+
+- style-loader/useable
+
+```js
+        use: [ // 处理过程 , 从后往前
+          {
+            loader: 'style-loader/useable', // 控制样式是否插入页面中 , 多了 .use() & .unuse() 方法
+```
+
+```js
+import base from './css/base.less'
+var flag = false
+setInterval( function () {
+  if (flag) {
+    base.unuse()
+    flag = false
+  } else {
+    base.use()
+  }
+  flag = !flag
+}, 1000)
+```
+
+- css-loader
+
+```js
+      {
+        test: /\.scss$/,
+        use: [
+          {
+            loader: 'css-loader',
+            options: {
+              importLoaders: 2 // 一定要走下面两个 loader
+            }
+          },
+          {
+            loader: 'sass-loader'
+          },
+          {
+            loader: 'postcss-loader'
+          }
+        ]
+      }
+```
+
+- less 处理
+
+```js
+      {
+        test: /\.less$/,
+        use: [
+          {
+            loader: 'less-loader' // less 转化为 css , 放置 css-loader 下面
+          }
+        ]
+      },
+```
+
+- PostCSS
+
+1. autoprefixer 加 css 各浏览器前缀
+2. cssnano 优化 & 压缩 css
+3. postcss-cssnext 使用未来的 css 语法
+4. postcss-sprites 图片合并成一张图
+
+```js
+      {
+        test: /\.css$/,
+        use: [
+          {
+            loader: 'postcss-loader' // css 处理 , autoprefixer: 加前缀
+          }
+        ]
+      },
+```
+
+- postcss.config.js
+
+```js
+module.exports = {
+  plugins: [
+    require('autoprefixer'), /* 加 css 各浏览器前缀 */
+    require('cssnano'), /* 优化 & 压缩 css */
+    require('postcss-cssnext'),   /* 使用未来的 css 语法 */
+    require('postcss-sprites')({   /* 图片合并成一张图 */
+      spritePath: 'dist/assets/imgs/sprites', /* 输出路径 */
+      retina: true   /* 处理苹果 retina 屏幕 */
+    })
+  ]
+}
+```
+
+## 处理图片
+
+- file-loader
+
+```js
+      {
+        test: /\.(png|jpg|jpeg|gif)$/,
+        use: [
+          /* 开发环境 */
+          {
+            loader: 'file-loader', // 会在内部生成一张图片到 build 目录
+```
+
+- url-loader
+
+```js
+      {
+        test: /\.(png|jpg|jpeg|gif)$/,
+        use: [
+          {
+            loader: 'url-loader', // 将图片转换为 base64
+            options: {
+              name: '[name]-[hash:5].[ext]', // 生成的图片名称
+              limit: 2048, // 超出 2048 处理成 base64
+              publicPath: '', // 引入资源路径前面加的前缀 ''
+              outputPath: 'dist/', // 放置在 dist
+              useRelativePath: true // 放置在 assets/imgs, 因为图片原本路径为 (aseets/imgs)
+            }
+          }
+        ]
+      },
+```
+
+- img-loader
+
+```js
+         {
+            /* 压缩图片 */
+            loader: 'img-loader',
+            options: {
+              /* .png 图片处理 */
+              pngquant: {
+                /* 压缩 png */
+                quality: 80
+              }
+            }
+          }
+```
+
+## 处理字体
+
+```js
+      {
+        /* 字体文件 */
+        test: /\.(eot|woff2?|ttf|svg)$/,
+        use: [
+          {
+            loader: 'url-loader',
+            options: {
+              name: '[name]-[hash:5].[ext]',
+              /* 超出 5000 处理成 base64 */
+              limit: 5000,
+              outputPath: 'assets/imgs/'
+            }
+          }
+        ]
+      },
+```
+
+## ESlint
+
+- 结合 happypack & babel & eslint
+
+```js
+const Happypack = require('happypack')
+  module: {
+    noParse: /jquery/, // 不需要解析
+    rules: [ // 后往前 右往左 执行
+      {
+        use: 'Happypack/loader?id=js',
+        include: path.resolve(__dirname, 'src'),
+        exclude: '/node_modules',
+      },
+    new Happypack({ // js 用 Happypack 打包
+      id: 'js',
+      use: [
+        {
+          loader: 'babel-loader',
+          options: {
+            presets: [
+              '@babel/preset-env'
+            ],
+            plugins: [
+              ['@babel/plugin-proposal-decorators', { 'legacy' : true }], // 类和对象装饰器
+            ]
+          }
+        },
+        {
+          loader: 'eslint-loader', // 放置 babel-loader 后           options: {
+            formatter: require('eslint-friendly-formatter') // 报错时输入内容的格式更友好
+          },
+          enforce: 'pre' // pre 先执行 , post 后执行
+        }
+      ]
+    }),
+```
+
+## 处理第三方库
+
+- 解析第三方包
+
+```js
+  resolve: { // 解析第三方包
+    modules: [path.resolve('node_modules')], // 找文件的位置
+    mainFields: ['style' , 'main'], // **package.json** 先找 style 再找 main
+    mainFiles: [], // 入口文件名字 index.js
+    extensions: [ 'js' , 'css' , 'json'], // 引入文件的后缀依次解析
+    alias: { // 别名
+      bootstrap: 'bootstrap/dist/css/bootstrap.css'
+    }
+  },
+**index.js**
+import 'bootstrap'
+```
+
+- imports-loader 导入加载程序允许您使用依赖于特定全局变量的模块
+
+```js
+      {
+        test: path.resolve(__dirname, 'src/app.js'),
+        use: [
+          {
+            loader: 'imports-loader',
+            options: {
+              $: 'jquery'
+            }
+          }
+        ]
+      },
+```
+
+- 暴露全局的 loader
+
+```js
+      {
+        test: require.resolve('jquery'),
+        use: 'expose-loader?$' // 暴露全局的 loader
+      },
+import $ from 'jquery'
+console.log(window.$)
+```
+
+- 在每个模块中都注入 $
+
+```js
+const webpack = require ('webpack')
+    new webpack.ProvidePlugin({ // 在每个模块中都注入 $
+      $: 'jquery'
+    }),
+**index.js**
+console.log($)
+```
+
+- externals CDN 方式
+
+```js
+// 如 CDN 引入的 jquery ， require 引入但不希望 webpack 将其编译进文件中
+import $ from 'jquery'
+console.log($)
+  externals: {
+    jquery: '$'
+  },
+```
+
+## source map
+
+```js
+// 生产选择, 不会产生列，是一个单独的映射文件
+devtool: 'cheap-module-source-map',
+```
+
+```js
+// 开发选择, 不会产生文件和列，集成在在打包后的文件中
+devtool: 'cheap-module—eval-source-map',
+```
+
+## watch
+
+- 文件被更新，代码将被重新编译
+
+```js
+  watch: true, // 实时监控打包
+  watchOptions: {
+    poll: 1000, // 监听间隔
+    aggregateTimeout: 500, // 防抖
+    ignored: /node_modules/ // 不需要监控
+  },
+```
+
+## devServer
+
+- 提供一个 web 服务器，能实时重新加载刷新浏览器
+
+```js
+  devServer: { // 开发服务器配置
+    port: 8080, // 启动端口
+    inline: false, // 构建消息将会出现在浏览器控制台
+    progress: true, // 运行过程
+    hot: true, // 启动热更新
+    hotOnly: true, // 启用热模块替换，在构建失败时不刷新页面作为回退
+    open: true, // 告诉 dev-server 在 server 启动后打开浏览器
+    openPage: '', // 指定打开浏览器时的导航页面
+    https: true, // 默认情况下，dev-server 通过 HTTP 提供服务 使用自签名证书
+    overlay: true, // 当出现编译器错误或警告时，在浏览器中显示全屏覆盖层
+    lazy: true, // 在请求时才编译包 webpack 不会监视任何文件改动
+    compress: true, // 压缩
+    contentBase: './build', // 指向 ./build 文件作为静态服务
+    historyApiFallback: { // 当使用 HTML5 History API 时，任意的 404 响应都可能需要被替代为 index.html
+      htmlAcceptHeaders: ['text/html', 'application/xhtml+xml'], // 指定文件类型, 匹配了才重定向
+      rewrites: [ // 重定向规则
+        {
+          from: /^\/([a-zA-Z0-9]+\/?)([a-zA-Z0-9]+)/,
+          to: function(context) {
+            return '/' + context.match[1] + context.match[2] + '.html'
+          }
+        }
+      ]
+    },
+    // proxy: {
+    //   '/api': 'http://localhost:3000' // 1) 配置代理
+    //   '/api': { // 2
+    //     target: 'http://localhost:3000', // 配置代理
+    //     pathRewrite: {'/api':''} // 重写路径
+    //   }
+    // }
+    proxy: { // 重写方式把请求代理到 express 服务上
+      '/': {
+        target: 'https://m.weibo.cn', // 请求远端服务器
+        changeOrigin: true, // 默认情况下代理时保留主机头的原点，您可以将 changeOrigin 设置为 true 以覆盖此行为
+        headers: { // http 请求头
+          Cookie: 'M_WEIBOCN_PARAMS=luicode%3D20000174%26lfid%3D102803_ctg1_7978_-_ctg1_7978%26uicode%3D20000174%26fid%3D102803_ctg1_7978_-_ctg1_7978; expires=Sun, 25-Nov-2018 16:18:59 GMT; Max-Age=600; path=/; domain=.weibo.cn; HttpOnly'
+        },
+        logLevel: 'debug', // 控制台显示代理信息
+        pathRewrite: { // 重定向接口请求
+          '^/container': '/api/container'
+        }
+      }
+    },
+    before(app) { // 提供的钩子，前端模拟数据
+      app.get('/user', (req, res) => {
+        res.json({ name: 'ganbefore' })
+      })
+    }
+    // 3) 服务端启动 webpack
+  },
+```
+
+## 每次打包都会删掉原来的并重新打包
+
+```js
+const CleanWebpackPlugin = require('clean-webpack-plugin') // 每次打包都会删掉原来的并重新打包
+    new CleanWebpackPlugin(),
+```
+
+## 拷贝文件
+
+```js
+const CopyWebpackPlugin = require('copy-webpack-plugin') // 拷贝文件
+    new CopyWebpackPlugin([
+      {
+        from: './doc',
+        to: './'
+      }
+    ]),
+```
+
+## 版权信息
+
+```js
+const webpack = require('webpack')
+    new webpack.BannerPlugin('ganyihuan 2019'), // 版权信息
+```
+
+## 定义环境变量
+
+```js
+const webpack = require('webpack')
+    new webpack.DefinePlugin({ // 定义环境变量
+      DEV: JSON.stringify('production'), // string production
+      FLAG: 'true', // boolean
+      EXPRESSION: '1+1' // 2
+    }),
+```
+
+## 打包分析
+
+- analyse 社区方式
+
+```js
+const BundleAnalzyerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin // 打包分析 webpack-bundle-anlayzer stats.json
+    new BundleAnalzyerPlugin(),
+```
+
+```node
+webpack-bundle-anlayzer stats.json
+```
+
+## 优化打包速度
+
+- 动态链接库
+
+```js
+    // new webpack.DllPlugin({ // 某种方法实现了拆分 bundles
+    //   name: '_dll_[name]', // 暴露出的 Dll 的函数名
+    //   path: path.resolve(__dirname, 'build', 'manifest.json')
+    // })
+```
+
+```js
+    // new webpack.DllReferencePlugin({ // 引入 DllPlugin 打包出来的资源
+    //   manifest: path.resolve(__dirname, 'dist', 'manifest.json')
+    // }),
+```
+
+## 忽略某些包
+
+```js
+  externals: [ 'lodash' ], // 打包时忽略 lodash
+
+    new webpack.IgnorePlugin(/\.\/locale/, /moment/), // 忽略 moment 里的 locale 包
+
+      {
+        include: path.resolve(__dirname, 'src'),
+        exclude: '/node_modules'
+      },
+```
+
+## 长缓存优化
+
+```js
+    new webpack.NamedModulesPlugin(), // module 的版本号从数字改成相对路径 有利于长缓存优化
+    new webpack.NamedChunksPlugin() // chunk 的版本号从数字改成文件名字
+```
+
+## 开发环境 & 生产环境
+
+```js
+const merge = require('webpack-merge')
+const devConfig = require('./webpack.dev.js')
+const prodConfig = require('./webpack.prod.js')
+const commonConfig = {
+}
+module.exports = (env) => {
+  if (env && env.production) {
+    return merge(commonConfig, prodConfig)
+  } else {
+    return merge(commonConfig, devdConfig)
+  }
+}
+```
+
+- package.json
+
+```json
+  "scripts": {
+    "dev-build": "webpack --config ./build/webpack.common.js",
+    "dev": "webpack-dev-server --config ./build/webpack.common.js",
+    "build": "webpack --env.production --config ./build/webpack.common.js"
+  },
+```
