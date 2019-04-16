@@ -8,6 +8,7 @@ const UglifyJsWebpackPlugin = require('uglifyjs-webpack-plugin') // js 压缩
 const CleanWebpackPlugin = require('clean-webpack-plugin') // 每次打包都会删掉原来的并重新打包
 const CopyWebpackPlugin = require('copy-webpack-plugin') // 拷贝文件
 const Happypack = require('happypack')
+const BundleAnalzyerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin // 打包分析 webpack-bundle-anlayzer stats.json
 
 module.exports = {
   mode: 'production', // 开发模式 development/production
@@ -19,11 +20,11 @@ module.exports = {
     publicPath: 'http://www.zhihu.cn', // 引入资源路径前面加的前缀
     filename: '[name].[hash:5].js', // 打包后文件名, 加入 hash 5位, [name] 对应 entry 定义的文件名称
     path: path.resolve(__dirname, 'dist'), // 打包后文件放哪里, path.resolve 相对路径解析成绝对路径
-    library: 'webpackNumbers', // 暴露library 让你的 library 能够在各种使用环境中可用
-    libraryTarget: 'umd' // 在 AMD 或 CommonJS require 之后可访问
+    library: 'MyLibrary', // 暴露library, 将你的 bundle 暴露为名为全局变量，通过此名称来 import
+    libraryTarget: 'umd' // 控制以不同形式暴露, umd: 在 AMD 或 CommonJS require 之后可访问
   },
   optimization: { // 优化项
-    runtimeChunk: { // manifest 抽离放入 runtime 文件中
+    runtimeChunk: { // manifest 提取放入 runtime 文件中
       name: 'runtime'
     },
     usedExports: true, // 导出的模块被使用了才打包
@@ -266,6 +267,7 @@ module.exports = {
     // new HtmlWebpackInlineChunkPlugin({ // chunk 加到 html, 提前载入 webpack 加载代码
     //   inlineChunks: ['manifest']
     // }),
+    new BundleAnalzyerPlugin(),
     new HtmlWebpackPlugin({
       template: './src/index.html', // 模板
       filename: 'index.html', // 打包后的文件名

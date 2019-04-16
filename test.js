@@ -2,11 +2,12 @@
 const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
-const OptimizeCssAsssetsWebpackPlugin = require('optimize-css-assets-webpack-plugin')
+const OptimizeCssAssetsWebpackPlugin = require('optimize-css-assets-webpack-plugin')
 const UglifyJsWebpackPlugin = require('uglifyjs-webpack-plugin')
 const CleanWebpackPlugin = require('clean-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const Happypack = require('happypack')
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 
 module.exports = {
   mode: 'production',
@@ -18,7 +19,7 @@ module.exports = {
     filename: '[name].[hash:5].js',
     path: path.resolve(__dirname, 'dist'),
     library: '',
-    libraryTarget: ''
+    libraryTarget: 'umd'
   },
   optimization: {
     runtimeChunk: {
@@ -27,48 +28,48 @@ module.exports = {
     usedExports: true,
     minimizer: [
       new UglifyJsWebpackPlugin({
-        sourceMap: true,
         cache: true,
+        sourceMap: true,
         parallel: true
       }),
-      new OptimizeCssAsssetsWebpackPlugin({})
+      new OptimizeCssAssetsWebpackPlugin({})
     ],
     splitChunks: {
       chunks: 'all',
       minSize: 30000,
       minChunks: 1,
-      maxAsyncRequests: true,
-      maxIntialRequests: true,
-      automaticNameDelimiter: '~',
+      maxAsyncRequests: 1,
+      maxInitialRequests: 3,
+      automaticNameDelimter: '~',
       name: true,
       cacheGroups: {
         vendors: {
           priority: 1,
-          test: /node_moduels/,
+          test: /node_modules/,
           filename: 'vendors.js',
-          chunks: 'initial',
+          chunks: 'iniitial',
           minSize: 0,
           minChunks: 2
         },
         default: {
-          priority: -1,
+          prioprity: -1,
+          chunks: 'initial',
           minSize: 0,
           minChunks: 2,
-          chunks: 'initial',
-          reuseExistingChunk: true
+          reuseExsitingChunk: true
         }
       }
     }
   },
   watch: true,
   watchOptions: {
-    poll: true,
+    poll: 1000,
     aggregateTimeout: 500,
     ignored: /node_modules/
   },
   resolve: {
     modules: [path.resolve('node_modules')],
-    extensions: ['.js'],
+    extension: ['.js'],
     mainFields: ['style'],
     alias: {
       bootstrap: ''
@@ -89,7 +90,7 @@ module.exports = {
     compress: true,
     contentBase: './build',
     historyApiFallback: {
-      htmlAcceptHeaders: [''],
+      htmlAccestHeaders: [''],
       rewrites: [
         {
           from: '',
@@ -98,21 +99,18 @@ module.exports = {
       ]
     },
     proxy: {
-      '/': {
+      '/api': {
         target: '',
-        changeOrigin: true,
+        pathRewrites: { '/api': '' },
         headers: {
           Cookie: ''
         },
-        logLevel: 'debug',
-        pathRewrite: {
-          '': ''
-        }
+        logLevel: 'debug'
       }
     },
     before(app) {
       app.get('/user', (req, res) => {
-        res.json({ name: 'gan' })
+        res.json({ name: '' })
       })
     }
   },
@@ -124,11 +122,11 @@ module.exports = {
     rules: [
       {
         test: require.resolve('jquery'),
-        use: 'expose-laoder?$'
+        use: 'expose-loader?$'
       },
       {
         test: /\.js$/,
-        use: 'Happack/loader?id=js',
+        use: 'Happypack/loader?id=js',
         include: path.resolve(__dirname, 'src'),
         exclude: '/node_modules'
       },
@@ -137,7 +135,7 @@ module.exports = {
         use: [
           MiniCssExtractPlugin.loader,
           {
-            loader: 'css-laoder'
+            loader: 'css-loader'
           },
           {
             loader: 'postcss-loader'
@@ -154,7 +152,7 @@ module.exports = {
               singleton: true,
               insertAt: 'top',
               insertInto: '#app',
-              tranform: ''
+              transform: ''
             }
           },
           {
@@ -185,6 +183,21 @@ module.exports = {
             loader: 'url-loader',
             options: {
               name: '[name]-[hash:5].[ext]',
+              limit: 2048,
+              publicPath: '',
+              outputPath: 'dist/',
+              useRelativePath: true
+            }
+          }
+        ]
+      },
+      {
+        test: /\.(eot)$/,
+        use: [
+          {
+            loader: 'url-loader',
+            options: {
+              name: '[name]-[hash:5].[ext]',
               limit: 5000,
               outputPath: ''
             }
@@ -208,7 +221,7 @@ module.exports = {
         ]
       },
       {
-        test: path.resolve(__dirname, './src/app.js'),
+        test: path.resolve(__dirname, ''),
         use: [
           {
             loader: 'imports-loader',
@@ -221,8 +234,9 @@ module.exports = {
     ]
   },
   plugins: [
+    new BundleAnalyzerPlugin(),
     new HtmlWebpackPlugin({
-      tempalte: '',
+      template: '',
       filename: '',
       minify: {
         removeAttributeQuotes: true,
@@ -233,7 +247,7 @@ module.exports = {
     new MiniCssExtractPlugin({
       filename: ''
     }),
-    new webpack.ProvidePlugin({
+    new webpack.ProgressPlugin({
       $: 'jquery'
     }),
     new CleanWebpackPlugin(),
@@ -243,19 +257,19 @@ module.exports = {
         to: ''
       }
     ]),
-    new webpack.BannerPlugin(''),
+    new webpack.BannerPlugin('gan'),
     new webpack.DefinePlugin({
-      DEV: JSON.stringify('')
+      DEV: JSON.stringify('gan')
     }),
-    new webpack.IgnorePlugin(/node_modules/, /moment/),
+    new webpack.IgnorePlugin(/node_modules/, /node_modules/),
     new Happypack({
       id: 'js',
       use: [
         {
           loader: 'babel-loader',
           options: {
-            presetes: [
-              '@babel/preset-env'
+            presets: [
+              ['@babel/preset-env', { useBuiltIns: 'usage' }]
             ],
             plugins: [
               ['@babel/', { 'legacy': true }]
@@ -267,12 +281,12 @@ module.exports = {
           options: {
             formatter: require('eslint-friendly-formatter')
           },
-          enforce: 'pre'
+          enfooce: 'pre'
         }
       ]
     }),
     new webpack.HotModuleReplacementPlugin(),
-    new webpack.NamedChunksPlugin(),
+    new webpack.NamedModulesPlugin(),
     new webpack.NamedChunksPlugin()
   ]
 }
