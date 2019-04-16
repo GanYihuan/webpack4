@@ -39,7 +39,7 @@ module.exports = {
     splitChunks: { // 多页面分割代码
       chunks: 'all', // 这表示将选择哪些块进行优化。当提供一个字符串时，有效值是 all async initial
       minSize: 30000, // 大于该值才分割
-      minChunks: 1, // 模块被使用了多少次后才进行代码分割 Infinity 不会将任何模块打包进去
+      minChunks: 1, // 模块被使用了 ? 次后进行代码分割, Infinity 不会将任何模块打包进去
       maxAsyncRequests: 5, // 同时加载的模块数最多是
       maxInitialRequests: 3, // 入口文件进行加载时, 入口文件引入的库最多分割几个
       automaticNameDelimiter: '~', // 分割生成的文件之间的连接符
@@ -114,7 +114,7 @@ module.exports = {
     proxy: { // 重写方式把请求代理到 express 服务上
       '/': {
         target: 'https://m.weibo.cn', // 请求远端服务器
-        changeOrigin: true, // 默认情况下代理时保留主机头的原点，您可以将changeOrigin设置为true以覆盖此行为
+        changeOrigin: true, // 默认情况下代理时保留主机头的原点，您可以将 changeOrigin 设置为 true 以覆盖此行为
         headers: { // http 请求头
           Cookie: 'M_WEIBOCN_PARAMS=luicode%3D20000174%26lfid%3D102803_ctg1_7978_-_ctg1_7978%26uicode%3D20000174%26fid%3D102803_ctg1_7978_-_ctg1_7978; expires=Sun, 25-Nov-2018 16:18:59 GMT; Max-Age=600; path=/; domain=.weibo.cn; HttpOnly'
         },
