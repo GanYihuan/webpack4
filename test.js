@@ -258,7 +258,7 @@ module.exports = {
               '@babel/preset-env'
             ],
             plugins: [
-              ['@babel/', {'legacy':true}]
+              ['@babel/', { 'legacy': true }]
             ]
           }
         },
