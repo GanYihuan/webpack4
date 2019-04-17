@@ -1,13 +1,13 @@
-﻿const webpack = require('webpack')
+const webpack = require('webpack')
 const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const OptimizeCssAssetsWebpackPlugin = require('optimize-css-assets-webpack-plugin')
-const UglifyJsWebpackPlugin = require('uglifyjs-webpack-plugin')
+const UglifyJSWebpackPlugin = require('uglifyjs-webpack-plugin')
 const CleanWebpackPlugin = require('clean-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
+const Happpypack = require('happypack')
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
-const Happypack = require('happypack')
 
 module.exports = {
   mode: 'production',
@@ -15,41 +15,41 @@ module.exports = {
     index: ''
   },
   output: {
+    publicPath: '',
     filename: '[name].[hash:5].js',
     path: path.resolve(__dirname, 'dist'),
-    publicPath: '',
-    library: '',
-    libraryTarget: ''
+    library: 'MyLibrary',
+    libraryTarget: 'umd'
   },
   optimization: {
-    runttimeChunk: {
+    runtimeChunk: {
       name: 'runtime'
     },
     usedExports: true,
     minimizer: [
-      new UglifyJsWebpackPlugin({
+      new UglifyJSWebpackPlugin({
+        sourceMap: true,
         cache: true,
-        parallel: true,
-        sourceMap: true
+        parallel: true
       }),
       new OptimizeCssAssetsWebpackPlugin({})
     ],
     splitChunks: {
       chunks: 'all',
-      minSize: 3000,
-      minChunks: 2,
-      maxAsyncRequests: true,
-      maxIntialRequests: true,
-      automaticNameDelimitter: '~',
+      minSize: 30000,
+      minChunks: 1,
+      maxAsyncRequests: 5,
+      maxInitialRequests: 3,
+      automaticNameDelimiter: '~',
       name: true,
       cacheGroups: {
         vendors: {
           priority: 1,
           test: /node_modules/,
-          minSize: 0,
-          minChunks: 1,
+          filename: 'vendors.js',
           chunks: 'initial',
-          filename: 'vendors.js'
+          minSize: 0,
+          minChunks: 2
         },
         default: {
           priority: -1,
@@ -65,28 +65,29 @@ module.exports = {
   watchOptions: {
     poll: 1000,
     aggregateTimeout: 500,
-    ignored: /node_moduels/
+    ignored: /node_modules/
   },
   resolve: {
     modules: [path.resolve('node_modules')],
-    extensions: ['.js'],
+    extensions: ['.js', '.css'],
     mainFields: ['style'],
     alias: {
       bootstrap: ''
     }
   },
-  devtool: 'cheap-module-source-map',
+  devTool: 'cheap-module-source-map',
   devServer: {
     port: 8080,
     inline: false,
+    progress: true,
     hot: true,
     hotOnly: true,
-    lazy: true,
-    compress: true,
-    progress: true,
-    https: true,
     open: true,
     openPage: '',
+    https: true,
+    overlay: true,
+    lazy: true,
+    compress: true,
     contentBase: './build',
     historyApiFallback: {
       htmlAcceptHeaders: [''],
@@ -116,7 +117,7 @@ module.exports = {
       })
     }
   },
-  extrenals: {
+  externals: {
     jquery: '$'
   },
   module: {
@@ -130,14 +131,14 @@ module.exports = {
         test: /\.js$/,
         use: 'Happypack/loader?id=js',
         include: path.resolve(__dirname, 'src'),
-        exclue: '/node_modules'
+        exclude: '/node_modules/'
       },
       {
         test: /\.css$/,
         use: [
           MiniCssExtractPlugin.loader,
           {
-            loader: 'css-laoder'
+            loader: 'css-loader'
           },
           {
             loader: 'postcss-loader'
@@ -167,8 +168,7 @@ module.exports = {
           {
             loader: 'postcss-laoder',
             options: {
-              sourceMap: true,
-              importLoadrs: 2
+              sourceMap: true
             }
           },
           {
@@ -185,7 +185,7 @@ module.exports = {
           {
             loader: 'url-loader',
             options: {
-              name: '[name]-[hash:5].[ext]',
+              name: '[name].[hash:5].[ext]',
               limit: 2048,
               publicPath: '',
               outputPath: 'dist/',
@@ -200,9 +200,9 @@ module.exports = {
           {
             loader: 'url-loader',
             options: {
-              name: '[name]-[hash:5].[ext]',
-              limit: 5000,
-              ooutputPath: ''
+              name: '[name].[hash:5].[ext]',
+              limit: 2048,
+              outputPath: ''
             }
           }
         ]
@@ -227,7 +227,7 @@ module.exports = {
         test: path.resolve(__dirname, ''),
         use: [
           {
-            laoder: 'imports-loader',
+            loader: 'imports-loader',
             options: {
               $: 'jquery'
             }
@@ -243,7 +243,7 @@ module.exports = {
       filename: '',
       minify: {
         removeAttributeQuotes: true,
-        collapseBooleanAttributes: true
+        collapseWhitespace: true
       },
       hash: true
     }),
@@ -264,15 +264,15 @@ module.exports = {
     new webpack.DefinePlugin({
       DEV: JSON.stringify('gan')
     }),
-    new webpack.IgnorePlugin(/node_module/, /moment/),
-    new Happypack({
+    new webpack.IgnorePlugin(/node_modules/, /moment/),
+    new Happpypack({
       id: 'js',
       use: [
         {
           loader: 'babel-loader',
           options: {
             presets: [
-              ['@babel/preset-env', { useBuiltIns: 'usage' }]
+              '@babel/preset-env'
             ],
             plugins: [
               ['@babel/plugin-proposal-decorators', { 'legacy': true }]
@@ -284,12 +284,12 @@ module.exports = {
           options: {
             formatter: require('eslint-friendly-formatter')
           },
-          enforce: 'pre'
+          enfore: 'pre'
         }
       ]
     }),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NamedChunksPlugin(),
-    new webpack.NamedModulesPlugin()
+    new webpack.NamedChunksPlugin()
   ]
 }

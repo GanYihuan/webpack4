@@ -20,7 +20,7 @@ module.exports = {
     publicPath: 'http://www.zhihu.cn', // 引入资源路径前面加的前缀
     filename: '[name].[hash:5].js', // 打包后文件名, 加入 hash 5位, [name] 对应 entry 定义的文件名称
     path: path.resolve(__dirname, 'dist'), // 打包后文件放哪里, path.resolve 相对路径解析成绝对路径
-    library: 'MyLibrary', // 暴露library, 将你的 bundle 暴露为名为全局变量，通过此名称来 import
+    library: 'MyLibrary', // 暴露 library, 将你的 bundle 暴露为名为全局变量，通过此名称来 import
     libraryTarget: 'umd' // 控制以不同形式暴露, umd: 在 AMD 或 CommonJS require 之后可访问
   },
   optimization: { // 优化项
