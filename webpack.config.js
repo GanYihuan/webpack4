@@ -7,7 +7,7 @@ const OptimizeCssAssetsWebpackPlugin = require('optimize-css-assets-webpack-plug
 const UglifyJsWebpackPlugin = require('uglifyjs-webpack-plugin') // js 压缩
 const CleanWebpackPlugin = require('clean-webpack-plugin') // 每次打包都会删掉原来的并重新打包
 const CopyWebpackPlugin = require('copy-webpack-plugin') // 拷贝文件
-const Happypack = require('happypack')
+const Happypack = require('happypack') // 多线打包
 const BundleAnalzyerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin // 打包分析 webpack-bundle-anlayzer stats.json
 
 module.exports = {
@@ -84,16 +84,16 @@ module.exports = {
     port: 8080, // 启动端口
     inline: false, // 构建消息将会出现在浏览器控制台
     progress: true, // 运行过程
+    compress: true, // 压缩
     hot: true, // 启动热更新
-    hotOnly: true, // 启用热模块替换，在构建失败时不刷新页面作为回退
+    hotOnly: true, // 启用热模块替换, 在构建失败时不刷新页面作为回退
     open: true, // 告诉 dev-server 在 server 启动后打开浏览器
     openPage: '', // 指定打开浏览器时的导航页面
-    https: true, // 默认情况下，dev-server 通过 HTTP 提供服务 使用自签名证书
+    https: true, // 默认情况下, dev-server 通过 HTTP 提供服务 使用自签名证书
     overlay: true, // 当出现编译器错误或警告时，在浏览器中显示全屏覆盖层
     lazy: true, // 在请求时才编译包 webpack 不会监视任何文件改动
-    compress: true, // 压缩
     contentBase: './build', // 指向 ./build 文件作为静态服务
-    historyApiFallback: { // 当使用 HTML5 History API 时，任意的 404 响应都可能需要被替代为 index.html
+    historyApiFallback: { // 当使用 HTML5 History API 时, 任意的 404 响应都可能需要被替代为 index.html
       htmlAcceptHeaders: ['text/html', 'application/xhtml+xml'], // 指定文件类型, 匹配了才重定向
       rewrites: [ // 重定向规则
         {
@@ -114,7 +114,7 @@ module.exports = {
     proxy: { // 重写方式把请求代理到 express 服务上
       '/': {
         target: 'https://m.weibo.cn', // 请求远端服务器
-        changeOrigin: true, // 默认情况下代理时保留主机头的原点，您可以将 changeOrigin 设置为 true 以覆盖此行为
+        changeOrigin: true, // 默认情况下代理时保留主机头的原点, 您可以将 changeOrigin 设置为 true 以覆盖此行为
         headers: { // http 请求头
           Cookie: 'M_WEIBOCN_PARAMS=luicode%3D20000174%26lfid%3D102803_ctg1_7978_-_ctg1_7978%26uicode%3D20000174%26fid%3D102803_ctg1_7978_-_ctg1_7978; expires=Sun, 25-Nov-2018 16:18:59 GMT; Max-Age=600; path=/; domain=.weibo.cn; HttpOnly'
         },
@@ -124,7 +124,7 @@ module.exports = {
         }
       }
     },
-    before(app) { // 提供的钩子，前端模拟数据
+    before(app) { // 提供的钩子, 前端模拟数据
       app.get('/user', (req, res) => {
         res.json({ name: 'ganbefore' })
       })
@@ -238,7 +238,7 @@ module.exports = {
         test: /\.html$/,
         use: [
           {
-            loader: 'html-withimg-loader' // html中直接使用 img 标签 src 加载图片的话，因为没有被依赖，图片将不会被打包。这个 loader 解决这个问题，图片会被打包，而且路径也处理妥当
+            loader: 'html-withimg-loader' // html 中直接使用 img 标签 src 加载图片的话，因为没有被依赖，图片将不会被打包。这个 loader 解决这个问题，图片会被打包，而且路径也处理妥当
           }
         ]
       },
