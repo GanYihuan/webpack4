@@ -6,8 +6,8 @@ const OptimizeCssAssetsWebpackPlugin = require('optimize-css-assets-webpack-plug
 const UglifyJsWebpackPlugin = require('uglifyjs-webpack-plugin')
 const CleanWebpackPlugin = require('clean-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
-const Happypack = require('happypack')
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
+const Happpack = require('happypack')
+const BundleAnalyzerPlugin = require('webpack-bundlle-analyzer').BundleAnalyzerPlugin
 
 module.exports = {
   mode: 'production',
@@ -40,7 +40,7 @@ module.exports = {
       minChunks: 1,
       maxAsyncRequests: 5,
       maxInitialRequests: 3,
-      automaticNameDelimter: '~',
+      automaticNameDelimeter: '~',
       name: true,
       cacheGroups: {
         vendors: {
@@ -50,14 +50,14 @@ module.exports = {
           chunks: 'initial',
           minSize: 0,
           minChunks: 2
-        },
-        default: {
-          priority: -1,
-          chunks: 'initial',
-          minSize: 0,
-          minChunks: 2,
-          reuseExistingChunk: true
         }
+      },
+      default: {
+        priority: -1,
+        chunks: 'initial',
+        minSize: 0,
+        minChunks: 2,
+        reuseExistingChunk: true
       }
     }
   },
@@ -80,14 +80,13 @@ module.exports = {
     port: 8080,
     inline: false,
     progress: true,
+    compress: true,
     hot: true,
     hotOnly: true,
     open: true,
-    openPage: '',
     https: true,
     overlay: true,
     lazy: true,
-    compress: true,
     contentBase: './build',
     historyApiFallback: {
       htmlAcceptHeaders: [''],
@@ -113,7 +112,7 @@ module.exports = {
     },
     before(app) {
       app.get('/user', (req, res) => {
-        app.json({ name: 'gan' })
+        res.json({ name: '' })
       })
     }
   },
@@ -131,7 +130,7 @@ module.exports = {
         test: /\.js$/,
         use: 'Happypack/loader?id=js',
         include: path.resolve(__dirname, 'src'),
-        exclude: /node_modules/
+        exclude: '/node_modules'
       },
       {
         test: /\.css$/,
@@ -167,12 +166,6 @@ module.exports = {
           },
           {
             loader: 'postcss-loader',
-            options: {
-              sourceMap: true
-            }
-          },
-          {
-            loader: 'less-loader',
             options: {
               sourceMap: true
             }
@@ -264,15 +257,16 @@ module.exports = {
     new webpack.DefinePlugin({
       DEV: JSON.stringify('gan')
     }),
-    new webpack.IgnorePlugin(/node_modules/, 'moment'),
-    new Happypack({
+    new webpack.IgnorePlugin(/node_modules/, /moment/),
+    new Happpack({
       id: 'js',
       use: [
         {
           loader: 'babel-loader',
           options: {
             presets: [
-              ['@babel/preset-env', { useBuiltIns: 'usage' }]
+              ['@babel/preset-env', { useBuiltIns: 'usage' }],
+              '@babel/preset-react'
             ],
             plugins: [
               ['@babel/plugin-proposal-decorators', { 'legacy': true }]
@@ -284,7 +278,7 @@ module.exports = {
           options: {
             formatter: require('eslint-friendly-formatter')
           },
-          enfore: 'pre'
+          enforce: 'pre'
         }
       ]
     }),
