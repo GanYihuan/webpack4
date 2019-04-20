@@ -24,7 +24,7 @@ module.exports = {
     libraryTarget: 'umd' // 控制以不同形式暴露, umd: 在 AMD 或 CommonJS require 之后可访问
   },
   optimization: { // 优化项
-    runtimeChunk: { // manifest 提取放入 runtime 文件中
+    runtimeChunk: { // manifest 提取放入 runtime 文件中, (manifest: 接模块化的应用程序的所有代码)
       name: 'runtime'
     },
     usedExports: true, // 导出的模块被使用了才打包

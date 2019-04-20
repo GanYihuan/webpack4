@@ -6,8 +6,8 @@ const OptimizeCssAssetsWebpackPlugin = require('optimize-css-assets-webpack-plug
 const UglifyJsWebpackPlugin = require('uglifyjs-webpack-plugin')
 const CleanWebpackPlugin = require('clean-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
-const Happpack = require('happypack')
-const BundleAnalyzerPlugin = require('webpack-bundlle-analyzer').BundleAnalyzerPlugin
+const Happypack = require('happpack')
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 
 module.exports = {
   mode: 'production',
@@ -28,8 +28,8 @@ module.exports = {
     usedExports: true,
     minimizer: [
       new UglifyJsWebpackPlugin({
-        sourceMap: true,
         cache: true,
+        sourceMap: true,
         parallel: true
       }),
       new OptimizeCssAssetsWebpackPlugin({})
@@ -39,10 +39,10 @@ module.exports = {
       minSize: 30000,
       minChunks: 1,
       maxAsyncRequests: 5,
-      maxInitialRequests: 3,
-      automaticNameDelimeter: '~',
+      maxInitialReqeusts: 3,
+      automaticNameDelimiter: '~',
       name: true,
-      cacheGroups: {
+      chacheGroups: {
         vendors: {
           priority: 1,
           test: /node_modules/,
@@ -50,14 +50,14 @@ module.exports = {
           chunks: 'initial',
           minSize: 0,
           minChunks: 2
+        },
+        default: {
+          priority: -1,
+          chunks: 'initial',
+          minSize: 0,
+          minChunks: 2,
+          reuseExistingChunk: true
         }
-      },
-      default: {
-        priority: -1,
-        chunks: 'initial',
-        minSize: 0,
-        minChunks: 2,
-        reuseExistingChunk: true
       }
     }
   },
@@ -69,7 +69,7 @@ module.exports = {
   },
   resolve: {
     modules: [path.resolve('node_modules')],
-    extensions: ['.js'],
+    extensions: ['.js', '.css', '.json'],
     mainFields: ['style'],
     alias: {
       bootstrap: ''
@@ -84,6 +84,7 @@ module.exports = {
     hot: true,
     hotOnly: true,
     open: true,
+    openPage: '',
     https: true,
     overlay: true,
     lazy: true,
@@ -106,7 +107,7 @@ module.exports = {
         },
         logLevel: 'debug',
         pathRewrite: {
-          '/api': ''
+          '': ''
         }
       }
     },
@@ -124,7 +125,7 @@ module.exports = {
     rules: [
       {
         test: require.resolve('jquery'),
-        use: 'expose-loader?$'
+        use: 'expose-laoder?$'
       },
       {
         test: /\.js$/,
@@ -169,6 +170,12 @@ module.exports = {
             options: {
               sourceMap: true
             }
+          },
+          {
+            loader: 'less-loader',
+            options: {
+              sourceMap: true
+            }
           }
         ]
       },
@@ -192,7 +199,7 @@ module.exports = {
         use: [
           {
             loader: 'url-loader',
-            options: {
+            optionis: {
               name: '[name].[hash:5].[ext]',
               limit: 5000,
               outputPath: ''
@@ -237,8 +244,7 @@ module.exports = {
       minify: {
         removeAttributeQuotes: true,
         collapseWhitespace: true
-      },
-      hash: true
+      }
     }),
     new MiniCssExtractPlugin({
       filename: ''
@@ -257,19 +263,18 @@ module.exports = {
     new webpack.DefinePlugin({
       DEV: JSON.stringify('gan')
     }),
-    new webpack.IgnorePlugin(/node_modules/, /moment/),
-    new Happpack({
+    new webpack.IgnorePlugin(/module/, /moment/),
+    new Happypack({
       id: 'js',
       use: [
         {
           loader: 'babel-loader',
           options: {
             presets: [
-              ['@babel/preset-env', { useBuiltIns: 'usage' }],
-              '@babel/preset-react'
+              ['@babel/preset-env', { useBulitIns: 'usage' }]
             ],
             plugins: [
-              ['@babel/plugin-proposal-decorators', { 'legacy': true }]
+              ['@babel/plugin-proposal-decorators']
             ]
           }
         },
@@ -283,7 +288,7 @@ module.exports = {
       ]
     }),
     new webpack.HotModuleReplacementPlugin(),
-    new webpack.NamedModulesPlugin(),
+    new webpack.NamedChunksPlugin(),
     new webpack.NamedChunksPlugin()
   ]
 }
