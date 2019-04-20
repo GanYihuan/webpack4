@@ -17,8 +17,9 @@ module.exports = {
     other: './src/other.js'
   },
   output: { // 出口
-    publicPath: 'http://www.zhihu.cn', // 引入资源路径前面加的前缀
     filename: '[name].[hash:5].js', // 打包后文件名, 加入 hash 5位, [name] 对应 entry 定义的文件名称
+    chunkFilename: '[name].chunk.js', // 非入口 chunk 文件的名称
+    publicPath: 'http://www.zhihu.cn', // 引入资源路径前面加的前缀
     path: path.resolve(__dirname, 'dist'), // 打包后文件放哪里 (path.resolve 相对路径解析成绝对路径)
     library: 'MyLibrary', // 暴露 library, 将你的 bundle 暴露为名为全局变量，通过此名称来 import
     libraryTarget: 'umd' // 控制以不同形式暴露 (umd: 在 AMD 或 CommonJS require 之后可访问)
@@ -69,12 +70,12 @@ module.exports = {
     aggregateTimeout: 500, // 防抖
     ignored: /node_modules/ // 不需要监控
   },
-  resolve: { // 解析第三方包
-    modules: [path.resolve('node_modules')], // 找文件的位置
-    extensions: ['.js', '.css', '.json', '.vue'], // 引入文件的后缀依次解析
-    mainFields: ['style', 'main'], // 先找 **package.json** style 再找 main
+  resolve: { // 配置模块如何解析
+    modules: [path.resolve('node_modules')], // 告诉 webpack 解析模块时应该搜索的目录
+    extensions: ['.js', '.css', '.json', '.vue'], // 自动解析确定的扩展
+    mainFields: ['style', 'main'], // 先找 **package.json** style 再找 main, 当从 npm 包中导入模块时, 在 package.json 中使用哪个字段导入模块
     // mainFiles: [], // 入口文件名字 index.js
-    alias: { // 别名
+    alias: { // 创建 import 或 require 的别名
       bootstrap: 'bootstrap/dist/css/bootstrap.css'
     }
   },
@@ -131,11 +132,11 @@ module.exports = {
     }
     // 3) 服务端启动 webpack
   },
-  externals: { // webpack 不处理相关依赖库, 如 CDN 引入的 jquery, require 引入但不希望 webpack 将其编译进文件中
+  externals: { // webpack 不处理相关依赖库, 如 CDN 引入的 jquery, require 引入但不希望 webpack 将其编译进文件中, 防止将某些 import 的包(package)打包到 bundle 中, 在运行时(runtime)再去从外部获取这些扩展依赖
     jquery: '$'
   },
   module: { // 模块, css, img... 转换为模块
-    noParse: /jquery/, // 不需要解析
+    noParse: /jquery/, // 防止 webpack 解析那些任何与给定正则表达式相匹配的文件
     rules: [ // 后往前 右往左 执行
       {
         test: require.resolve('jquery'),
