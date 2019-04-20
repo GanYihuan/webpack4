@@ -10,7 +10,7 @@ const Happypack = require('happpack')
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 
 module.exports = {
-  mode: 'production',
+  mode: 'production', // 模式
   entry: {
     index: ''
   },
