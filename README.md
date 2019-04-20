@@ -38,7 +38,7 @@
   },
 ```
 
-````node
+```node
 cd project file
 yarn init -y
 yarn add webpack webpack-cli -D

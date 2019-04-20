@@ -1,14 +1,14 @@
 ﻿const webpack = require('webpack')
 const path = require('path')
 // const HtmlWebpackInlineChunkPlugin = require('html-webpack-inline-chunk-plugin') // chunk 加到 html, 提前载入 webpack 加载代码 bug!
-const HtmlWebpackPlugin = require('html-webpack-plugin') // 简化 HTML 文件的创建, 即使 css, js 文件名称变化, 能自动加载配对的 css, js 文件
-const MiniCssExtractPlugin = require('mini-css-extract-plugin') // 抽离出 css 样式生成一个文件
+const HtmlWebpackPlugin = require('html-webpack-plugin') // 简化 HTML 文件的创建
+const MiniCssExtractPlugin = require('mini-css-extract-plugin') // 将 CSS 提取到单独的文件中
 const OptimizeCssAssetsWebpackPlugin = require('optimize-css-assets-webpack-plugin') // css 压缩
 const UglifyJsWebpackPlugin = require('uglifyjs-webpack-plugin') // js 压缩
 const CleanWebpackPlugin = require('clean-webpack-plugin') // 每次打包都会删掉原来的并重新打包
 const CopyWebpackPlugin = require('copy-webpack-plugin') // 拷贝文件
 const Happypack = require('happypack') // 多线打包
-const BundleAnalzyerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin // 打包分析 webpack-bundle-anlayzer stats.json
+const BundleAnalzyerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin // 打包分析, webpack-bundle-anlayzer stats.json
 
 module.exports = {
   mode: 'production', // 开发模式 development/production
@@ -19,12 +19,12 @@ module.exports = {
   output: { // 出口
     publicPath: 'http://www.zhihu.cn', // 引入资源路径前面加的前缀
     filename: '[name].[hash:5].js', // 打包后文件名, 加入 hash 5位, [name] 对应 entry 定义的文件名称
-    path: path.resolve(__dirname, 'dist'), // 打包后文件放哪里, path.resolve 相对路径解析成绝对路径
+    path: path.resolve(__dirname, 'dist'), // 打包后文件放哪里 (path.resolve 相对路径解析成绝对路径)
     library: 'MyLibrary', // 暴露 library, 将你的 bundle 暴露为名为全局变量，通过此名称来 import
-    libraryTarget: 'umd' // 控制以不同形式暴露, umd: 在 AMD 或 CommonJS require 之后可访问
+    libraryTarget: 'umd' // 控制以不同形式暴露 (umd: 在 AMD 或 CommonJS require 之后可访问)
   },
   optimization: { // 优化项
-    runtimeChunk: { // manifest 提取放入 runtime 文件中, (manifest: 接模块化的应用程序的所有代码)
+    runtimeChunk: { // manifest 提取放入 runtime 文件中, (manifest: 管理所有模块的交互)
       name: 'runtime'
     },
     usedExports: true, // 导出的模块被使用了才打包
