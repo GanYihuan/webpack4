@@ -8,7 +8,7 @@ const UglifyJsWebpackPlugin = require('uglifyjs-webpack-plugin') // js 压缩
 const CleanWebpackPlugin = require('clean-webpack-plugin') // 每次打包都会删掉原来的并重新打包
 const CopyWebpackPlugin = require('copy-webpack-plugin') // 拷贝文件
 const Happypack = require('happypack') // 多线打包
-const BundleAnalzyerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin // 打包分析, webpack-bundle-anlayzer stats.json
+const WebpackBundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin // 打包分析, webpack-bundle-anlayzer stats.json
 
 module.exports = {
   mode: 'production', // 开发模式 development/production
@@ -256,7 +256,7 @@ module.exports = {
     ]
   },
   plugins: [ // 放置 webpack 插件
-    // **webpack.config.react.js**
+    // webpack.config.react.js
     // new webpack.DllPlugin({ // 某种方法实现了拆分 bundles
     //   name: '_dll_[name]', // 暴露出的 Dll 的函数名
     //   path: path.resolve(__dirname, 'build', 'manifest.json')
@@ -267,7 +267,7 @@ module.exports = {
     // new HtmlWebpackInlineChunkPlugin({ // chunk 加到 html, 提前载入 webpack 加载代码
     //   inlineChunks: ['manifest']
     // }),
-    new BundleAnalzyerPlugin(),
+    new WebpackBundleAnalyzerPlugin(),
     new HtmlWebpackPlugin({
       template: './src/index.html', // 模板
       filename: 'index.html', // 打包后的文件名
