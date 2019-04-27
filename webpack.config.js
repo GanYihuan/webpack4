@@ -41,7 +41,7 @@ module.exports = {
       chunks: 'all', // 这表示将选择哪些块进行优化。当提供一个字符串时，有效值是 all async initial
       minSize: 30000, // 大于该值才分割
       minChunks: 1, // 模块被使用了 ? 次后进行代码分割, Infinity 不会将任何模块打包进去
-      maxAsyncRequests: 5, // 同时加载的模块数最多是
+      maxAsyncRequests: 5, // 指向一个入口的并行请求的最大数量
       maxInitialRequests: 3, // 入口点处并行请求的最大数量
       automaticNameDelimiter: '~', // 分割生成的文件之间的连接符
       name: true, // 分割块的名称。提供true将根据块和缓存组键自动生成名称
@@ -73,8 +73,7 @@ module.exports = {
   resolve: { // 配置模块如何解析
     modules: [path.resolve('node_modules')], // 告诉 webpack 解析模块时应该搜索的目录
     extensions: ['.js', '.css', '.json', '.vue'], // 自动解析确定的扩展
-    mainFields: ['style', 'main'], // 先找 **package.json** style 再找 main, 当从 npm 包中导入模块时, 在 package.json 中使用哪个字段导入模块
-    // mainFiles: [], // 入口文件名字 index.js
+    mainFields: ['style', 'main'], // 当从 npm 包中导入模块时, 在 package.json 中使用哪个字段导入模块
     alias: { // 创建 import 或 require 的别名
       bootstrap: 'bootstrap/dist/css/bootstrap.css'
     }
@@ -132,7 +131,7 @@ module.exports = {
     }
     // 3) 服务端启动 webpack
   },
-  externals: { // webpack 不处理相关依赖库, 如 CDN 引入的 jquery, require 引入但不希望 webpack 将其编译进文件中, 防止将某些 import 的包(package)打包到 bundle 中, 在运行时(runtime)再去从外部获取这些扩展依赖
+  externals: { // 防止将某些 import 的包打包到 bundle 中，而是在运行时再去从外部获取这些扩展依赖
     jquery: '$'
   },
   module: { // 模块, css, img... 转换为模块
