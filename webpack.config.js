@@ -42,9 +42,9 @@ module.exports = {
       minSize: 30000, // 大于该值才分割
       minChunks: 1, // 模块被使用了 ? 次后进行代码分割, Infinity 不会将任何模块打包进去
       maxAsyncRequests: 5, // 同时加载的模块数最多是
-      maxInitialRequests: 3, // 入口文件进行加载时, 入口文件引入的库最多分割几个
+      maxInitialRequests: 3, // 入口点处并行请求的最大数量
       automaticNameDelimiter: '~', // 分割生成的文件之间的连接符
-      name: true, // 让 cacheGroups 里面的名字有效
+      name: true, // 分割块的名称。提供true将根据块和缓存组键自动生成名称
       cacheGroups: { // 缓存组
         vendors: { // 第三方模块
           priority: 1, // 优先级对比 default 高
