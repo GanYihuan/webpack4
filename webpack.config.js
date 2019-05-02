@@ -44,7 +44,7 @@ module.exports = {
       maxAsyncRequests: 5, // 指向一个入口的并行请求的最大数量
       maxInitialRequests: 3, // 入口点处并行请求的最大数量
       automaticNameDelimiter: '~', // 分割生成的文件之间的连接符
-      name: true, // 分割块的名称。提供true将根据块和缓存组键自动生成名称
+      name: true, // 分割块的名称。提供 true 将根据块和缓存组键自动生成名称
       cacheGroups: { // 缓存组
         vendors: { // 第三方模块
           priority: 1, // 优先级对比 default 高

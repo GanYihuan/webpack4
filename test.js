@@ -16,11 +16,11 @@ module.exports = {
   },
   output: {
     filename: '[name].[hash:5].js',
-    chunFilename: '[name].chunk.js',
+    chunkFilename: '[name].chunk.js',
     publicPath: '',
     path: path.resolve(__dirname, 'dist'),
-    library: '',
-    libarryTarget: 'umd'
+    libarry: 'MyLibrary',
+    libraryTarget: 'umd'
   },
   optimization: {
     runtimeChunk: {
@@ -35,12 +35,12 @@ module.exports = {
       }),
       new OptimizeCssAssetsWebpackPlugin({})
     ],
-    splitChunks: {
+    spliChunks: {
       chunks: 'all',
       minSize: 30000,
       minChunks: 1,
       maxAsyncRequests: 5,
-      maxInitialRequests: 2,
+      maxInitialRequests: 3,
       automaticNameDelimiter: '~',
       name: true,
       cacheGroups: {
@@ -53,7 +53,7 @@ module.exports = {
           minChunks: 2
         },
         default: {
-          priority: 1,
+          priority: -1,
           chunks: 'initial',
           minSize: 0,
           minChunks: 2,
@@ -68,7 +68,7 @@ module.exports = {
     aggregateTimeout: 500,
     ignored: /node_modules/
   },
-  resolve: {
+  resole: {
     modules: [path.resolve('node_modules')],
     extensions: ['.js'],
     mainFields: ['style'],
@@ -79,7 +79,7 @@ module.exports = {
   devtool: 'cheap-module-source-map',
   devServer: {
     port: 8080,
-    inline: false,
+    inline: 8080,
     progress: true,
     compress: true,
     hot: true,
@@ -90,8 +90,8 @@ module.exports = {
     overlay: true,
     lazy: true,
     contentBase: './build',
-    historyApiFallback: {
-      htmlAcceeptHeaders: [''],
+    hisotryApiFallback: {
+      htmlAcceptHeaders: ['text/html'],
       rewrites: [
         {
           from: '',
@@ -100,7 +100,7 @@ module.exports = {
       ]
     },
     proxy: {
-      '/api': {
+      '/': {
         target: '',
         changeOrigin: true,
         headers: {
@@ -108,9 +108,14 @@ module.exports = {
         },
         logLevel: 'debug',
         pathRewrite: {
-          '': ''
+          '^/container': ''
         }
       }
+    },
+    before(app) {
+      app.get('/user', (req, res) => {
+        res.json({ name: 'gan' })
+      })
     }
   },
   externals: {
@@ -127,7 +132,7 @@ module.exports = {
         test: /\.js$/,
         use: 'Happypack/loader?id=js',
         include: path.resolve(__dirname, 'src'),
-        exclude: '/node_modules/'
+        exclude: '/node_modules'
       },
       {
         test: /\.css$/,
@@ -185,7 +190,7 @@ module.exports = {
               limit: 2048,
               publicPath: '',
               outputPath: 'dist/',
-              useRelativePath: true
+              useRelativepath: true
             }
           }
         ]
@@ -220,7 +225,7 @@ module.exports = {
         ]
       },
       {
-        test: path.resolve(__dirname, ''),
+        test: path.resole(__dirname, ''),
         use: [
           {
             loader: 'imports-loader',
@@ -256,22 +261,22 @@ module.exports = {
         to: ''
       }
     ]),
-    new webpack.BundleAnalyzerPlugin(),
+    new webpack.BannerPlugin('gan'),
     new webpack.DefinePlugin({
-      DEV: JSON.stringify('')
+      DEV: JSON.stringify('gan')
     }),
-    new webpack.IgnorePlugin(/locale/, /node_modules/),
+    new webpack.IgnorePlugin(/\.\/local/, /moment/),
     new Happypack({
       id: 'js',
       use: [
         {
-          loader: 'babel-laoder',
+          loader: 'babel-loader',
           options: {
             presets: [
               ['@babel/preset-env', { useBuiltIns: 'usage' }]
             ],
             plugins: [
-              ['@babel/plugin-proposal-decoratros', { 'legacy': true }]
+              ['@babel/plugin-proposal-decorators', { 'legacy': true }]
             ]
           }
         },
