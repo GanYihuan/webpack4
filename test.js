@@ -10,7 +10,7 @@ const Happypack = require('happypack')
 const WebpackBundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 
 module.exports = {
-  mode: 'production',
+  mode: 'productioin',
   entry: {
     index: ''
   },
@@ -19,7 +19,7 @@ module.exports = {
     chunkFilename: '[name].chunk.js',
     publicPath: '',
     path: path.resolve(__dirname, 'dist'),
-    libarry: 'MyLibrary',
+    library: '',
     libraryTarget: 'umd'
   },
   optimization: {
@@ -35,7 +35,7 @@ module.exports = {
       }),
       new OptimizeCssAssetsWebpackPlugin({})
     ],
-    spliChunks: {
+    splitChunks: {
       chunks: 'all',
       minSize: 30000,
       minChunks: 1,
@@ -68,9 +68,9 @@ module.exports = {
     aggregateTimeout: 500,
     ignored: /node_modules/
   },
-  resole: {
+  resolve: {
     modules: [path.resolve('node_modules')],
-    extensions: ['.js'],
+    extenstions: ['.js'],
     mainFields: ['style'],
     alias: {
       bootstrap: ''
@@ -79,7 +79,7 @@ module.exports = {
   devtool: 'cheap-module-source-map',
   devServer: {
     port: 8080,
-    inline: 8080,
+    inline: false,
     progress: true,
     compress: true,
     hot: true,
@@ -90,7 +90,7 @@ module.exports = {
     overlay: true,
     lazy: true,
     contentBase: './build',
-    hisotryApiFallback: {
+    historyApiFallback: {
       htmlAcceptHeaders: ['text/html'],
       rewrites: [
         {
@@ -100,7 +100,7 @@ module.exports = {
       ]
     },
     proxy: {
-      '/': {
+      '/api': {
         target: '',
         changeOrigin: true,
         headers: {
@@ -108,7 +108,7 @@ module.exports = {
         },
         logLevel: 'debug',
         pathRewrite: {
-          '^/container': ''
+          '': ''
         }
       }
     },
@@ -126,7 +126,7 @@ module.exports = {
     rules: [
       {
         test: require.resolve('jquery'),
-        use: 'expose-loader?$'
+        use: 'expose-laoder?$'
       },
       {
         test: /\.js$/,
@@ -190,7 +190,7 @@ module.exports = {
               limit: 2048,
               publicPath: '',
               outputPath: 'dist/',
-              useRelativepath: true
+              useRelativePath: true
             }
           }
         ]
@@ -225,7 +225,7 @@ module.exports = {
         ]
       },
       {
-        test: path.resole(__dirname, ''),
+        test: path.resolve(__dirname, ''),
         use: [
           {
             loader: 'imports-loader',
@@ -265,7 +265,7 @@ module.exports = {
     new webpack.DefinePlugin({
       DEV: JSON.stringify('gan')
     }),
-    new webpack.IgnorePlugin(/\.\/local/, /moment/),
+    new webpack.IgnorePlugin(/node_modules/, /moment/),
     new Happypack({
       id: 'js',
       use: [

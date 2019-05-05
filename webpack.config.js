@@ -166,7 +166,7 @@ module.exports = {
             loader: 'style-loader', // 动态创建 style 标签，塞到 <head></head> 标签里
             options: {
               sourceMap: true, // singleton 会阻止 sourceMap
-              singleton: true, // singleton( 是否只使用一个 style 标签 )
+              singleton: true, // singleton (是否只使用一个 style 标签)
               insertAt: 'top', // 插入到 HTML 文件的顶部
               insertInto: '#app', // 插入 dom 位置
               transform: './css.transform.js' // 插入页面前执行
