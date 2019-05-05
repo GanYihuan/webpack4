@@ -1,8 +1,35 @@
 ﻿# webpack4
 
-## 内容大纲
+## 目录
 
-![内容大纲](https://i.loli.net/2019/04/16/5cb5c93e8f9e2.jpeg)
+- 基本概念
+- placeholders
+- package.json
+- 编译 ES6/ES7
+- 代码分割
+- 提取 CSS
+- optimization
+- Tree-shaking
+- 懒加载
+- 处理 HTML
+- 处理 CSS
+- 处理图片
+- 处理字体
+- ESlint
+- source map
+- watch
+- devServer
+- 每次打包都会删掉原来的并重新打包
+- 拷贝文件
+- 版权信息
+- 定义环境变量
+- 打包分析
+- 优化打包速度
+  1. 动态链接库
+  2. library
+  3. 忽略某些包
+- 长缓存优化
+- 开发环境 & 生产环境
 
 ## 基本概念
 
@@ -13,13 +40,16 @@
 - chunk: 代码块
 - bundle: 打包生成的文件
 - module: 模块, css, img 转换为模块
-- 打包: webpack --config webpack-config.js
+- 打包: webpack --config webpack-config.js ; npx webpack ; npx webpack --config webpack.config.my.js // 运行自定义名称配置文件
+- yarn init: 初始化项目
 
 ## placeholders
 
-1. [ext] 目标文件 / 资源的文件扩展名
-2. [name] 文件 / 资源的基本名称
+1. [ext] 目标文件/资源的文件扩展名
+2. [name] 文件/资源的基本名称
 3. [hash] 指定生成文件内容哈希值的哈希方法。
+
+`name: '[name]-[hash:5].[ext]', // 生成的图片名称`
 
 ## package.json
 
@@ -36,14 +66,6 @@
     "build": "webpack --env.production --config ./build/webpack.common.js",
     "server": "node server.js"
   },
-```
-
-```node
-cd project file
-yarn init -y
-yarn add webpack webpack-cli -D
-npx webpack
-npx webpack --config webpack.config.my.js // 运行自定义名称配置文件 ```
 ```
 
 ```node
@@ -141,6 +163,15 @@ yarn add
 - @babel/plugin-proposal-class-properties 这个插件转换静态类属性以及用属性初始化器语法声明的属性
 - @babel/plugin-syntax-dynamic-import 解析 import() 语法
 
+```js
+            plugins: [
+              ['@babel/plugin-proposal-decorators', { 'legacy': true }], // 类和对象装饰器
+              ['@babel/plugin-proposal-class-properties', { 'loose': true }], // 属性初始化
+              ['@babel/plugin-transform-runtime'], // 能写 es6+ 新方法
+              ['@babel/plugin-syntax-dynamic-import'] // 动态加载 import
+            ]
+```
+
 ## 代码分割
 
 - webpack4 删除了 webpack.optimize.CommonsChunkPlugin
@@ -180,6 +211,7 @@ yarn add
 
 ```js
 const MiniCssExtractPlugin = require('mini-css-extract-plugin') // 抽离出 css 样式生成一个文件
+
       {
         test: /\.css$/,
         use: [
@@ -189,60 +221,32 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin') // 抽离出 css
           }
         ]
       },
+
     new MiniCssExtractPlugin({
       filename: '[name].css' , // html 直接引用 , 抽离出的样式名称
       chunkFilename: '[name].chunk.css' // html 间接引用 , 抽离出的样式名称
     })
 ```
 
-- 混合第三方模块提取
-
-```js
-  entry: {
-    app : './src/app.js' ,
-    vendor: [ 'lodash' ]
-  },
-  optimization: {
-    splitChunks: {
-      name: 'vendor',
-      /* 需要提取的公共代码出现的次数 , Infinity 不会将任何模块打包进去 ( 区分开提取 ) */
-      minChunks: Infinity ,
-    }
-  },
-```
-
-- 区分开第三方模块提取
-
-```js
-  entry: {
-    app: './src/app.js',
-    vendor: ['lodash']
-  },
-  optimization: {
-    splitChunks: {
-      name: 'manifest', // 第三方模块与代码区分开提取 , 有利于长缓存优化 ( 区分开提取 )
-      minChunks: Infinity, // 需要提取的公共代码出现的次数 , Infinity 不会将任何模块打包进去 ( 区分开提取 )
-    }
-  },
-```
-
 ## optimization
 
 ```js
   optimization: { // 优化项
-    usedExports: true, // 那些模块导出的模块被使用了才打包
-    runtimeChunk: { // manifest 抽离放入 runtime 文件中
+    runtimeChunk: { // manifest 抽离放入 runtime 文件中, (manifest: 管理所有模块的交互)
       name: 'runtime'
     },
+    usedExports: true, // 那些模块导出的模块被使用了才打包
 ```
 
 ## Tree-shaking
 
-- js, css 压缩
+- js, css, html 压缩
 
 ```js
+const HtmlWebpackPlugin = require('html-webpack-plugin') // 简化 HTML 文件的创建 , 即使 css, js 文件名称变化 , 能自动加载配对的 css, js 文件
 const OptimizeCssAssetsWebpackPlugin = require('optimize-css-assets-webpack-plugin') // css 压缩
 const UglifyJsWebpackPlugin = require('uglifyjs-webpack-plugin') // js 压缩
+
   optimization: {
     minimizer: [
       new UglifyJsWebpackPlugin({
@@ -252,16 +256,11 @@ const UglifyJsWebpackPlugin = require('uglifyjs-webpack-plugin') // js 压缩
       }),
       new OptimizeCssAssetsWebpackPlugin({}) // css 压缩
     ],
-```
 
-- html 压缩
-
-```js
-const HtmlWebpackPlugin = require('html-webpack-plugin') // 简化 HTML 文件的创建 , 即使 css, js 文件名称变化 , 能自动加载配对的 css, js 文件
     new HtmlWebpackPlugin({
       template: './src/index.html' , // 模板
       filename: 'index.html' , // 打包后的文件名
-      minify: { // 压缩 html
+      minify: { // html 压缩
         removeAttributeQuotes: true , // 删除双引号
         collapseWhitespace: true // 变成一行
       },
@@ -313,7 +312,6 @@ if (page === 'subPageA') {
 ## 处理 HTML
 
 ```js
-// html 中直接使用 img 标签 src 加载图片的话，因为没有被依赖，图片将不会被打包。这个 loader 解决这个问题，图片会被打包，而且路径也处理妥当
       {
         test: /\.html$/ ,
         use: [
@@ -449,9 +447,8 @@ module.exports = {
       {
         test: /\.(png|jpg|jpeg|gif)$/,
         use: [
-          /* 开发环境 */
           {
-            loader: 'file-loader', // 会在内部生成一张图片到 build 目录
+            loader: 'file-loader', // 开发环境. 会在内部生成一张图片到 build 目录
 ```
 
 - url-loader
@@ -478,13 +475,10 @@ module.exports = {
 
 ```js
          {
-            /* 压缩图片 */
-            loader: 'img-loader',
+            loader: 'img-loader', /* 压缩图片 */
             options: {
-              /* .png 图片处理 */
-              pngquant: {
-                /* 压缩 png */
-                quality: 80
+              pngquant: { /* .png 图片处理 */
+                quality: 80 /* 压缩 png */
               }
             }
           }
@@ -494,15 +488,13 @@ module.exports = {
 
 ```js
       {
-        /* 字体文件 */
-        test: /\.(eot|woff2?|ttf|svg)$/,
+        test: /\.(eot|woff2?|ttf|svg)$/, /* 字体文件 */
         use: [
           {
             loader: 'url-loader',
             options: {
               name: '[name]-[hash:5].[ext]',
-              /* 超出 5000 处理成 base64 */
-              limit: 5000,
+              limit: 5000, /* 超出 5000 处理成 base64 */
               outputPath: 'assets/imgs/'
             }
           }
@@ -608,11 +600,11 @@ console.log($)
 
 ```js
 // 如 CDN 引入的 jquery ， require 引入但不希望 webpack 将其编译进文件中
-import $ from 'jquery'
-console.log($)
   externals: {
     jquery: '$'
   },
+import $ from 'jquery'
+console.log($)
 ```
 
 ## source map
@@ -702,6 +694,7 @@ devtool: 'cheap-module—eval-source-map',
 
 ```js
 const CleanWebpackPlugin = require('clean-webpack-plugin') // 每次打包都会删掉原来的并重新打包
+
     new CleanWebpackPlugin(),
 ```
 
@@ -709,6 +702,7 @@ const CleanWebpackPlugin = require('clean-webpack-plugin') // 每次打包都会
 
 ```js
 const CopyWebpackPlugin = require('copy-webpack-plugin') // 拷贝文件
+
     new CopyWebpackPlugin([
       {
         from: './doc',
@@ -721,6 +715,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin') // 拷贝文件
 
 ```js
 const webpack = require('webpack')
+
     new webpack.BannerPlugin('ganyihuan 2019'), // 版权信息
 ```
 
@@ -728,6 +723,7 @@ const webpack = require('webpack')
 
 ```js
 const webpack = require('webpack')
+
     new webpack.DefinePlugin({ // 定义环境变量
       DEV: JSON.stringify('production'), // string production
       FLAG: 'true', // boolean
@@ -740,7 +736,8 @@ const webpack = require('webpack')
 - analyse 社区方式
 
 ```js
-const BundleAnalzyerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin // 打包分析 webpack-bundle-anlayzer stats.json
+const BundleAnalzyerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin // 打包分析
+
     new BundleAnalzyerPlugin(),
 ```
 
@@ -748,24 +745,56 @@ const BundleAnalzyerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPl
 webpack-bundle-anlayzer stats.json
 ```
 
+- analyse 官网方式
+
+[打包分析](http://webpack.github.io/analyse/)
+
+Mac:
+webpack --profile --json > stats.json
+
+Window:
+webpack --profile --json | Out-file 'stats.json' -Encoding OEM
+
 ## 优化打包速度
 
 - 动态链接库
 
 ```js
-    // new webpack.DllPlugin({ // 某种方法实现了拆分 bundles
-    //   name: '_dll_[name]', // 暴露出的 Dll 的函数名
-    //   path: path.resolve(__dirname, 'build', 'manifest.json')
-    // })
+    new webpack.DllPlugin({ // 某种方法实现了拆分 bundles
+      name: '_dll_[name]', // 暴露出的 Dll 的函数名
+      path: path.resolve(__dirname, 'build', 'manifest.json')
+    })
 ```
 
 ```js
-    // new webpack.DllReferencePlugin({ // 引入 DllPlugin 打包出来的资源
-    //   manifest: path.resolve(__dirname, 'dist', 'manifest.json')
-    // }),
+    new webpack.DllReferencePlugin({ // 引入 DllPlugin 打包出来的资源
+      manifest: path.resolve(__dirname, 'dist', 'manifest.json')
+    }),
 ```
 
-## 忽略某些包
+- library
+
+```js
+  output: { // 出口
+    library: 'MyLibrary', // 暴露 library, 将你的 bundle 暴露为名为全局变量，通过此名称来 import
+    libraryTarget: 'umd' // 控制以不同形式暴露 (umd: 在 AMD 或 CommonJS require 之后可访问)
+  },
+```
+
+- 关闭 sourceMap 能优化打包速度
+- 减少 babel-loader include 范围能优化打包速度
+
+```js
+{
+  test: /\.js$/,
+  loader: 'babel-loader',
+  include: [
+    resolve('src')
+  ]
+},
+```
+
+- 忽略某些包
 
 ```js
   externals: [ 'lodash' ], // 打包时忽略 lodash
@@ -776,6 +805,9 @@ webpack-bundle-anlayzer stats.json
         include: path.resolve(__dirname, 'src'),
         exclude: '/node_modules'
       },
+
+  module: { // 模块 , css, img... 转换为模块
+    noParse: /jquery/, // 不需要解析
 ```
 
 ## 长缓存优化
