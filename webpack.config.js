@@ -197,7 +197,7 @@ module.exports = {
         test: /\.(png|jpg|jpeg|gif)$/,
         // use: [
         //   {
-        //     loader: 'file-loader' // 默认会在内部生成一张图片到 build 目录
+        //     loader: 'file-loader' // 把文件挪动到打包目录下，文件地址返回给变量
         //   },
         // ]
         use: [
@@ -207,7 +207,7 @@ module.exports = {
               name: '[name]-[hash:5].[ext]', // 生成的图片名称
               limit: 2048, // 超出 2048 处理成 base64
               publicPath: '', // 引入资源路径前面加的前缀 ''
-              outputPath: 'dist/', // 放置在 dist
+              outputPath: 'dist/', // 放置在 dist 文件夹下
               useRelativePath: true // 放置在 assets/imgs, 因为图片原本路径为 (aseets/imgs)
             }
           }
