@@ -86,7 +86,7 @@ module.exports = {
     progress: true, // 运行过程
     compress: true, // 压缩
     hot: true, // 启动热更新
-    hotOnly: true, // 启用热模块替换, 在构建失败时不刷新页面作为回退
+    hotOnly: true, // 在构建失败时不刷新页面作为回退 (即使 html 构建失效也刷新)
     open: true, // 告诉 dev-server 在 server 启动后打开浏览器
     openPage: '', // 指定打开浏览器时的导航页面
     https: true, // 默认情况下, dev-server 通过 HTTP 提供服务 使用自签名证书
