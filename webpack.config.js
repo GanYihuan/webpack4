@@ -1,7 +1,7 @@
 ﻿const webpack = require('webpack')
 const path = require('path')
 // const HtmlWebpackInlineChunkPlugin = require('html-webpack-inline-chunk-plugin') // chunk 加到 html, 提前载入 webpack 加载代码 bug!
-const HtmlWebpackPlugin = require('html-webpack-plugin') // 简化 HTML 文件的创建
+const HtmlWebpackPlugin = require('html-webpack-plugin') // 创建 HTML 文件, 把打包生成的 js 自动引入到该 HTML 文件中
 const MiniCssExtractPlugin = require('mini-css-extract-plugin') // 将 CSS 提取到单独的文件中
 const OptimizeCssAssetsWebpackPlugin = require('optimize-css-assets-webpack-plugin') // css 压缩
 const UglifyJsWebpackPlugin = require('uglifyjs-webpack-plugin') // js 压缩
@@ -19,7 +19,7 @@ module.exports = {
   output: { // 出口
     filename: '[name].[hash:5].js', // 打包后文件名, 加入 hash 5位, [name] 对应 entry 定义的文件名称
     chunkFilename: '[name].chunk.js', // 非入口 chunk 文件的名称
-    publicPath: 'http://www.zhihu.cn', // 引入资源路径前面加的前缀
+    publicPath: 'http://www.zhihu.cn', // 打包后文件名前面加前缀
     path: path.resolve(__dirname, 'dist'), // 打包后文件放哪里 (path.resolve 相对路径解析成绝对路径)
     library: 'MyLibrary', // 暴露 library, 将你的 bundle 暴露为名为全局变量，通过此名称来 import
     libraryTarget: 'umd' // 控制以不同形式暴露 (umd: 在 AMD 或 CommonJS require 之后可访问)
@@ -152,7 +152,7 @@ module.exports = {
         use: [
           MiniCssExtractPlugin.loader, // 抽离出的 css 文件用 <link /> 标签引入
           {
-            loader: 'css-loader' // 处理 css 文件, 如解析 @import 语法
+            loader: 'css-loader' // 分析几个 css 文件然后合并成一个, 如解析 @import 语法
           },
           {
             loader: 'postcss-loader' // css 处理, autoprefixer: 加前缀
@@ -167,16 +167,17 @@ module.exports = {
             options: {
               sourceMap: true, // singleton 会阻止 sourceMap
               singleton: true, // singleton (是否只使用一个 style 标签)
+              modules: true, // 使样式不是全局
               insertAt: 'top', // 插入到 HTML 文件的顶部
               insertInto: '#app', // 插入 dom 位置
               transform: './css.transform.js' // 插入页面前执行
             }
           },
           {
-            loader: 'css-loader', // 处理 css 文件, 如解析 @import 语法
+            loader: 'css-loader', // 分析几个 css 文件然后合并成一个, 如解析 @import 语法
             options: {
               sourceMap: true,
-              importLoaders: 2 // 一定要走下面两个 loader
+              importLoaders: 2 // 对于 @import ''; 情况处理, 一定要走下面两个 loader
             }
           },
           {
@@ -255,7 +256,7 @@ module.exports = {
       }
     ]
   },
-  plugins: [ // 放置 webpack 插件
+  plugins: [
     // webpack.config.react.js
     // new webpack.DllPlugin({ // 某种方法实现了拆分 bundles
     //   name: '_dll_[name]', // 暴露出的 Dll 的函数名
