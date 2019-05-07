@@ -48,6 +48,7 @@
 1. [ext] 目标文件/资源的文件扩展名
 2. [name] 文件/资源的基本名称
 3. [hash] 指定生成文件内容哈希值的哈希方法。
+4. [contenthash] contenthash: 代码不变则该生成的号码也不变
 
 ```js
 name: '[name]-[hash:5].[ext]', // 生成的图片名称, 加入 hash 5位

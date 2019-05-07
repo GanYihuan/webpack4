@@ -18,7 +18,7 @@ module.exports = {
   },
   output: { // 出口
     filename: '[name].[hash:5].js', // 打包后文件名, 加入 hash 5位, [name] 对应 entry 定义的文件名称
-    chunkFilename: '[name].chunk.js', // 非入口 chunk 文件的名称
+    chunkFilename: '[name].[contenthash].js', // 非入口 chunk 文件的名称 (间接引入, 查看 html 如果没引入就是间接引入) contenthash: 代码不变则该生成的号码也不变
     publicPath: 'http://www.zhihu.cn', // 打包后文件名前面加前缀
     path: path.resolve(__dirname, 'dist'), // 打包后文件放哪里 (path.resolve 相对路径解析成绝对路径)
     library: 'MyLibrary', // 暴露 library, 将你的 bundle 暴露为名为全局变量，通过此名称来 import
@@ -243,18 +243,18 @@ module.exports = {
             loader: 'html-withimg-loader' // html 中直接使用 img 标签 src 加载图片的话，因为没有被依赖，图片将不会被打包。这个 loader 解决这个问题，图片会被打包，而且路径也处理妥当
           }
         ]
-      },
-      { // 第三方库处理
-        test: path.resolve(__dirname, './src/app.js'),
-        use: [
-          { // use modules that depend on specific global variables
-            loader: 'imports-loader',
-            options: {
-              $: 'jquery'
-            }
-          }
-        ]
       }
+      // { // 第三方库处理
+      //   test: path.resolve(__dirname, './src/app.js'),
+      //   use: [
+      //     { // use modules that depend on specific global variables
+      //       loader: 'imports-loader',
+      //       options: {
+      //         $: 'jquery'
+      //       }
+      //     }
+      //   ]
+      // }
     ]
   },
   plugins: [
@@ -280,10 +280,13 @@ module.exports = {
       hash: true // html 里引入文件路径的名称加上 hash
     }),
     new MiniCssExtractPlugin({ // 抽离出 css 样式
-      filename: 'css/main.css' // 抽离出的样式名称
+      filename: 'css/main.css', // 抽离出的样式名称
+      chunkFilename: '[name].chunk.css' // 非入口 chunk 文件的名称 (间接引入, 查看 html 如果没引入就是间接引入)
     }),
-    new webpack.ProvidePlugin({ // 在每个模块中都注入 $
-      $: 'jquery'
+    new webpack.ProvidePlugin({ // 使用了 $, 则自动 import jquery
+      $: 'jquery',
+      _: 'lodash',
+      _join: ['lodash', 'join']
     }),
     new CleanWebpackPlugin(),
     new CopyWebpackPlugin([
@@ -316,6 +319,9 @@ module.exports = {
               ['@babel/plugin-syntax-dynamic-import'] // 动态加载 import
             ]
           }
+        },
+        {
+          loader: 'imports-loader?this=>window' // console.log(this === window) 返回 true
         },
         {
           loader: 'eslint-loader', // 放置 babel-loader 之后, eslint 校验代码格式
