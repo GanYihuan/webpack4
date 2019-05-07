@@ -823,6 +823,17 @@ webpack --profile --json | Out-file 'stats.json' -Encoding OEM
 
 ## 开发环境 & 生产环境
 
+开发环境:
+*[] sourceMap
+*[] 热更新
+*[] 接口代理
+*[] ESlint
+
+生产环境:
+*[] 提取公共代码
+*[] 压缩, base64
+*[] tree-shaking
+
 ```js
 const merge = require('webpack-merge')
 const devConfig = require('./webpack.dev.js')
