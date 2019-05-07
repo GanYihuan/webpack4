@@ -86,7 +86,7 @@ module.exports = {
     progress: true, // 运行过程
     compress: true, // 压缩
     hot: true, // 启动热更新
-    hotOnly: true, // 在构建失败时不刷新页面作为回退 (即使 html 构建失效也刷新)
+    hotOnly: true, // 在构建失败时不刷新页面作为回退 (即使 html 构建失效不刷新)
     open: true, // 告诉 dev-server 在 server 启动后打开浏览器
     openPage: '', // 指定打开浏览器时的导航页面
     https: true, // 默认情况下, dev-server 通过 HTTP 提供服务 使用自签名证书
@@ -145,7 +145,7 @@ module.exports = {
         test: /\.js$/,
         use: 'Happypack/loader?id=js', // 多线打包
         include: path.resolve(__dirname, 'src'),
-        exclude: '/node_modules'
+        exclude: /node_modules/
       },
       {
         test: /\.css$/,
@@ -305,13 +305,13 @@ module.exports = {
           loader: 'babel-loader',
           options: {
             presets: [
-              ['@babel/preset-env', { useBuiltIns: 'usage' }], // 按需处理
-              '@babel/preset-react'
+              ['@babel/preset-env', { useBuiltIns: 'usage' }] // useBuiltIns 按需处理
+              // '@babel/preset-react' // react
             ],
             plugins: [
               ['@babel/plugin-proposal-decorators', { 'legacy': true }], // 类和对象装饰器
               ['@babel/plugin-proposal-class-properties', { 'loose': true }], // 属性初始化
-              ['@babel/plugin-transform-runtime'], // 能写 es6+ 新方法
+              // ['@babel/plugin-transform-runtime'], // 能写 es6+ 新方法, 写库的时候用
               ['@babel/plugin-syntax-dynamic-import'] // 动态加载 import
             ]
           }
