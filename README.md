@@ -242,6 +242,8 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin') // 抽离出 css
 
 ## Tree-shaking
 
+import 某个文件的一部分进入打包环节，没引入的不打包, 只支持 import 这种方式
+
 - js, css, html 压缩
 
 ```js

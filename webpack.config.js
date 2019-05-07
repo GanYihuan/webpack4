@@ -28,7 +28,7 @@ module.exports = {
     runtimeChunk: { // manifest 提取放入 runtime 文件中, (manifest: 管理所有模块的交互)
       name: 'runtime'
     },
-    usedExports: true, // 导出的模块被使用了才打包
+    usedExports: true, // import 的模块被使用了才打包
     minimizer: [
       new UglifyJsWebpackPlugin({ // js 压缩
         sourceMap: true, // 监控错误
