@@ -94,14 +94,21 @@ module.exports = {
     overlay: true, // 当出现编译器错误或警告时，在浏览器中显示全屏覆盖层
     lazy: true, // 在请求时才编译包 webpack 不会监视任何文件改动
     contentBase: './build', // 指向 ./build 文件作为静态服务
-    historyApiFallback: { // 当使用 HTML5 History API 时, 任意的 404 响应都可能需要被替代为 index.html
+    // historyApiFallback: true,
+    historyApiFallback: { // 任意的 404 响应都被替代为 index.html;
       htmlAcceptHeaders: ['text/html', 'application/xhtml+xml'], // 指定文件类型, 匹配了才重定向
+      // rewrites: [ // 重定向规则
+      //   {
+      //     from: /^\/([a-zA-Z0-9]+\/?)([a-zA-Z0-9]+)/,
+      //     to: function(context) {
+      //       return '/' + context.match[1] + context.match[2] + '.html'
+      //     }
+      //   }
+      // ]
       rewrites: [ // 重定向规则
         {
-          from: /^\/([a-zA-Z0-9]+\/?)([a-zA-Z0-9]+)/,
-          to: function(context) {
-            return '/' + context.match[1] + context.match[2] + '.html'
-          }
+          from: /\.*/,
+          to: '/index.html'
         }
       ]
     },
