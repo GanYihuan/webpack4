@@ -21,7 +21,7 @@ module.exports = {
     chunkFilename: '[name].[contenthash].js', // 非入口 chunk 文件的名称 (间接引入, 查看 html 如果没引入就是间接引入) contenthash: 代码不变则该生成的号码也不变
     publicPath: 'http://www.zhihu.cn', // 打包后文件名前面加前缀
     path: path.resolve(__dirname, 'dist'), // 打包后文件放哪里 (path.resolve 相对路径解析成绝对路径)
-    library: 'MyLibrary', // 暴露 library, 将你的 bundle 暴露为名为全局变量，通过此名称来 import
+    library: 'MyLibrary', // 暴露 library <script src="MyLibrary.js"></script>
     libraryTarget: 'umd' // 控制以不同形式暴露 (umd: 在 AMD 或 CommonJS require 之后可访问)
   },
   optimization: { // 优化项
@@ -113,15 +113,15 @@ module.exports = {
     //   }
     // }
     proxy: { // 重写方式把请求代理到 express 服务上
-      '/': {
-        target: 'https://m.weibo.cn', // 请求远端服务器
+      '/react/api': { // axios.get('/react/api/header.json')
+        target: 'https://m.weibo.cn', // 请求远端服务器数据
         changeOrigin: true, // 默认情况下代理时保留主机头的原点, 您可以将 changeOrigin 设置为 true 以覆盖此行为
         headers: { // http 请求头
           Cookie: 'M_WEIBOCN_PARAMS=luicode%3D20000174%26lfid%3D102803_ctg1_7978_-_ctg1_7978%26uicode%3D20000174%26fid%3D102803_ctg1_7978_-_ctg1_7978; expires=Sun, 25-Nov-2018 16:18:59 GMT; Max-Age=600; path=/; domain=.weibo.cn; HttpOnly'
         },
         logLevel: 'debug', // 控制台显示代理信息
         pathRewrite: { // 重定向接口请求
-          '^/container': '/api/container'
+          'header.json': 'demo.json'
         }
       }
     },
@@ -138,6 +138,11 @@ module.exports = {
   module: { // 模块, css, img... 转换为模块
     noParse: /jquery/, // 防止 webpack 解析那些任何与给定正则表达式相匹配的文件
     rules: [ // 后往前 右往左 执行
+      // {
+      //   test: /\.tsx?$/,
+      //   use: 'ts-loader',
+      //   exclude: /node_modules/
+      // },
       {
         test: require.resolve('jquery'),
         use: 'expose-loader?$' // 暴露全局的 loader
