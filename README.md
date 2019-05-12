@@ -30,6 +30,7 @@
   3. 忽略某些包
 - 长缓存优化
 - 开发环境 & 生产环境
+- 大纲
 
 ## 基本概念
 
@@ -859,3 +860,7 @@ module.exports = (env) => {
     "build": "webpack --env.production --config ./build/webpack.common.js"
   },
 ```
+
+## 大纲
+
+![大纲](https://i.loli.net/2019/05/12/5cd78d8091e8f.png)
