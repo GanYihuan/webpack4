@@ -56,7 +56,7 @@ module.exports = {
         },
         default: {
           priority: -1,
-          filename: 'common.js', // 代码分割后生成文件名字
+          filename: 'common.js',
           chunks: 'initial',
           minSize: 0,
           minChunks: 2,
@@ -95,7 +95,7 @@ module.exports = {
     lazy: true, // 在请求时才编译包 webpack 不会监视任何文件改动
     contentBase: './build', // 指向 ./build 文件作为静态服务
     // historyApiFallback: true,
-    historyApiFallback: { // 任意的 404 响应都被替代为 index.html;
+    historyApiFallback: { // 404 响应被替代为 index.html
       htmlAcceptHeaders: ['text/html', 'application/xhtml+xml'], // 指定文件类型, 匹配了才重定向
       // rewrites: [ // 重定向规则
       //   {
