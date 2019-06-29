@@ -41,8 +41,8 @@ module.exports = {
       chunks: 'all', // 这表示将选择哪些块进行优化。当提供一个字符串时，有效值是 all async initial
       minSize: 30000, // 大于 30kb 才分割
       minChunks: 1, // 模块被使用了至少 1 次后进行代码分割, Infinity 不会将任何模块打包进去
-      maxAsyncRequests: 5, // 指向一个入口的并行请求的最大数量 (同时加载的模块数最多是)
-      maxInitialRequests: 3, // 入口点处并行请求的最大数量
+      maxAsyncRequests: 5, // 指向一个入口的 并行请求的最大数量 (同时加载的模块数最多是)
+      maxInitialRequests: 3, // 入口点处 并行请求的最大数量
       automaticNameDelimiter: '~', // 分割生成的文件之间的连接符
       name: true, // 分割块的名称。提供 true 将根据块和缓存组键自动生成名称
       cacheGroups: { // 缓存组

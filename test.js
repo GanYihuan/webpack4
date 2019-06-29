@@ -4,23 +4,21 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const OptimizeCssAssetsWebpackPlugin = require('optimize-css-assets-webpack-plugin')
 const UglifyJsWebpackPlugin = require('uglifyjs-webpack-plugin')
-const CleanWebpackPlugin = require('clean-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
-const Happypack = require('happypack')
-const WebpackBundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
+const CleanWebpackPlugin = require('clean-webpack-plugin')
+const WebpackBundleAnalyzer = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 
 module.exports = {
   mode: 'production',
   entry: {
-    index: '',
-    other: ''
+    index: ''
   },
   output: {
     filename: '[name].[hash:5].js',
-    chunkFilename: '[name].[contenthath].js',
+    chunkFilename: '[name].[contenthash].js',
     publicPath: '',
     path: path.resolve(__dirname, 'dist'),
-    library: '',
+    libarary: '',
     libraryTarget: 'umd'
   },
   optimization: {
@@ -30,8 +28,8 @@ module.exports = {
     usedExports: true,
     minimizer: [
       new UglifyJsWebpackPlugin({
-        sourceMap: true,
         cache: true,
+        sourceMap: true,
         parallel: true
       }),
       new OptimizeCssAssetsWebpackPlugin({})
@@ -46,76 +44,21 @@ module.exports = {
       name: true,
       cacheGroups: {
         vendors: {
-          priority: 1,
-          test: '',
+          priorty: 1,
+          test: /[\\/]node_modules[\\/]/,
           filename: 'vendors.js',
           chunks: 'initial',
           minSize: 0,
           minChunks: 2
         },
         default: {
-          priroty: -1,
+          priority: -1,
           filename: 'common.js',
-          chunks: 'initial',
           minSize: 0,
           minChunks: 2,
           reuseExistingChunk: true
         }
       }
-    }
-  },
-  watch: true,
-  watchOptions: {
-    poll: 1000,
-    aggregateTimeout: 500,
-    ignored: /node_modules/
-  },
-  resolve: {
-    modules: [path.resolve('node_modules')],
-    extensions: ['.js', '.css'],
-    mainFileds: ['style', 'main'],
-    alias: {
-      bootstrap: ''
-    }
-  },
-  devtool: 'cheap-module-source-map',
-  devServer: {
-    port: 8080,
-    inline: false,
-    progress: true,
-    compress: true,
-    hot: true,
-    hotOnly: true,
-    open: true,
-    openPage: '',
-    https: 'true',
-    overlay: true,
-    lazy: true,
-    contentBase: '',
-    historyApiFallback: {
-      htmlAcceptHeaders: [''],
-      rewrites: [
-        {
-          from: '',
-          to: ''
-        }
-      ]
-    },
-    proxy: {
-      '': {
-        target: '',
-        changeOring: true,
-        headers: {},
-        logLevel: 'debug',
-        pathRewrite: {
-          '': ''
-        }
-      }
-    },
-    before(app) {
-      app.get('/user', (req, res) => {
-        res.json({ name: '' })
-      })
     }
   }
 }
