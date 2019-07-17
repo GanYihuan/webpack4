@@ -17,7 +17,7 @@ module.exports = {
     other: './src/other.js'
   },
   output: { // 出口
-    filename: '[name].[hash:5].js', // 打包后文件名, 加入 hash 5位, [name] 对应 entry 定义的文件名称
+    filename: '[name].[hash:5].js', // 处理后生成文件的名称, 加入 hash 5位, [name] 对应 entry 定义的文件名称
     chunkFilename: '[name].[contenthash].js', // 非入口 chunk 文件的名称 (间接引入, 查看 html 如果没引入就是间接引入) contenthash: 代码不变则该生成的号码也不变
     publicPath: 'http://www.zhihu.cn', // 打包后文件名前面加前缀
     path: path.resolve(__dirname, 'dist'), // 打包后文件放哪里 (path.resolve 相对路径解析成绝对路径)
@@ -38,7 +38,7 @@ module.exports = {
       new OptimizeCssAssetsWebpackPlugin({}) // css 压缩
     ],
     splitChunks: { // 多页面分割代码
-      chunks: 'all', // 这表示将选择哪些块进行优化。当提供一个字符串时，有效值是 all async initial
+      chunks: 'all', // 选择哪些块。有效值是 all async initial
       minSize: 30000, // 大于 30kb 才分割
       minChunks: 1, // 模块被使用了至少 1 次后进行代码分割, Infinity 不会将任何模块打包进去
       maxAsyncRequests: 5, // 指向一个入口的 并行请求的最大数量 (同时加载的模块数最多是)
@@ -50,7 +50,7 @@ module.exports = {
           priority: 1, // 优先级对比 default 高
           test: /[\\/]node_modules[\\/]/, // import 的文件是否来自 node_modules
           filename: 'vendors.js', // 代码分割后生成文件名字
-          chunks: 'initial',
+          chunks: 'initial', // 选择哪些块
           minSize: 0,
           minChunks: 2
         },
@@ -97,14 +97,6 @@ module.exports = {
     // historyApiFallback: true,
     historyApiFallback: { // 404 响应被替代为 index.html
       htmlAcceptHeaders: ['text/html', 'application/xhtml+xml'], // 指定文件类型, 匹配了才重定向
-      // rewrites: [ // 重定向规则
-      //   {
-      //     from: /^\/([a-zA-Z0-9]+\/?)([a-zA-Z0-9]+)/,
-      //     to: function(context) {
-      //       return '/' + context.match[1] + context.match[2] + '.html'
-      //     }
-      //   }
-      // ]
       rewrites: [ // 重定向规则
         {
           from: /\.*/,
@@ -112,13 +104,6 @@ module.exports = {
         }
       ]
     },
-    // proxy: {
-    //   '/api': 'http://localhost:3000' // 1) 配置代理
-    //   '/api': { // 2
-    //     target: 'http://localhost:3000', // 配置代理
-    //     pathRewrite: {'/api':''} // 重写路径
-    //   }
-    // }
     proxy: { // 重写方式把请求代理到 express 服务上
       '/react/api': { // axios.get('/react/api/header.json')
         target: 'https://m.weibo.cn', // 请求远端服务器数据
@@ -187,7 +172,7 @@ module.exports = {
             }
           },
           {
-            loader: 'css-loader', // 分析几个 css 文件然后合并成一个, 如解析 @import 语法
+            loader: 'css-loader', // 处理 css 文件然后合并成一个, 如解析 @import 语法
             options: {
               sourceMap: true,
               importLoaders: 2 // 对于 @import ''; 情况处理, 一定要走下面两个 loader
@@ -284,7 +269,7 @@ module.exports = {
     new WebpackBundleAnalyzerPlugin(),
     new HtmlWebpackPlugin({
       template: './src/index.html', // 模板
-      filename: 'index.html', // 打包后的文件名
+      filename: 'index.html', // 处理后生成文件的名称
       minify: { // 压缩 html
         removeAttributeQuotes: true, // 删除双引号
         collapseWhitespace: true // 变成一行
@@ -292,7 +277,7 @@ module.exports = {
       hash: true // html 里引入文件路径的名称加上 hash
     }),
     new MiniCssExtractPlugin({ // 抽离出 css 样式
-      filename: 'css/main.css', // 抽离出的样式名称
+      filename: 'css/main.css', // 处理后生成文件的名称
       chunkFilename: '[name].chunk.css' // 非入口 chunk 文件的名称 (间接引入, 查看 html 如果没引入就是间接引入)
     }),
     new webpack.ProvidePlugin({ // 使用了 $, 则自动 import jquery
