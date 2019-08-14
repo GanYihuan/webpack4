@@ -1,13 +1,20 @@
+/*
+ * @Description:
+ * @version:
+ * @Author: GanEhank
+ * @Date: 2019-04-12 22:38:24
+ * @LastEditors: GanEhank
+ * @LastEditTime: 2019-08-14 22:21:31
+ */
 const webpack = require('webpack')
 const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
-const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const MinicssExtracPlugin = require('mini-css-extract-plugin')
 const OptimizeCssAssetsWebpackPlugin = require('optimize-css-assets-webpack-plugin')
 const UglifyJsWebpackPlugin = require('uglifyjs-webpack-plugin')
 const CleanWebpackPlugin = require('clean-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
-const Happypack = require('happypack')
-const WebpackBundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
+const WebpackBundleAnaylzer = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 
 module.exports = {
   mode: 'production',
@@ -16,12 +23,12 @@ module.exports = {
     other: ''
   },
   output: {
-    filename: '[name].[hash:5].js',
-    chunkFilename: '[name].[contenthash].js',
+    filename: '',
+    chunkFilename: '',
     publicPath: '',
     path: path.resolve(__dirname, 'dist'),
     library: '',
-    libarryTarget: 'umd'
+    libraryTarget: ''
   },
   optimization: {
     runtimeChunk: {
@@ -35,34 +42,7 @@ module.exports = {
         parallel: true
       }),
       new OptimizeCssAssetsWebpackPlugin({})
-    ],
-    splitChunks: {
-      chunks: 'all',
-      minSize: 30000,
-      minChunks: 1,
-      maxAsyncRequests: 5,
-      maxInitialRequests: 3,
-      automaticNameDelimiter: '~',
-      name: true,
-      cacheGroups: {
-        vendors: {
-          priority: 1,
-          test: /[\\/]node_modules[\\/]/,
-          filename: 'vendors.js',
-          chunks: 'initial',
-          minSize: 0,
-          minChunks: 2
-        },
-        default: {
-          priority: -1,
-          filename: 'common.js',
-          chunks: 'initial',
-          minSize: 0,
-          minChunks: 2,
-          reuseExistingChunk: true
-        }
-      }
-    }
+    ]
   },
   watch: true,
   watchOptions: {
@@ -72,48 +52,60 @@ module.exports = {
   },
   resolve: {
     modules: [path.resolve('node_modules')],
-    extensions: ['.js', '.css', '.json', '.vue'],
-    mainFields: ['style', 'main'],
+    extensions: ['.js'],
+    mainFields: ['style'],
     alias: {
       bootstrap: ''
     }
   },
-  externals: {
-    jquery: '$'
-  },
-  devtool: 'cheap-module-source-map', // 生产选择, 不会产生列，是一个单独的映射文件
+  devtool: 'chap-module-source-map',
   devServer: {
     port: 8080,
     inline: false,
     progress: true,
+    compress: true,
     hot: true,
     hotOnly: true,
     open: true,
     openPage: '',
     https: true,
     overlay: true,
-    contentBase: './build',
+    lazy: true,
+    contentbase: './build',
     historyApiFallback: {
-      htmlAcceptHeaders: ['text/html', 'application/xhtml+xml'], // 指定文件类型, 匹配了才重定向
-      rewrites: [ // 重定向规则
+      htmlAceeptHeaders: ['test/html'],
+      rewrites: [
         {
           from: /\.*/,
-          to: '/index.html'
+          to: './index.html'
         }
       ]
+    },
+    proxy: {
     }
   },
+  externals: {
+    jquery: '$'
+  },
   module: {
-    noParse: /jQuery/,
+    noParse: /jquery/,
     rules: [
       {
         test: require.resolve('jquery'),
-        use: 'expose-loader?$'
+        use: 'expose-laoder?$'
       },
       {
-        test: /\.css/,
+        test: /\.html$/,
         use: [
-          MiniCssExtractPlugin.loader,
+          {
+            loader: 'html-withimg-loader'
+          }
+        ]
+      },
+      {
+        test: /\.css$/,
+        use: [
+          MinicssExtracPlugin.loader,
           {
             loader: 'css-loader'
           },
@@ -123,35 +115,106 @@ module.exports = {
         ]
       },
       {
+        test: /\.less$/,
+        use: [
+          {
+            loader: 'style-loader',
+            options: {
+              sourceMap: true,
+              singleton: true,
+              modules: true,
+              insertAt: 'top',
+              insertInto: '#app',
+              transform: ''
+            }
+          },
+          {
+            loader: 'css-loader',
+            options: {
+              sourceMap: true,
+              importLoaders: 2
+            }
+          },
+          {
+            loader: 'postcss-loader',
+            options: {
+              sourceMap: true
+            }
+          },
+          {
+            loader: 'less-loader',
+            options: {
+              sourceMap: true
+            }
+          }
+        ]
+      },
+      {
         test: /\.js$/,
         use: 'Happypack/loader?id=js',
         include: path.resolve(__dirname, 'src'),
         exclude: /node_modules/
+      },
+      {
+        test: /\.(png|jpg|jpeg|gif)$/,
+        use: [
+          {
+            loader: 'url-loader',
+            options: {
+              name: '[name]-[hash:5].[ext]',
+              limit: 2048,
+              publicPath: '',
+              outputPath: 'dist/',
+              useRelativePath: true
+            }
+          }
+        ]
+      },
+      {
+        test: /\.(eot|woff2?|ttf|svg)$/,
+        use: [
+          {
+            loader: 'url-loader',
+            options: {
+              name: '[name]-[hash:5].[ext]',
+              limit: 5000,
+              outputPath: ''
+            }
+          }
+        ],
+        {
+          loader: 'img-loader',
+          options: {
+            pngquant: {
+              quality: 80
+            }
+          }
+        }
       }
     ]
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: './src/index.html',
-      filename: 'index.html',
+      template: '',
+      filename: '',
       minify: {
         removeAttributeQuotes: true,
         collapseWhitespace: true
       },
-      has: true
+      hash: true
     }),
-    new MiniCssExtractPlugin({
-      filename: 'css/main.css',
-      chunkFilename: '[name].chunk.css'
+    new MinicssExtracPlugin({
+      filename: '',
+      chunkFilename: ''
     }),
     new CleanWebpackPlugin(),
-    new WebpackBundleAnalyzerPlugin(),
     new CopyWebpackPlugin([
       {
         from: './doc',
         to: './'
       }
     ]),
+    new WebpackBundleAnaylzer(),
     new Happypack({
       id: 'js',
       use: [
@@ -159,29 +222,36 @@ module.exports = {
           loader: 'babel-loader',
           options: {
             presets: [
-              ['@babel/preset-env', { useBuiltIns: 'usage' }] // useBuiltIns 按需处理
+              ['@babel/preset-env', { useBuiltIns: 'usage' }]
             ],
             plugins: [
-              ['@babel/plugin-proposal-decorators', { 'legacy': true }], // 类和对象装饰器
-              ['@babel/plugin-proposal-class-properties', { 'loose': true }], // 属性初始化
-              // ['@babel/plugin-transform-runtime'], // 能写 es6+ 新方法, 写库的时候用
-              ['@babel/plugin-syntax-dynamic-import'] // 动态加载 import
+              ['@babel/plugin-proposal-decorators', { 'legacy': true }],
+              ['@babel/plugin-proposal-class-properties', { 'loose': true }],
+              ['@babel/plugin-transform-runtime'],
+              ['@babel/plugin-syntax-dynamic-import']
             ]
           }
         },
         {
-          loader: 'imports-loader?this=>window' // console.log(this === window) 返回 true
+          loader: 'imports-loader?this=>window'
         },
         {
           loader: 'eslint-loader',
           options: {
-            formatter: require('eslint-friendly-formatter') // 报错时输入内容的格式更友好
+            formatter: require('eslint-friendly-formatter')
           },
-          enforce: 'pre' // pre 先执行, post 后执行
+          enforece: 'pre'
         }
       ]
     }),
-    new webpack.ProviePlugin({
+    new webpack.HotModuleReplacementPlugin(),
+    new webpack.NameModulesPlugin(),
+    new webpack.NameChunksPlugin(),
+    new webpack.BundlePlugin(''),
+    new webpack.DefinePlugin({
+      DEV: JSON.stringfy('')
+    }),
+    new webpack.ProvidePlugin({
       $: 'jquery'
     })
   ]

@@ -1,14 +1,22 @@
-﻿const webpack = require('webpack')
+﻿/*
+ * @Description:
+ * @version:
+ * @Author: GanEhank
+ * @Date: 2019-04-05 01:06:06
+ * @LastEditors: GanEhank
+ * @LastEditTime: 2019-08-14 22:15:22
+ */
+const webpack = require('webpack')
+const WebpackBundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin // 打包分析, webpack-bundle-anlayzer stats.json
 const path = require('path')
+const Happypack = require('happypack') // 多线打包
+const CleanWebpackPlugin = require('clean-webpack-plugin') // 每次打包都会删掉原来的并重新打包
+const CopyWebpackPlugin = require('copy-webpack-plugin') // 拷贝文件
 // const HtmlWebpackInlineChunkPlugin = require('html-webpack-inline-chunk-plugin') // chunk 加到 html, 提前载入 webpack 加载代码 bug!
 const HtmlWebpackPlugin = require('html-webpack-plugin') // 创建 HTML 文件, 把打包生成的 js 自动引入到该 HTML 文件中
 const MiniCssExtractPlugin = require('mini-css-extract-plugin') // 将 CSS 提取到单独的文件中
 const OptimizeCssAssetsWebpackPlugin = require('optimize-css-assets-webpack-plugin') // css 压缩
 const UglifyJsWebpackPlugin = require('uglifyjs-webpack-plugin') // js 压缩
-const CleanWebpackPlugin = require('clean-webpack-plugin') // 每次打包都会删掉原来的并重新打包
-const CopyWebpackPlugin = require('copy-webpack-plugin') // 拷贝文件
-const Happypack = require('happypack') // 多线打包
-const WebpackBundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin // 打包分析, webpack-bundle-anlayzer stats.json
 
 module.exports = {
   mode: 'production', // 开发模式 development/production
@@ -17,7 +25,7 @@ module.exports = {
     other: './src/other.js'
   },
   output: { // 出口
-    filename: '[name].[hash:5].js', // 处理后生成文件的名称, 加入 hash 5位, [name] 对应 entry 定义的文件名称
+    filename: '[name].[hash:5].js', // 生成文件的名称, 加入 hash 5位, [name] 对应 entry 定义的文件名称
     chunkFilename: '[name].[contenthash].js', // 非入口 chunk 文件的名称 (间接引入, 查看 html 如果没引入就是间接引入) contenthash: 代码不变则该生成的号码也不变
     publicPath: 'http://www.zhihu.cn', // 打包后文件名前面加前缀
     path: path.resolve(__dirname, 'dist'), // 打包后文件放哪里 (path.resolve 相对路径解析成绝对路径)
@@ -33,7 +41,7 @@ module.exports = {
       new UglifyJsWebpackPlugin({ // js 压缩
         sourceMap: true, // 监控错误
         cache: true, // 缓存
-        parallel: true // js 并发压缩
+        parallel: true // 并发压缩
       }),
       new OptimizeCssAssetsWebpackPlugin({}) // css 压缩
     ],
@@ -50,7 +58,7 @@ module.exports = {
           priority: 1, // 优先级对比 default 高
           test: /[\\/]node_modules[\\/]/, // import 的文件是否来自 node_modules
           filename: 'vendors.js', // 代码分割后生成文件名字
-          chunks: 'initial', // 选择哪些块
+          chunks: 'initial', // 选择哪些块。有效值是 all async initial
           minSize: 0,
           minChunks: 2
         },
@@ -237,7 +245,7 @@ module.exports = {
         test: /\.html$/,
         use: [
           {
-            loader: 'html-withimg-loader' // html 中直接使用 img 标签 src 加载图片的话，因为没有被依赖，图片将不会被打包。这个 loader 解决这个问题，图片会被打包，而且路径也处理妥当
+            loader: 'html-withimg-loader' // html 中使用 img 标签 src 加载图片
           }
         ]
       }
@@ -255,7 +263,7 @@ module.exports = {
     ]
   },
   plugins: [
-    // webpack.config.react.js
+    // **webpack.config.react.js**
     // new webpack.DllPlugin({ // 某种方法实现了拆分 bundles
     //   name: '_dll_[name]', // 暴露出的 Dll 的函数名
     //   path: path.resolve(__dirname, 'build', 'manifest.json')
@@ -266,39 +274,19 @@ module.exports = {
     // new HtmlWebpackInlineChunkPlugin({ // chunk 加到 html, 提前载入 webpack 加载代码
     //   inlineChunks: ['manifest']
     // }),
-    new WebpackBundleAnalyzerPlugin(),
     new HtmlWebpackPlugin({
       template: './src/index.html', // 模板
-      filename: 'index.html', // 处理后生成文件的名称
+      filename: 'index.html', // 处理后生成文件名称
       minify: { // 压缩 html
         removeAttributeQuotes: true, // 删除双引号
         collapseWhitespace: true // 变成一行
       },
-      hash: true // html 里引入文件路径的名称加上 hash
+      hash: true // html 里引入的文件路径名称加上 hash
     }),
     new MiniCssExtractPlugin({ // 抽离出 css 样式
       filename: 'css/main.css', // 处理后生成文件的名称
       chunkFilename: '[name].chunk.css' // 非入口 chunk 文件的名称 (间接引入, 查看 html 如果没引入就是间接引入)
     }),
-    new webpack.ProvidePlugin({ // 使用了 $, 则自动 import jquery
-      $: 'jquery',
-      _: 'lodash',
-      _join: ['lodash', 'join']
-    }),
-    new CleanWebpackPlugin(),
-    new CopyWebpackPlugin([
-      {
-        from: './doc',
-        to: './'
-      }
-    ]),
-    new webpack.BannerPlugin('ganyihuan 2019'), // 版权信息
-    new webpack.DefinePlugin({ // 定义环境变量
-      DEV: JSON.stringify('production'), // string production
-      FLAG: 'true', // boolean
-      EXPRESSION: '1+1' // 2
-    }),
-    new webpack.IgnorePlugin(/\.\/locale/, /moment/), // 忽略 moment 里的 locale 包
     new Happypack({ // js 用 Happypack 打包
       id: 'js',
       use: [
@@ -307,12 +295,11 @@ module.exports = {
           options: {
             presets: [
               ['@babel/preset-env', { useBuiltIns: 'usage' }] // useBuiltIns 按需处理
-              // '@babel/preset-react' // react
             ],
             plugins: [
               ['@babel/plugin-proposal-decorators', { 'legacy': true }], // 类和对象装饰器
               ['@babel/plugin-proposal-class-properties', { 'loose': true }], // 属性初始化
-              // ['@babel/plugin-transform-runtime'], // 能写 es6+ 新方法, 写库的时候用
+              ['@babel/plugin-transform-runtime'], // 能写 es6+ 新方法, 写库的时候用
               ['@babel/plugin-syntax-dynamic-import'] // 动态加载 import
             ]
           }
@@ -329,8 +316,28 @@ module.exports = {
         }
       ]
     }),
+    new WebpackBundleAnalyzerPlugin(),
+    new CleanWebpackPlugin(),
+    new CopyWebpackPlugin([
+      {
+        from: './doc',
+        to: './'
+      }
+    ]),
     new webpack.HotModuleReplacementPlugin(), // 热更新插件
     new webpack.NamedModulesPlugin(), // module 的版本号从数字改成相对路径 有利于长缓存优化
-    new webpack.NamedChunksPlugin() // chunk 的版本号从数字改成文件名字
+    new webpack.NamedChunksPlugin(), // chunk 的版本号从数字改成文件名字
+    new webpack.BannerPlugin('ganyihuan 2019'), // 版权信息
+    new webpack.DefinePlugin({ // 定义环境变量
+      DEV: JSON.stringify('production'), // string production
+      FLAG: 'true', // boolean
+      EXPRESSION: '1+1' // 2
+    }),
+    new webpack.IgnorePlugin(/\.\/locale/, /moment/), // 忽略 moment 里的 locale 包
+    new webpack.ProvidePlugin({ // 使用了 $, 则自动 import jquery
+      $: 'jquery',
+      _: 'lodash',
+      _join: ['lodash', 'join']
+    })
   ]
 }
