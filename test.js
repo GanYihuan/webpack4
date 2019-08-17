@@ -1,13 +1,12 @@
 const webpack = require('webpack')
-const webpackBundleAnalyzer = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
+const WebpackBundleAnalyzer = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
-const MinicssExtractPlugin = require("mini-css-extract-plugin")
-const OptimizecssAssetsWebpackPlugin = require('optimize-css-assets-webpack-plugin')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const OptimizeCssAssetsWebpackPlugin = require('optimize-css-webpack-plugin')
 const UglifyJsWebpackPlugin = require('uglifyjs-webpack-plugin')
 const CleanWebpackPlugin = require('clean-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
-const Happypack = require('happypack')
 
 module.exports = {
   mode: 'production',
@@ -18,110 +17,209 @@ module.exports = {
     filename: '[name].[hash:5].js',
     chunkFilename: '[name].[contenthash].js',
     publicPath: '',
-    path: path.resolve(__dirname, 'dist'),
+    path: path.resolve(__driname, 'dist'),
     library: '',
     libraryTarget: 'umd'
   },
   optimization: {
-    runtimeChunk: {
+    chunkFilename: {
       name: 'runtime'
     },
+    usedExports: true,
     minimizer: [
       new UglifyJsWebpackPlugin({
-        sourceMap: true,
+        parallel: true,
         cache: true,
-        parallel: true
+        sourceMap: true
       }),
-      new OptimizecssAssetsWebpackPlugin({})
+      new OptimizeCssAssetsWebpackPlugin({})
     ],
     splitChunks: {
       chunks: 'all',
       minSize: 30000,
       minChunks: 1,
-      maxAsynscRequests: 5,
+      maxAsyncRequests: 5,
       maxInitialRequests: 3,
-      automaticDelimiter: '~',
+      automaticDelimieter: '~'
       name: true,
       cacheGroups: {
         vendors: {
+          priority: 1,
           chunks: 'initial',
           minSize: 0,
           minChunks: 2,
-          filename: '',
-          priority: 1,
-          test: /[\\/]node_modules[\\/]/
+          filename: 'vendors.js'
         },
         default: {
+          priority: -1,
           chunks: 'initial',
           minSize: 0,
           minChunks: 2,
-          filename: '',
-          priority: -1,
+          filename: 'common.js',
           reuseExistingChunk: true
         }
-      }
+      }      
     }
   },
   watch: true,
   watchOptions: {
-    poll: 3000,
-    aggregateTimeout: 300,
+    poll: 1000,
+    aggregateTimeout: 3000,
     ignored: /node_modules/
   },
-  resolve: {
-    modules: [path.resolve('node_modules')],
-    extensions: ['.js', '.vue'],
-    mainFields: ['style', 'main'],
-    alias: {
-      bootstrap: ''
-    }
-  },
-  devtool: 'cheap-module-source-map',
+  resolve: 'cheap-module-source-map',
   devServer: {
     port: 8080,
-    inline: false,
-    progress: true,
     compress: true,
     hot: true,
     hotOnly: true,
-    open: true,
-    openPage: '',
+    progress: true,
     https: true,
     overlay: true,
+    inline: false,
+    open: true,
+    openPage: '',
     lazy: true,
     contentBase: './build',
     historyApiFallback: {
-      htmlAcceptHeaders: ['text/html'],
+      htmlAcceptHeaders: [''],
       rewrites: [
         {
-          from: /\.*/,
+          from: '',
           to: ''
         }
-      ],
-      proxy: {
-        '/react/api': {
-          target: '',
-          changeOrigin: true,
-          headers: {
-            Cookie: ''
-          },
-          logLevel: 'debug',
-          pathRewrite: {
-            '': ''
-          }
+      ]
+    },
+    proxy: {
+      '': {
+        target: '',
+        changeOrigin: true,
+        headers: {
+          Cookie: ''
+        },
+        logLevel: 'debug',
+        pathRewrite: {
+          '': ''
         }
-      },
-      before(app) {
-        app.get('/user', (req, res) => {
-          res.json({name: ''})
-        })
       }
+    },
+    before(app) {
+      app.get('', (req, res) => {
+        res.json({name: ''})
+      })
     }
   },
   externals: {
     jquery: '$'
   },
+  module: {
+    noParse: /jquery/,
+    rules: [
+      {
+        test: require.resolve('jquery'),
+        use: 'expose-loader?$'
+      },
+      {
+        test: /\.js$/,
+        use: 'Happypack/loader?id=js',
+        include: path.resolve(__driname, 'src'),
+        exclude: /node_modules/
+      },
+      {
+        test: /\.css$/,
+        use: [
+          MiniCssExtractPlugin.loader,
+          {
+            loader: 'css-loader'
+          },
+          {
+            loader: 'postcss-loader'
+          }
+        ]
+      },
+      {
+        test: /\.less$/,
+        use: [
+          {
+            loader: 'style-loader',
+            options: {
+              sourceMap: true,
+              singleton: true,
+              modules: true,
+              insertAt: 'top',
+              insertInto: '#app',
+              transform: ''
+            }
+          },
+          {
+            loader: 'css-loader',
+            options: {
+              sourceMap: true,
+              importLoaders: 2
+            }
+          },
+          {
+            loader: 'postcss-loader',
+            options: {
+              sourceMap: true
+            }
+          },
+          {
+            loader: 'less-loader',
+            options: {
+              sourceMap: true
+            }
+          }
+        ]
+      },
+      {
+        test: /\.(png|jpg|jpeg|gif)$/,
+        use: [
+          {
+            loader: 'url-loader',
+            options: {
+              name: '[name]-[hash:5].[ext]',
+              limit: 2048,
+              publicPath: '',
+              outputPath: 'dist/',
+              useRelativePath: true
+            }
+          },
+        ]
+      },
+      {
+        test: /\.(eot|woff2?|ttf|svg)$/,
+        use: [
+          {
+            loader: 'url-loader',
+            options: {
+              name: '[name]-[hash:5].[ext]',
+              limit: 5000,
+              outputPath: ''
+            }
+          }
+        ]
+      },
+      {
+        loader: 'img-loader',
+        options: {
+          pngquant: {
+            quality: 80
+          }
+        }
+      },
+      {
+        test: /\.html$/,
+        use: [
+          {
+            loader: 'html-withimg-loader'
+          }
+        ]
+      }
+    ]
+  },
   plugins: [
+    new WebpackBundleAnalyzer(),
     new HtmlWebpackPlugin({
       template: '',
       filename: '',
@@ -131,13 +229,34 @@ module.exports = {
       },
       hash: true
     }),
-    new MinicssExtractPlugin({
+    new MiniCssExtractPlugin({
       filename: '',
       chunkFilename: '[name].chunk.css'
     }),
-    new webpackBundleAnalyzer(),
-    new CopyWebpackPlugin(),
-    new CleanWebpackPlugin([
+    new Happypack({
+      id: 'js',
+      use: [
+        {
+          loader: 'babel-loader',
+          options: {
+            presets: [],
+            plugins: []
+          }
+        },
+        {
+          loader: 'imports-loader?this=>window'
+        },
+        {
+          loader: 'eslint-loader',
+          options: {
+            formatter: require('eslint-friendly-formatter')
+          },
+          enforece: 'pre'
+        }
+      ]
+    }),
+    new CleanWebpackPlugin(),
+    new CopyWebpackPlugin([
       {
         from: '',
         to: ''
@@ -146,11 +265,11 @@ module.exports = {
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NameModulesPlugin(),
     new webpack.NameChunksPlugin(),
-    new webpack.BunnerPlugin(''),
+    new webpack.BannerPlugin(''),
     new webpack.DefinePlugin({
       DEV: JSON.stringfy('')
     }),
-    new webpack.IgnorePlugin(/\.\/locale/, /moment/),
+    new webpack.IgnorePlugin(''),
     new webpack.ProvidePlugin({
       $: 'jquery'
     })
