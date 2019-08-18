@@ -132,7 +132,7 @@ module.exports = {
     }
     // 3) 服务端启动 webpack
   },
-  externals: { // 防止将某些 import 的包打包到 bundle 中，而是在运行时再去从外部获取这些扩展依赖
+  externals: { // webpack打包时，会忽略掉jquery
     jquery: '$'
   },
   module: { // 模块, css, img... 转换为模块
