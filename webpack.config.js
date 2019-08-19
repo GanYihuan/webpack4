@@ -49,8 +49,8 @@ module.exports = {
       chunks: 'all', // 选择哪些块。有效值是 all async initial
       minSize: 30000, // 大于 30kb 才分割
       minChunks: 1, // 模块被使用了至少 1 次后进行代码分割, Infinity 不会将任何模块打包进去
-      maxAsyncRequests: 5, // 指向一个入口的 并行请求的最大数量 (同时加载的模块数最多是)
-      maxInitialRequests: 3, // 入口点处 并行请求的最大数量
+      maxAsyncRequests: 5, // 限制异步模块内部的并行最大请求数
+      maxInitialRequests: 3, // 限制入口的拆分数量
       automaticNameDelimiter: '~', // 分割生成的文件之间的连接符
       name: true, // 分割块的名称。提供 true 将根据块和缓存组键自动生成名称
       cacheGroups: { // 缓存组
@@ -76,11 +76,11 @@ module.exports = {
   watch: true, // 实时监控打包
   watchOptions: {
     poll: 1000, // 监听间隔
-    aggregateTimeout: 500, // 防抖
+    aggregateTimeout: 500, // 检测文件不再发生变化会先缓存起来，等待一段时间，通知监听者
     ignored: /node_modules/ // 不需要监控
   },
   resolve: { // 配置模块如何解析
-    modules: [path.resolve('node_modules')], // 告诉 webpack 解析模块时应该搜索的目录
+    modules: [path.resolve('node_modules')], // 模块查找路径
     extensions: ['.js', '.css', '.json', '.vue'], // 自动解析确定的扩展
     mainFields: ['style', 'main'], // 当从 npm 包中导入模块时, 在 package.json 中使用哪个字段导入模块
     alias: { // 创建 import 或 require 的别名
@@ -101,14 +101,14 @@ module.exports = {
     https: true, // 默认情况下, dev-server 通过 HTTP 提供服务 使用自签名证书
     overlay: true, // 当出现编译器错误或警告时，在浏览器中显示全屏覆盖层
     lazy: true, // 在请求时才编译包 webpack 不会监视任何文件改动
-    contentBase: './build', // 指向 ./build 文件作为静态服务
+    contentBase: './build', // ./build 文件作为静态文件服务
     // historyApiFallback: true,
     historyApiFallback: { // 404 响应被替代为 index.html
-      htmlAcceptHeaders: ['text/html', 'application/xhtml+xml'], // 指定文件类型, 匹配了才重定向
+      // htmlAcceptHeaders: ['text/html', 'application/xhtml+xml'], // 指定文件类型, 匹配了才重定向
       rewrites: [ // 重定向规则
         {
           from: /\.*/,
-          to: '/index.html'
+          to: '/404.html'
         }
       ]
     },
@@ -230,16 +230,16 @@ module.exports = {
               limit: 5000,
               outputPath: 'assets/imgs/'
             }
+          },
+          { // 压缩图片
+            loader: 'img-loader',
+            options: {
+              pngquant: { // .png 图片处理
+                quality: 80 // 压缩 png
+              }
+            }
           }
         ]
-      },
-      { // 压缩图片
-        loader: 'img-loader',
-        options: {
-          pngquant: { // .png 图片处理
-            quality: 80 // 压缩 png
-          }
-        }
       },
       { // 处理 html
         test: /\.html$/,
