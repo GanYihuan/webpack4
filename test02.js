@@ -3,14 +3,14 @@ const path = require('path')
 module.exports = {
 	mode: 'production',
 	entry: {
-		index: ''
-	},
+		index: './src/index.js'
+	},,
 	output: {
 		filename: '[name].[hash:5].js',
 		chunkFilename: '[name].[contenthash].js',
 		publicPath: '',
 		path: path.resolve(__dirname, 'dist'),
-		library: '',
+		library: 'MyLibrary',
 		libraryTarget: 'umd'
 	},
 	optimization: {
@@ -21,27 +21,27 @@ module.exports = {
 		splitChunks: {
 			chunks: 'all',
 			minSize: 30000,
-			minChunks: 2,
-			maxAsynsRequests: 5,
+			minChunks: 1,
+			maxAsyncRequests: 5,
 			maxInitialRequests: 3,
-			automaticDelimiter: '~',
+			automaticNameDelimiter: '~',
 			name: true,
 			cacheGroups: {
 				vendors: {
 					priority: 1,
-					minSize: 0,
-					minChunks: 1,
 					filename: 'vendors.js',
 					chunks: 'initial',
+					minSize: 0,
+					minChunks: 2,
 					test: /[\\/]node_modules[\\/]/
 				},
 				default: {
 					priority: -1,
-					minSize: 0,
-					minChunks: 0,
 					filename: 'common.js',
 					chunks: 'initial',
-					useExsitingChunk: true
+					minSize: 0,
+					minChunks: 2,
+					reuseExistingChunk: true
 				}
 			}
 		}
@@ -49,22 +49,22 @@ module.exports = {
 	watch: true,
 	watchOptions: {
 		poll: 1000,
-		aggregateTimemout: 500,
+		aggregateTimeout: 500,
 		ignored: /node_modules/
+	},
+	resolve: {
+		modules: [path.resolve('node_modules')],
+		extensions: ['.js'],
+		mainFields: ['style'],
+		alias: {
+			bootstrap: ''
+		}
 	},
 	devtool: 'cheap-module-source-map',
 	externals: {
 		jquery: '$'
 	},
-	resolve: {
-		modules: [path.resolve(__dirname, 'node_modules')],
-		extensions: ['.js'],
-		mainFileds: ['style'],
-		alias: {
-			bootstrap: ''
-		}
-	},
-	modules: {
+	module: {
 		noParse: /jquery/
-	},
+	}
 }
