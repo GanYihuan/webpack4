@@ -9,9 +9,9 @@
 const webpack = require('webpack')
 const WebpackBundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin // 打包分析, webpack-bundle-anlayzer stats.json
 const path = require('path')
-const Happypack = require('happypack') // 多线打包
 const CleanWebpackPlugin = require('clean-webpack-plugin') // 每次打包都会删掉原来的并重新打包
 const CopyWebpackPlugin = require('copy-webpack-plugin') // 拷贝文件
+const Happypack = require('happypack') // 多线打包
 // const HtmlWebpackInlineChunkPlugin = require('html-webpack-inline-chunk-plugin') // chunk 加到 html, 提前载入 webpack 加载代码 bug!
 const HtmlWebpackPlugin = require('html-webpack-plugin') // 创建 HTML 文件, 把打包生成的 js 自动引入到该 HTML 文件中
 const MiniCssExtractPlugin = require('mini-css-extract-plugin') // 将 CSS 提取到单独的文件中
