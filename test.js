@@ -3,23 +3,23 @@
  * @Author: GanEhank
  * @Date: 2019-08-26 18:50:49
  * @LastEditors: GanEhank
- * @LastEditTime: 2019-08-27 14:36:35
+ * @LastEditTime: 2019-08-27 15:16:35
  */
 const webpack = require('webpack')
-const WebpackBundleAnalyzerPlugin = require('webpack.bundle.analyzer').WebpackBundleAnalyzerPlugin
+const WebpackBundleAnalyzerPlugin = require('webpack-bundle.analyzer').BundleAnalyzerPlugin
 const path = require('path')
-const CleanWebpackPlugin = require('clean-webpack')
-const CopyWebpackPlugin = reqire('copy-webpack-plugin')
+const CleanWebpackPlugin = require('clean-webpack-plugin')
+const CopyWebpackPlugin = require('copy-webpack-plugin')
 const Happypack = require('happypack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
-const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const MinicssExtractPlugin = require('mini-css-extract-plugin')
 const OptimizeCssAssetsWebpackPlugin = require('optimize-css-assets-webpack-plugin')
-const UglifyJsWebpackPlugin = require("uglifyjs-webpack-plugin")
+const UglifyJsWebpackPlugin = require('uglifyjs-webpack-plugin')
 
 module.exports = {
   optimization: {
     minimizer: [
-      new MiniCssExtractPlugin(),
+      new OptimizeCssAssetsWebpackPlugin(),
       new UglifyJsWebpackPlugin({
         sourceMap: true,
         cache: true,
@@ -32,7 +32,7 @@ module.exports = {
       {
         test: /\.css$/,
         use: [
-          MiniCssExtractPlugin.loader
+          MinicssExtractPlugin.loader
         ]
       }
     ]
@@ -46,29 +46,32 @@ module.exports = {
         to: ''
       }
     ]),
-    new HtmlWebpackPlugin({
+    new webpack.HtmlWebpackPlugin({
       template: '',
       filename: 'index.html',
       minify: {
-        removeAttributeQuotes: true,
-        collapseWhitespace: true
+        remoteAttributeQuotes: true,
+        collapseWhitespace:true
       },
       hash: true
     }),
-    new MiniCssExtractPlugin({
+    new MinicssExtractPlugin({
       filename: 'css/main.css',
-      chunkFilename: '[name].chunk.css'
+      chunkFilename: '[name].[hash:5].css'
     }),
-    new webpack.HotModuleReplacementPlugin(),
+    new webpack.HotModuleReplacemenetPlugin(),
     new webpack.NameModulesPlugin(),
     new webpack.NameChunksPlugin(),
-    new webpack.BannerPlugin(),
-    new webpack.DefindePlugin({
-      FLAG: 'true'
+    new webpack.BannerPlugin('gan')
+    new webpack.IgnorePlugin({
+      resourceRegExp: /^\.\/locale$/,
+      contextRegExp: /moment$/
     }),
-    new webpack.IgnorePlugin(/\\.locale/,/moment/),
     new webpack.ProvidePlugin({
       $: 'jquery'
+    }),
+    new webpack.DefinePlugin({
+      FLAG: true
     })
   ]
 }

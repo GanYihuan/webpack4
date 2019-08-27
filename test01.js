@@ -1,10 +1,9 @@
 /*
  * @Description:
- * @version:
  * @Author: GanEhank
  * @Date: 2019-04-12 22:38:24
  * @LastEditors: GanEhank
- * @LastEditTime: 2019-08-27 15:06:26
+ * @LastEditTime: 2019-08-27 15:09:02
  */
 const webpack = require('webpack')
 const WebpackBundleAnalyzerPlugin = require('webpack.bundle.analyzer').BundleAnalyzerPlugin
