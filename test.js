@@ -1,9 +1,9 @@
 /*
- * @Description: test04
+ * @Description: test
  * @Author: GanEhank
  * @Date: 2019-08-26 18:50:49
  * @LastEditors: GanEhank
- * @LastEditTime: 2019-08-27 16:50:56
+ * @LastEditTime: 2019-08-27 17:07:57
  */
 module.exports = {
   module: {
@@ -107,7 +107,7 @@ module.exports = {
               limit: 5000,
               outputPath: ''
             }
-          }t
+          }
         ]
       },
       {
