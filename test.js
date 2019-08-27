@@ -3,7 +3,7 @@
  * @Author: GanEhank
  * @Date: 2019-08-26 18:50:49
  * @LastEditors: GanEhank
- * @LastEditTime: 2019-08-27 16:45:45
+ * @LastEditTime: 2019-08-27 16:50:56
  */
 module.exports = {
   module: {
@@ -86,6 +86,14 @@ module.exports = {
               outputPath: '',
               useRelativePath: true
             }
+          },
+          {
+            loader: 'img-loader',
+            options: {
+              pngquant: {
+                quality: 80
+              }
+            }
           }
         ]
       },
@@ -99,15 +107,7 @@ module.exports = {
               limit: 5000,
               outputPath: ''
             }
-          },
-          {
-            loader: 'img-loader',
-            options: {
-              pngquant: {
-                quality: 80
-              }
-            }
-          }
+          }t
         ]
       },
       {
