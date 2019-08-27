@@ -1,78 +1,49 @@
 /*
- * @Description:
- * @version:
+ * @Description: test
  * @Author: GanEhank
  * @Date: 2019-08-26 18:50:49
  * @LastEditors: GanEhank
- * @LastEditTime: 2019-08-27 10:47:50
+ * @LastEditTime: 2019-08-27 11:27:22
  */
-const path = require('path')
-
 module.exports = {
-  mode: 'production',
-  entry: {
-    index: ''
-  },
-  output: {
-    filename: '[name].[hash:5].js',
-    chunkFilename: '[name].[contenthash].js',
-    publicPath: '',
-    path: path.resolve(__dirname, 'dist'),
-    library: '',
-    libraryTarget: 'umd'
-  },
-  optimization: {
-    runtimeChunk: {
-      name: 'runtime'
+  devServer: {
+    port: 8080,
+    lazy: true,
+    https: true,
+    inline: false,
+    overlay: true,
+    compress: true,
+    progress: true,
+    hot: true,
+    hotOnly: true,
+    open: true,
+    openOnly: true,
+    contentBase: './build',
+    historyApiFallback: {
+      rewrite: [
+        {
+          from: /\.*/,
+          to: './404.html'
+        }
+      ]
     },
-    usedExports: true,
-    splitChunks: {
-      chunks: 'all',
-      minSize: 30000,
-      minChunks: 1,
-      maxAsynsRequests: 5,
-      maxInitialRequests: 3
-      automaticDelimiter: '~'
-      name: true,
-      cacheGroups: {
-        vendors: {
-          pirority: 1,
-          minSize: 0,
-          minChunks: 2,
-          chunks: 'initial',
-          filename: 'vendors.js',
-          test: /[\\/]node_modules[\\/]/
+    proxy: {
+      '/react/api': {
+        target: '',
+        changeOrigin: true,
+        headers: {
+          Cookie: ''
         },
-        default: {
-          priority: -1,
-          minSize: 0,
-          minChunks: 2,
-          chunks: 'initial',
-          filename: 'common.js',
-          reuseExstingChunk: true
+        logLevel: 'debug',
+        pathRewrite: {
+          '': ''
         }
       }
+    },
+    before(app) {
+      app.get('/user', (req, res) => {
+        res.json({ name: '' })
+      })
     }
-  },
-  watch: true,
-  watchOptions: {
-    poll: true,
-    aggregateTimeout: true,
-    ignored: /node_modules/
-  },
-  externals: {
-    jquery: '$'
-  },
-  resolve: {
-    modules: [path.resolve('node_modules')],
-    mainFields: ['style'],
-    extensions: ['.js'],
-    alias: {
-      bootstrap: ''
-    }
-  },
-  devtool: 'cheap-module-source-map',
-  module: {
-    noParse: /jquery/
   }
 }
