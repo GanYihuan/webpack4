@@ -3,7 +3,7 @@
  * @Author: GanEhank
  * @Date: 2019-08-26 18:50:49
  * @LastEditors: GanEhank
- * @LastEditTime: 2019-08-27 15:52:40
+ * @LastEditTime: 2019-08-27 16:18:37
  */
 module.exports = {
   mode: 'production',
