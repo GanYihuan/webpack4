@@ -3,7 +3,7 @@
  * @Author: GanEhank
  * @Date: 2019-08-26 21:25:23
  * @LastEditors: GanEhank
- * @LastEditTime: 2019-08-27 11:54:35
+ * @LastEditTime: 2019-08-27 16:48:07
  */
 module.exports = {
   module: { // css, img... 转换为模块
@@ -22,7 +22,7 @@ module.exports = {
         use: [
           {
             loader: 'Happypack/loader?id=js',
-            include: path.resolve(__dirname, src),
+            include: path.resolve(__dirname, 'src'),
             exclude: /node_modules/
           }
         ]
@@ -91,6 +91,14 @@ module.exports = {
               outputPath: 'dist/', // 放置位置
               useRelativePath: true // 放置相对位置 (assets/imgs, 因为图片原本路径为 aseets/imgs)
             }
+          },
+          { // 压缩图片
+            loader: 'img-loader',
+            options: {
+              pngquant: { // .png 图片处理
+                quality: 80 // 压缩 png
+              }
+            }
           }
         ]
       },
@@ -103,14 +111,6 @@ module.exports = {
               name: '[name]-[hash:5].[ext]',
               limit: 5000,
               outputPath: 'assets/imgs/'
-            }
-          },
-          { // 压缩图片
-            loader: 'img-loader',
-            options: {
-              pngquant: { // .png 图片处理
-                quality: 80 // 压缩 png
-              }
             }
           }
         ]
