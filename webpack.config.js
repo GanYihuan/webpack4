@@ -4,7 +4,7 @@
  * @Author: GanEhank
  * @Date: 2019-04-05 01:06:06
  * @LastEditors: GanEhank
- * @LastEditTime: 2019-08-27 15:24:03
+ * @LastEditTime: 2019-08-27 15:57:06
  */
 const webpack = require('webpack')
 const WebpackBundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin // 打包分析, webpack-bundle-anlayzer stats.json
@@ -81,13 +81,13 @@ module.exports = {
   },
   resolve: { // 配置模块如何解析
     modules: [path.resolve('node_modules')], // 模块查找路径
-    extensions: ['.js', '.css', '.json', '.vue'], // 自动解析确定的扩展
-    mainFields: ['style', 'main'], // 当从 npm 包中导入模块时, 在 package.json 中使用哪个字段导入模块
+    extensions: ['.js', '.css', '.json', '.vue'], // 自动解析的扩展
+    mainFields: ['style', 'main'], // 从 npm 中导入模块时, 在 package.json 中使用哪个字段导入模块
     alias: { // 创建 import 或 require 的别名
       bootstrap: 'bootstrap/dist/css/bootstrap.css'
     }
   },
-  devtool: 'cheap-module-source-map', // 生产选择, 不会产生列，是一个单独的映射文件
+  devtool: 'cheap-module-source-map', // 追踪错误和警告 (生产选择)
   // devtool: 'cheap-module—eval-source-map', // 开发选择, 不会产生文件和列，集成在在打包后的文件中
   devServer: { // 开发服务器配置
     port: 8080, // 启动端口
@@ -132,11 +132,11 @@ module.exports = {
     }
     // 3) 服务端启动 webpack
   },
-  externals: { // webpack打包时，会忽略掉jquery
+  externals: { // webpack 打包时，忽略掉
     jquery: '$'
   },
   module: { // 模块, css, img... 转换为模块
-    noParse: /jquery/, // 防止 webpack 解析那些任何与给定正则表达式相匹配的文件
+    noParse: /jquery/, // 防止 webpack 解析该文件
     rules: [ // 后往前 右往左 执行
       // {
       //   test: /\.tsx?$/,
