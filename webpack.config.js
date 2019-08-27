@@ -4,7 +4,7 @@
  * @Author: GanEhank
  * @Date: 2019-04-05 01:06:06
  * @LastEditors: GanEhank
- * @LastEditTime: 2019-08-27 11:41:51
+ * @LastEditTime: 2019-08-27 15:06:17
  */
 const webpack = require('webpack')
 const WebpackBundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin // 打包分析, webpack-bundle-anlayzer stats.json
@@ -285,7 +285,7 @@ module.exports = {
     }),
     new MiniCssExtractPlugin({ // 抽离出 css 样式
       filename: 'css/main.css', // 处理后生成文件的名称
-      chunkFilename: '[name].chunk.css' // 非入口 chunk 文件的名称 (间接引入, 查看 html 如果没引入就是间接引入)
+      chunkFilename: '[name].chunk.css' // 非入口 chunk 文件的名称 (未被列在entry中，却又需要被打包出来的文件命名配置)
     }),
     new Happypack({ // js 用 Happypack 打包
       id: 'js',
@@ -325,15 +325,15 @@ module.exports = {
       }
     ]),
     new webpack.HotModuleReplacementPlugin(), // 热更新插件
-    new webpack.NamedModulesPlugin(), // module 的版本号从数字改成相对路径 有利于长缓存优化
-    new webpack.NamedChunksPlugin(), // chunk 的版本号从数字改成文件名字
+    new webpack.NamedModulesPlugin(), // 热加载时 module 版本号从数字改成文件名字 (长缓存优化)
+    new webpack.NamedChunksPlugin(), // 热加载时 chunk 版本号从数字改成文件名字
     new webpack.BannerPlugin('ganyihuan 2019'), // 版权信息
     new webpack.DefinePlugin({ // 定义环境变量
       DEV: JSON.stringify('production'), // string production
       FLAG: 'true', // boolean
       EXPRESSION: '1+1' // 2
     }),
-    new webpack.IgnorePlugin(/\.\/locale/, /moment/), // 忽略 moment 里的 locale 包
+    new webpack.IgnorePlugin(/\.\/locale/, /moment$/), // 忽略 moment 里的 locale 包
     new webpack.ProvidePlugin({ // 使用了 $, 则自动 import jquery
       $: 'jquery',
       _: 'lodash',
