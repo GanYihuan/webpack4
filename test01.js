@@ -1,5 +1,13 @@
+/*
+ * @Description:
+ * @version:
+ * @Author: GanEhank
+ * @Date: 2019-04-12 22:38:24
+ * @LastEditors: GanEhank
+ * @LastEditTime: 2019-08-27 10:32:02
+ */
 const webpack = require('webpack')
-const WebpackBundleAnalyzerPlugin = require('webpack.bundle.analyzer').WebpackBundleAnalyzerPlugin
+const WebpackBundleAnalyzerPlugin = require('webpack.bundle.analyzer').BundleAnalyzerPlugin
 const path = require('path')
 const CleanWebpackPlugin = require('clean-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
@@ -59,7 +67,7 @@ module.exports = {
     new webpack.DefinePlugin({
       FLAG: 'true'
     }),
-    new webpack.IgnorePlugin(/\.\locale/, /moment/),,
+    new webpack.IgnorePlugin(/\.\locale/, /moment/),
     new webpack.ProvidePlugin({
       $: 'jquery'
     })

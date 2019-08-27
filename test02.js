@@ -1,10 +1,18 @@
+/*
+ * @Description:
+ * @version:
+ * @Author: GanEhank
+ * @Date: 2019-08-26 18:22:37
+ * @LastEditors: GanEhank
+ * @LastEditTime: 2019-08-27 10:48:05
+ */
 const path = require('path')
 
 module.exports = {
 	mode: 'production',
 	entry: {
 		index: './src/index.js'
-	},,
+	},
 	output: {
 		filename: '[name].[hash:5].js',
 		chunkFilename: '[name].[contenthash].js',
