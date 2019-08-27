@@ -3,7 +3,7 @@
  * @Author: GanEhank
  * @Date: 2019-08-26 18:50:49
  * @LastEditors: GanEhank
- * @LastEditTime: 2019-08-27 15:35:24
+ * @LastEditTime: 2019-08-27 15:46:29
  */
 const webpack = require('webpack')
 const WebpackBundleAnalyzerPlugin = require('webpack.bundle.analyzer').BundleAnalyzerPlugin
@@ -12,7 +12,7 @@ const CleanWebpackPlugin = require('clean-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const Happypack = require('happypack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
-const MinicssExtractPlugin = require('mini-css-extract-plugin')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const OptimizeCssAssetsWebpackPlugin = require('optimize-css-assets-webpack-plugin')
 const UglifyJsWebpackPlugin = require('uglifyjs-webpack-plugin')
 
@@ -32,7 +32,7 @@ module.exports = {
       {
         test: /\.css$/,
         use: [
-          MinicssExtractPlugin.loader
+          MiniCssExtractPlugin.loader
         ]
       }
     ]
@@ -64,12 +64,12 @@ module.exports = {
       template: '',
       filename: 'index.html',
       minify: {
-        removeAttributes: true,
+        removeAttributeQuotes: true,
         collapseWhitespace: true
       },
       hash: true
     }),
-    new MinicssExtractPlugin({
+    new MiniCssExtractPlugin({
       filename: 'css/main.css',
       chunkFilename: '[name].[hash:5].css'
     })
