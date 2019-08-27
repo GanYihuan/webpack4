@@ -4,7 +4,7 @@
  * @Author: GanEhank
  * @Date: 2019-04-05 01:06:06
  * @LastEditors: GanEhank
- * @LastEditTime: 2019-08-27 15:06:17
+ * @LastEditTime: 2019-08-27 15:24:03
  */
 const webpack = require('webpack')
 const WebpackBundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin // 打包分析, webpack-bundle-anlayzer stats.json
@@ -334,7 +334,7 @@ module.exports = {
       EXPRESSION: '1+1' // 2
     }),
     new webpack.IgnorePlugin(/\.\/locale/, /moment$/), // 忽略 moment 里的 locale 包
-    new webpack.ProvidePlugin({ // 使用了 $, 则自动 import jquery
+    new webpack.ProvidePlugin({ // 自动加载模块
       $: 'jquery',
       _: 'lodash',
       _join: ['lodash', 'join']

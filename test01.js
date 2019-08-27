@@ -3,7 +3,7 @@
  * @Author: GanEhank
  * @Date: 2019-04-12 22:38:24
  * @LastEditors: GanEhank
- * @LastEditTime: 2019-08-27 15:09:02
+ * @LastEditTime: 2019-08-27 15:24:00
  */
 const webpack = require('webpack')
 const WebpackBundleAnalyzerPlugin = require('webpack.bundle.analyzer').BundleAnalyzerPlugin
@@ -12,7 +12,7 @@ const CleanWebpackPlugin = require('clean-webpack-plugin') // 每次打包都会
 const CopyWebpackPlugin = require('copy-webpack-plugin') // 拷贝文件
 const Happypack = require('happypack') // 多线打包
 const HtmlWebpackPlugin = require('html-webpack-plugin') // 创建 HTML 文件
-const MiniCssExtractPlugin = require('mini-css-extract-plugin') // 将 CSS 提取到单独的文件中
+const MiniCssExtractPlugin = require('mini-css-extract-plugin') // 提取 CSS
 const OptimizeCssAssetsWebpackPlugin = require('optimize-css-assets-webpack-plugin') // css 压缩
 const UglifyJsWebpackPlugin = require('uglifyjs-webpack-plugin') // js 压缩
 
@@ -21,9 +21,9 @@ module.exports = {
     minimizer: [
       new MiniCssExtractPlugin(), // css 压缩
       new UglifyJsWebpackPlugin({ // js 压缩
+        sourceMap: true, // 监控错误
         cache: true, // 缓存
-        parallel: true, // 并发压缩
-        sourceMap: true // 监控错误
+        parallel: true // 并发压缩
       })
     ]
   },
@@ -47,8 +47,8 @@ module.exports = {
       }
     ]),
     new HtmlWebpackPlugin({ // 创建 HTML 文件
-      template: '',
-      filename: 'index.html',
+      template: '', // 模板
+      filename: 'index.html', // 生成文件名
       minify: { // html 压缩
         removeAttributeQuotes: true, // 删除双引号
         collapseWhitespace: true // 变成一行
@@ -63,14 +63,14 @@ module.exports = {
     new webpack.NameModulesPlugin(), // 热加载时 module 版本号从数字改成文件名字 (长缓存优化)
     new webpack.NameChunksPlugin(), // 热加载时 chunk 版本号从数字改成文件名字
     new webpack.BannerPlugin(''), // 版权信息
-    new webpack.DefinePlugin({ // create global constants which can be configured at compile time
+    new webpack.DefinePlugin({ // 定义环境变量
       FLAG: 'true'
     }),
     new webpack.IgnorePlugin({ // IgnorePlugin prevents generation of modules for import or require calls matching the regular expressions or filter functions
       resourceRegExp: /^\.\/locale$/, // A RegExp to test the resource against
       contextRegExp: /moment$/ // (optional) A RegExp to test the context (directory) against
     }),
-    new webpack.ProvidePlugin({ // Automatically load modules instead of having to import or require them everywhere
+    new webpack.ProvidePlugin({ // 自动加载模块
       $: 'jquery'
     })
   ]
