@@ -3,73 +3,47 @@
  * @Author: GanEhank
  * @Date: 2019-08-26 18:50:49
  * @LastEditors: GanEhank
- * @LastEditTime: 2019-08-27 16:18:37
+ * @LastEditTime: 2019-08-27 16:33:35
  */
 module.exports = {
-  mode: 'production',
-  entry: {
-    index: ''
-  },
-  output: {
-    filename: '[name].[hash:5].js',
-    chunkFilename: '[name].[contenthash].js',
-    publicPath: '',
-    path: path.resolve(__dirname, 'dist'),
-    library: 'MyLibrary',
-    libraryTarget: 'umd'
-  },
-  optimization: {
-    runtimeChunk: {
-      name: 'runtime'
+  devServer: {
+    port: 8080,
+    lazy: true,
+    https: true,
+    inline: false,
+    overlay: true,
+    progress: true,
+    compress: true,
+    hot: true,
+    hotOnly: true,
+    open: true,
+    openPage: '',
+    contentBase: './build',
+    historyApiFallback: {
+      rewrites: [
+        {
+          from: /\.*/,
+          to: '/404.html'
+        }
+      ]
     },
-    usedExports: true,
-    splitChunks: {
-      chunks: 'all',
-      minSize: 30000,
-      minChunks: 1,
-      maxAsyncRequests: 5,
-      maxInitialRequests: 3,
-      automaticNameDelimiter: '~',
-      name: true,
-      cacheGroups: {
-        vendors: {
-          priority: 1,
-          filename: 'vendors.js',
-          chunks: 'initial',
-          minSize: 0,
-          minChunks: 2,
-          test: /[\\/]node_modules[\\/]/
+    proxy: {
+      '/react/api': {
+        target: '',
+        changeOrigin: true,
+        headers: {
+          Cookie: ''
         },
-        default: {
-          priority: -1,
-          filename: 'common.js',
-          chunks: 'initial',
-          minSize: 0,
-          minChunks: 2,
-          reuseExistingChunk: true
+        logLevel: 'debug',
+        pathRewrite: {
+          '': ''
         }
       }
+    },
+    before(app) {
+      app.get('/user', (req, res) => {
+        res.json({name: ''})
+      })
     }
-  },
-  watch: true,
-  watchOptions: {
-    poll: 1000,
-    aggregateTimeout: 500,
-    ignored: /node_modules/
-  },
-  resolve: {
-    modules: [path.resolve('node_modules')],
-    extensions: ['.js'],
-    mainFields: ['style'],
-    alias: {
-      bootstrap: ''
-    }
-  },
-  devtool: 'cheap-module-source-map',
-  externals: {
-    jquery: '$'
-  },
-  module: {
-    noParse: /jquery/
   }
 }
