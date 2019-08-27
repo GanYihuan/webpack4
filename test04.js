@@ -1,7 +1,14 @@
+/*
+ * @Description:
+ * @Author: GanEhank
+ * @Date: 2019-08-26 21:25:23
+ * @LastEditors: GanEhank
+ * @LastEditTime: 2019-08-27 11:54:35
+ */
 module.exports = {
-  module: { // 模块, css, img... 转换为模块
-    noParse: /jquery/, // 防止 webpack 解析那些任何与给定正则表达式相匹配的文件
-    rules: [ // 后往前 右往左 执行
+  module: { // css, img... 转换为模块
+    noParse: /jquery/, // 防止 webpack 解析该文件
+    rules: [ // 后往前 右往左
     	{
 				test: require.resolve('jquery'),
 				use: [
@@ -12,19 +19,23 @@ module.exports = {
 			},
       {
         test: /\.js$/,
-        use: 'Happypack/loader?id=js', // 多线打包
-        include: path.resolve(__dirname, 'src'),
-        exclude: /node_modules/
-      },
+        use: [
+          {
+            loader: 'Happypack/loader?id=js',
+            include: path.resolve(__dirname, src),
+            exclude: /node_modules/
+          }
+        ]
+      }
       {
         test: /\.css$/,
         use: [
           MiniCssExtractPlugin.loader, // 抽离出的 css 文件用 <link /> 标签引入
           {
-            loader: 'css-loader' // 分析几个 css 文件然后合并成一个, 如解析 @import 语法
+            loader: 'css-loader' // css 文件合并成一个, 解析 @import ...
           },
           {
-            loader: 'postcss-loader' // css 处理, autoprefixer: 加前缀
+            loader: 'postcss-loader' // css 处理
           }
         ]
       },
@@ -32,25 +43,25 @@ module.exports = {
         test: /\.less$/,
         use: [
           {
-            loader: 'style-loader', // 动态创建 style 标签，塞到 <head></head> 标签里
+            loader: 'style-loader', // 创建 style 标签，塞到 <head></head>
             options: {
               sourceMap: true, // singleton 会阻止 sourceMap
-              singleton: true, // singleton (是否只使用一个 style 标签)
-              modules: true, // 使样式不是全局
-              insertAt: 'top', // 插入到 HTML 文件的顶部
-              insertInto: '#app', // 插入 dom 位置
+              singleton: true, // 只使用一个 style 标签
+              modules: true, // 样式不是全局
+              insertAt: 'top', // 插入 HTML 文件顶部
+              insertInto: '#app', // 插入 DOM 位置
               transform: './css.transform.js' // 插入页面前执行
             }
           },
           {
-            loader: 'css-loader', // 处理 css 文件然后合并成一个, 如解析 @import 语法
+            loader: 'css-loader',
             options: {
               sourceMap: true,
-              importLoaders: 2 // 对于 @import ''; 情况处理, 一定要走下面两个 loader
+              importLoaders: 2 // 要走下面两个 loader
             }
           },
           {
-            loader: 'postcss-loader', // css 处理, autoprefixer: 加前缀等功能
+            loader: 'postcss-loader',
             options: {
               sourceMap: true
             }
@@ -67,18 +78,18 @@ module.exports = {
         test: /\.(png|jpg|jpeg|gif)$/,
         // use: [
         //   {
-        //     loader: 'file-loader' // 把文件挪动到打包目录下，文件地址返回给变量
+        //     loader: 'file-loader' // 文件挪到打包目录下
         //   },
         // ]
         use: [
           {
-            loader: 'url-loader', // 将图片转换为 base64
+            loader: 'url-loader', // 转换为 base64
             options: {
-              name: '[name]-[hash:5].[ext]', // 生成的图片名称
-              limit: 2048, // 大于 2048 处理成 base64
-              publicPath: '', // 引入资源路径前面加的前缀 ''
-              outputPath: 'dist/', // 放置在 dist 文件夹下
-              useRelativePath: true // 放置在 assets/imgs, 因为图片原本路径为 (aseets/imgs)
+              name: '[name]-[hash:5].[ext]', // 生成图片名称
+              limit: 2048, // 大于 2048 处理
+              publicPath: '', // 引入资源路径前面加的前缀
+              outputPath: 'dist/', // 放置位置
+              useRelativePath: true // 放置相对位置 (assets/imgs, 因为图片原本路径为 aseets/imgs)
             }
           }
         ]
@@ -147,13 +158,13 @@ module.exports = {
           loader: 'imports-loader?this=>window' // console.log(this === window) 返回 true
         },
         {
-          loader: 'eslint-loader', // 放置 babel-loader 之后, eslint 校验代码格式
+          loader: 'eslint-loader', // 放置 babel-loader 后, 校验代码格式
           options: {
-            formatter: require('eslint-friendly-formatter') // 报错时输入内容的格式更友好
+            formatter: require('eslint-friendly-formatter') // 报错时更友好
           },
           enforce: 'pre' // pre 先执行, post 后执行
         }
       ]
-    })  	
+    })
   ]
 }

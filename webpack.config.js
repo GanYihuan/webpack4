@@ -4,7 +4,7 @@
  * @Author: GanEhank
  * @Date: 2019-04-05 01:06:06
  * @LastEditors: GanEhank
- * @LastEditTime: 2019-08-14 22:15:22
+ * @LastEditTime: 2019-08-27 11:41:51
  */
 const webpack = require('webpack')
 const WebpackBundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin // 打包分析, webpack-bundle-anlayzer stats.json
@@ -217,6 +217,14 @@ module.exports = {
               outputPath: 'dist/', // 放置在 dist 文件夹下
               useRelativePath: true // 放置在 assets/imgs, 因为图片原本路径为 (aseets/imgs)
             }
+          },
+          { // 压缩图片
+            loader: 'img-loader',
+            options: {
+              pngquant: { // .png 图片处理
+                quality: 80 // 压缩 png
+              }
+            }
           }
         ]
       },
@@ -229,14 +237,6 @@ module.exports = {
               name: '[name]-[hash:5].[ext]',
               limit: 5000,
               outputPath: 'assets/imgs/'
-            }
-          },
-          { // 压缩图片
-            loader: 'img-loader',
-            options: {
-              pngquant: { // .png 图片处理
-                quality: 80 // 压缩 png
-              }
             }
           }
         ]
