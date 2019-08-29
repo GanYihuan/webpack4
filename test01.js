@@ -3,7 +3,7 @@
  * @Author: GanEhank
  * @Date: 2019-04-12 22:38:24
  * @LastEditors: GanEhank
- * @LastEditTime: 2019-08-27 15:24:00
+ * @LastEditTime: 2019-08-29 09:11:02
  */
 const webpack = require('webpack')
 const WebpackBundleAnalyzerPlugin = require('webpack.bundle.analyzer').BundleAnalyzerPlugin
@@ -59,7 +59,7 @@ module.exports = {
       filename: 'css/main.css', // 处理后生成文件的名称
       chunkFilename: '[name].chunk.css' // 非入口 chunk 文件的名称 (未被列在entry中，却又需要被打包出来的文件命名配置)
     }),
-    new webpack.HotModuleReplacementPlugin(), // Enables Hot Module Replacement
+    new webpack.HotModuleReplacementPlugin(), // 启用热模块更换
     new webpack.NameModulesPlugin(), // 热加载时 module 版本号从数字改成文件名字 (长缓存优化)
     new webpack.NameChunksPlugin(), // 热加载时 chunk 版本号从数字改成文件名字
     new webpack.BannerPlugin(''), // 版权信息
