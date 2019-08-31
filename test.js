@@ -3,7 +3,7 @@
  * @Author: GanEhank
  * @Date: 2019-08-26 18:50:49
  * @LastEditors: GanEhank
- * @LastEditTime: 2019-08-31 09:09:05
+ * @LastEditTime: 2019-08-31 09:29:20
  */
 const webpack = require('webpack')
 const WebpackBundleAnalyzerPlugin = require('bundle-analyzer-plugin').WebpackBundleAnalyzerPlugin
@@ -84,6 +84,46 @@ modeule.exports = {
       bootstrap: ''
     }
   },
+  devServer: {
+    port: 8080,
+    lazy: true,
+    https: true,
+    inline: false,
+    overlay: true,
+    progress: true,
+    compress: true,
+    hot: true,
+    hotOnly: true,
+    open: true,
+    openPage: '',
+    contentBase: './build',
+    historyApiFallback: {
+      rewrites: [
+        {
+          from: /\.*/,
+          to: '/404.html'
+        }
+      ]
+    },
+    proxy: {
+      '/react/api': {
+        target: '',
+        changeOrigin: true,
+        headers: {
+          Cookie: ''
+        },
+        logLevel: 'debug',
+        pathRewrites: {
+          'header.json': 'demo.json'
+        }
+      }
+    },
+    before(app) {
+      app.get('/user', (req, res) => {
+        res.json({name: ''})
+      })
+    }
+  },
   devtool: 'cheap-module-source-map',
   externals: {
     jquery: '$'
@@ -94,7 +134,110 @@ modeule.exports = {
       {
         test: /\.css$/,
         use: [
-          MiniCssExtractPlugin.loader
+          MiniCssExtractPlugin.loader,
+          {
+            loader: 'css-loader'
+          },
+          {
+            loader: 'postcss-loader'
+          }
+        ]
+      },
+      {
+        test: require.resolve('jquery'),
+        use: [
+          {
+            loader: 'expose-loader?$'
+          }
+        ]
+      },
+      {
+        test: /\.js$/,
+        use: [
+          {
+            loader: 'Happypack/loader?id=js',
+            include: path.resolve(__dirname, 'src'),
+            exclude: /node_modules/
+          }
+        ]
+      },
+      {
+        test: /\.less$/,
+        use: [
+          {
+            loader: 'style-loader',
+            options: {
+              sourceMap: true,
+              singleton: true,
+              modules: true,
+              insertAt: 'top',
+              insertInto: '#app',
+              transform: ''
+            }
+          },
+          {
+            loader: 'css-loader',
+            options: {
+              sourceMap: true,
+              importLoaders: 2
+            }
+          },
+          {
+            loader: 'postcss-loader',
+            options: {
+              sourceMap: true
+            }
+          },
+          {
+            loader: 'less-loader',
+            options: {
+              sourceMap: true
+            }
+          }
+        ]
+      },
+      {
+        test: /\.(png|jpeg|jpg|gif)$/,
+        use: [
+          {
+            loader: 'url-loader',
+            options: {
+              name: '[name]-[hash:5].[ext]',
+              limit: 2048,
+              publicPath: '',
+              outputPath: 'dist/',
+              useRelativePath: true
+            }
+          },
+          {
+            loader: 'img-loader',
+            options: {
+              pngquant: {
+                quality: 80
+              }
+            }
+          }
+        ]
+      },
+      {
+        test: /\.(eot|woff2?|ttf|svg)$/,
+        use: [
+          {
+            loader: 'url-loader',
+            options: {
+              name: '[name]-[hash:5].[ext]',
+              limit: 5000,
+              outputPath: 'assets/imgs/'
+            }
+          }
+        ]
+      },
+      {
+        test: /\.html$/,
+        use: [
+          {
+            loader: 'html-withimg-loader'
+          }
         ]
       }
     ]
@@ -134,6 +277,32 @@ modeule.exports = {
     }),
     new webpack.ProvidePlugin({
       $: 'jquery'
+    }),
+    new Happypack({
+      id: 'js',
+      use: [
+        {
+          loader: 'babel-loader',
+          options: {
+            presets: [
+              ['']
+            ],
+            plugins: [
+              []
+            ]
+          }
+        },
+        {
+          loader: 'imports-loader?this=>window'
+        },
+        {
+          loader: 'eslint-loader',
+          options: {
+            formatter: require('eslint-friendly-formatter')
+          },
+          enforce: 'pre'
+        }
+      ]
     })
   ]
 }
