@@ -4,7 +4,7 @@
  * @Author: GanEhank
  * @Date: 2019-08-26 18:22:37
  * @LastEditors: GanEhank
- * @LastEditTime: 2019-08-27 16:05:15
+ * @LastEditTime: 2019-08-31 16:51:40
  */
 module.exports = {
 	mode: 'production',
@@ -12,10 +12,10 @@ module.exports = {
 		index: './src/index.js'
 	},
 	output: {
-		filename: '[name].[hash:5].js',
-		chunkFilename: '[name].[contenthash].js',
-		publicPath: '',
-		path: path.resolve(__dirname, 'dist'),
+		filename: '[name].[hash:5].js', // 处理后生成文件名称
+		chunkFilename: '[name].[contenthash].js', // 未列在 entry, 又需要被打包出来的文件命名
+		publicPath: '', // 打包后文件名前面加前缀
+		path: path.resolve(__dirname, 'dist'), // 打包后文件放哪里 (path.resolve 相对路径解析成绝对路径)
 		library: 'MyLibrary', // 暴露 library
 		libraryTarget: 'umd' // 控制以不同形式暴露
 	},
@@ -23,7 +23,7 @@ module.exports = {
 		runtimeChunk: { // manifest 提取放入 runtime 文件中
 			name: 'runtime'
 		},
-		usedExports: true,
+		usedExports: true, // import 的模块被使用了才打包
 		splitChunks: { // 多页面分割代码
 			chunks: 'all', // 选择哪些块
 			minSize: 30000, // 大于才分割
@@ -59,15 +59,16 @@ module.exports = {
 		ignored: /node_modules/ // 不需要监控
 	},
 	resolve: {
-		modules: [path.resolve('node_modules')], // 模块查找路径
+		modules: [path.resolve('node_modules')], // 解析模块时应该搜索的目录。
 		extensions: ['.js'], // 自动解析的扩展
-		mainFields: ['style'], // 从 npm 中导入模块时, 在 package.json 中使用哪个字段导入模块
-		alias: { // 创建别名
+    mainFields: ['style'], // 从 npm 中导入模块时, 在 package.json 中使用哪个字段导入模块
+    mainFiles: ['index'], // 解析目录时要使用的文件名
+		alias: { // 创建 import 或 require 的别名
 			bootstrap: ''
 		}
 	},
 	devtool: 'cheap-module-source-map', // 追踪错误和警告
-	externals: { // webpack 打包时，忽略掉
+	externals: { // 防止将某些 import 的包(package)打包到 bundle 中，而是在运行时(runtime)再去从外部获取这些扩展依赖
 		jquery: '$'
 	},
 	module: {

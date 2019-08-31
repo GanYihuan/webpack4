@@ -4,7 +4,7 @@
  * @Author: GanEhank
  * @Date: 2019-04-05 01:06:06
  * @LastEditors: GanEhank
- * @LastEditTime: 2019-08-27 15:57:06
+ * @LastEditTime: 2019-08-31 17:39:04
  */
 const webpack = require('webpack')
 const WebpackBundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin // 打包分析, webpack-bundle-anlayzer stats.json
@@ -263,8 +263,7 @@ module.exports = {
     ]
   },
   plugins: [
-    // **webpack.config.react.js**
-    // new webpack.DllPlugin({ // 某种方法实现了拆分 bundles
+    // new webpack.DllPlugin({ // **webpack.config.react.js** 某种方法实现了拆分 bundles
     //   name: '_dll_[name]', // 暴露出的 Dll 的函数名
     //   path: path.resolve(__dirname, 'build', 'manifest.json')
     // })

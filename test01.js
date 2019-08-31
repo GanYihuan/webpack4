@@ -3,12 +3,12 @@
  * @Author: GanEhank
  * @Date: 2019-04-12 22:38:24
  * @LastEditors: GanEhank
- * @LastEditTime: 2019-08-29 20:55:12
+ * @LastEditTime: 2019-08-31 16:13:59
  */
 const webpack = require('webpack')
 const WebpackBundleAnalyzerPlugin = require('webpack.bundle.analyzer').BundleAnalyzerPlugin
 const path = require('path')
-const CleanWebpackPlugin = require('clean-webpack-plugin') // 每次打包都会删掉原来的并重新打包
+const CleanWebpackPlugin = require('clean-webpack-plugin') // 打包时删掉原来的包重新打包
 const CopyWebpackPlugin = require('copy-webpack-plugin') // 拷贝文件
 const Happypack = require('happypack') // 多线打包
 const HtmlWebpackPlugin = require('html-webpack-plugin') // 创建 HTML 文件
@@ -46,18 +46,18 @@ module.exports = {
         to: ''
       }
     ]),
-    new HtmlWebpackPlugin({ // 创建 HTML 文件
+    new HtmlWebpackPlugin({
       template: '', // 模板
       filename: 'index.html', // 生成文件名
       minify: { // html 压缩
         removeAttributeQuotes: true, // 删除双引号
         collapseWhitespace: true // 变成一行
       },
-      hash: true // html 里引入的文件名加上 hash
+      hash: true // html 引入的文件名加 hash
     }),
     new MiniCssExtractPlugin({
-      filename: 'css/main.css', // 处理后生成文件的名称
-      chunkFilename: '[name].chunk.css' // 非入口 chunk 文件的名称 (未被列在entry中，却又需要被打包出来的文件命名配置)
+      filename: 'css/main.css', // 处理后生成文件名称
+      chunkFilename: '[name].chunk.css' // 未列在 entry, 又需要被打包出来的文件命名
     }),
     new webpack.HotModuleReplacementPlugin(), // 启用热模块更换
     new webpack.NameModulesPlugin(), // 热加载时 module 版本号从数字改成文件名字 (长缓存优化)
@@ -66,7 +66,7 @@ module.exports = {
     new webpack.DefinePlugin({ // 定义环境变量
       FLAG: 'true'
     }),
-    new webpack.IgnorePlugin({ // IgnorePlugin prevents generation of modules for import or require calls matching the regular expressions or filter functions
+    new webpack.IgnorePlugin({ // prevents generation of modules for import or require calls matching the regular expressions or filter functions
       resourceRegExp: /^\.\/locale$/, // A RegExp to test the resource against
       contextRegExp: /moment$/ // (optional) A RegExp to test the context (directory) against
     }),
