@@ -3,7 +3,7 @@
  * @Author: GanEhank
  * @Date: 2019-04-12 22:38:24
  * @LastEditors: GanEhank
- * @LastEditTime: 2019-08-29 09:11:02
+ * @LastEditTime: 2019-08-29 20:55:12
  */
 const webpack = require('webpack')
 const WebpackBundleAnalyzerPlugin = require('webpack.bundle.analyzer').BundleAnalyzerPlugin
@@ -19,7 +19,7 @@ const UglifyJsWebpackPlugin = require('uglifyjs-webpack-plugin') // js 压缩
 module.exports = {
   optimization: {
     minimizer: [
-      new MiniCssExtractPlugin(), // css 压缩
+      new OptimizeCssAssetsWebpackPlugin(), // css 压缩
       new UglifyJsWebpackPlugin({ // js 压缩
         sourceMap: true, // 监控错误
         cache: true, // 缓存
