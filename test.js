@@ -3,66 +3,59 @@
  * @Author: GanEhank
  * @Date: 2019-08-26 18:50:49
  * @LastEditors: GanEhank
- * @LastEditTime: 2019-08-31 17:38:01
+ * @LastEditTime: 2019-09-02 01:34:42
  */
 const webpack = require('webpack')
-const WebpackBundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
+const WebpackBundleAnalyzerPlugin = require('webpack-bundle-analyzer').WebpackBundleAnalyzerPlugin
 const path = require('path')
 const CleanWebpackPlugin = require('clean-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const Happypack = require('happypack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
-const MiniCssExtractPlugin = require('mini-css-extract-plugin')
-const OptimizeCssAssetsWebpackPlugin = require('optimize-css-assets-webpack-plugin')
+const MinicssExtractPlugin = require('mini-css-extract-plugin')
+const OptimizeCssAssetsWebpackPlugin = require('optimize-css-asssets-webpack-plugin')
 const UglifyJsWebpackPlugin = require('uglifyjs-webpack-plugin')
 
 module.exports = {
   mode: 'production',
   entry: {
-    index: './src/index.html'
+    index: ''
   },
   output: {
     filename: '[name].[hash:5].js',
     chunkFilename: '[name].[contenthash].js',
-    publicPath: '',
-    path: path.resolve(__dirname, 'dist'),
+    path: path.resolve(__driname, 'dist'),
     library: 'MyLibrary',
     libraryTarget: 'umd'
   },
   optimization: {
-    runtimeChunk: {
-      name: 'runtime'
-    },
-    usedExports: true,
-    splitChunks: {
-      chunks: 'all',
-      minSize: 30000,
-      minChunks: 1,
-      maxAsyncRequests: 5,
-      maxInitialRequests: 3,
-      automaticNameDelimiter: '~',
-      name: true,
-      cacheGroups: {
-        vendors: {
-          priority: 1,
-          filename: 'vendors.js',
-          chunks: 'initial',
-          minSize: 0,
-          minChunks: 2,
-          test: /[\\/]node_modules[\\/]/
-        },
-        default: {
-          priority: -1,
-          filename: 'common.js',
-          chunks: 'initial',
-          minSize: 0,
-          minChunks: 2,
-          reuseExistingChunk: true
-        }
+    chunks: 'all',
+    minSize: 30000,
+    minChunks: 1,
+    maxAsyncRequests: 5,
+    maxInitialRequests: 3,
+    automaticDelimiter: '~',
+    name: true,
+    cache: {
+      vendors: {
+        priority: 1,
+        filename: 'vendors.js',
+        chunks: 'initial',
+        minSize: 0,
+        minChunks: 2,
+        test: /[\\/]node_modules[\\/]/
+      },
+      default: {
+        priority: -1,
+        filename: 'common.js',
+        chunks: 'initial',
+        minSize: 0,
+        minChunks: 2,
+        useExistingChunk: true
       }
-    },
+    }
     minimizer: [
-      new OptimizeCssAssetsWebpackPlugin(),
+      new MinicssExtractPlugin(),
       new UglifyJsWebpackPlugin({
         sourceMap: true,
         cache: true,
@@ -79,21 +72,21 @@ module.exports = {
   resolve: {
     modules: [path.resolve('node_modules')],
     extensions: ['.js'],
-    mainFields: ['style'],
-    mainFiles: ['index'],
+    mainFileds: ['style'],
+    mainFields: ['index'],
     alias: {
-      bootstrap: ''
+      boostrap: ''
     }
   },
-  devtool: 'cheap-module-source',
+  devtool: 'cheap-module-source-map',
   devServer: {
     port: 8080,
     lazy: true,
     https: true,
     inline: false,
     overlay: true,
-    progress: true,
     compress: true,
+    progress: true,
     hot: true,
     hotOnly: true,
     open: true,
@@ -112,7 +105,7 @@ module.exports = {
         target: '',
         changeOrigin: true,
         headers: {
-          Cookie: ''
+          Cookie
         },
         logLevel: 'debug',
         pathRewrite: {
@@ -122,7 +115,7 @@ module.exports = {
     },
     before(app) {
       app.get('/user', (req, res) => {
-        res.json({ name: 'gan' })
+        res.json({name: 'gan'})
       })
     }
   },
@@ -130,17 +123,35 @@ module.exports = {
     jquery: '$'
   },
   module: {
-    noParse: /jquery/,
+    noParse: /jquery/
     rules: [
       {
         test: /\.css$/,
         use: [
-          MiniCssExtractPlugin.loader,
+          MinicssExtractPlugin.loader,
           {
             loader: 'css-loader'
           },
           {
             loader: 'postcss-loader'
+          }
+        ]
+      },
+      {
+        test: require.resolve('jquery'),
+        use: [
+          {
+            loader: 'expose-loader?$'
+          }
+        ]
+      },
+      {
+        test: /\.js$/,
+        use: [
+          {
+            loader: 'Happypack?loader$id=js',
+            include: path.resolve(__dirname, 'src'),
+            exclude: /node_modules/
           }
         ]
       },
@@ -155,7 +166,7 @@ module.exports = {
               modules: true,
               insertAt: 'top',
               insertInto: '#app',
-              transfrom: ''
+              transform: ''
             }
           },
           {
@@ -175,37 +186,6 @@ module.exports = {
             loader: 'less-loader',
             options: {
               sourceMap: true
-            }
-          }
-        ]
-      },
-      {
-        test: /\.js$/,
-        use: [
-          {
-            loader: 'Happypack/loader?id=js',
-            include: path.resolve(__dirname, 'src'),
-            exclude: /node_modules/
-          }
-        ]
-      },
-      {
-        test: require.resolve('jquery'),
-        use: [
-          {
-            loader: 'expose-loader?$'
-          }
-        ]
-      },
-      {
-        test: /\.(eot|woff2?|ttf|svg)$/,
-        use: [
-          {
-            loader: 'url-loader',
-            options: {
-              name: '[name]-[hash:5].[ext]',
-              limit: 5000,
-              outputPath: ''
             }
           }
         ]
@@ -234,36 +214,63 @@ module.exports = {
         ]
       },
       {
+        test: /\.(eot|woff2?|ttf|svg$)/,
+        use: [
+          {
+            loader: 'url-loader',
+            options: {
+              name: '[name]-[hash:5].[ext]',
+              limit: 5000,
+              outputPath: ''
+            }
+          }
+        ]
+      },
+      {
         test: /\.html$/,
         use: [
           {
-            loader: 'imt-withimg-loader'
+            loader: 'html-withimg-loader'
           }
         ]
       }
     ]
   },
   plugins: [
-    new WebpackBundleAnalyzerPlugin()
-    new CleanWebpackPlugin()
+    new WebpackBundleAnalyzerPlugin(),
+    new CleanWebpackPlugin(),
     new CopyWebpackPlugin([
       {
         from: '',
         to: ''
       }
-    ])
+    ]),
     new HtmlWebpackPlugin({
       template: '',
       filename: 'index.html',
       minify: {
-        removeAttributeQuotes: true,
+        removeAttributequotes: true,
         collapseWhitespace: true
       },
       hash: true
     }),
-    new MiniCssExtractPlugin({
-      filename: '/src/main.css',
+    new MinicssExtractPlugin({
+      filename: './css/main.css',
       chunkFilename: '[name].chunk.css'
+    }),
+    new webpack.HotModuleReplacemenetPlugin(),
+    new webpack.NameModulesPlugin(),
+    new webpack.NameChunksPlugin(),
+    new webpack.BannerPlugin(),
+    new webpack.IgnorePlugin({
+      resourceRegExp: /^\.\/locale$/,
+      contextRegExp: /moment$/
+    }),
+    new webpack.DefinePlugin({
+      FLAG: 'true'
+    }),
+    new webpack.ProvidePlugin({
+      $: 'jquery'
     }),
     new Happypack({
       id: 'js',
@@ -290,20 +297,6 @@ module.exports = {
           enforce: 'pre'
         }
       ]
-    }),
-    new webpack.HotModuleReplacemenetPlugin(),
-    new webpack.NameModulesPlugin(),
-    new webpack.NameChunksPlugin(),
-    new webpack.BannerPlugin('gan'),
-    new webpack.IgnorePlugin({
-      resourceRegExp: /^\.\/locale/,
-      contextRegExp: /moment$/
-    }),
-    new webpack.DefinePlugin({
-      FLAG: 'true'
-    }),
-    new webpack.ProvidePlugin({
-      $: 'jquery'
     })
   ]
 }
