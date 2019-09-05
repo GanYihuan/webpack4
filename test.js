@@ -3,17 +3,17 @@
  * @Author: GanEhank
  * @Date: 2019-08-26 18:50:49
  * @LastEditors: GanEhank
- * @LastEditTime: 2019-09-02 01:34:42
+ * @LastEditTime: 2019-09-06 03:22:05
  */
 const webpack = require('webpack')
-const WebpackBundleAnalyzerPlugin = require('webpack-bundle-analyzer').WebpackBundleAnalyzerPlugin
+const WebpackBundleAnalyzerPlugin = require('webpack.bundle.analyzer').BundleAnalyzerPlugin
 const path = require('path')
-const CleanWebpackPlugin = require('clean-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
+const CleanWebpackPlugin = require('clean-webpack-plugin')
 const Happypack = require('happypack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
-const MinicssExtractPlugin = require('mini-css-extract-plugin')
-const OptimizeCssAssetsWebpackPlugin = require('optimize-css-asssets-webpack-plugin')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const OptimizeCssAssetsWebpackPlugin = require('optimize-css-assets-webpack-plugin')
 const UglifyJsWebpackPlugin = require('uglifyjs-webpack-plugin')
 
 module.exports = {
@@ -24,38 +24,45 @@ module.exports = {
   output: {
     filename: '[name].[hash:5].js',
     chunkFilename: '[name].[contenthash].js',
-    path: path.resolve(__driname, 'dist'),
+    publicPath: '',
+    path: path.resolve(__dirname, 'dist'),
     library: 'MyLibrary',
     libraryTarget: 'umd'
   },
   optimization: {
-    chunks: 'all',
-    minSize: 30000,
-    minChunks: 1,
-    maxAsyncRequests: 5,
-    maxInitialRequests: 3,
-    automaticDelimiter: '~',
-    name: true,
-    cache: {
-      vendors: {
-        priority: 1,
-        filename: 'vendors.js',
-        chunks: 'initial',
-        minSize: 0,
-        minChunks: 2,
-        test: /[\\/]node_modules[\\/]/
-      },
-      default: {
-        priority: -1,
-        filename: 'common.js',
-        chunks: 'initial',
-        minSize: 0,
-        minChunks: 2,
-        useExistingChunk: true
+    runtimeChunk: {
+      name: 'runtime'
+    },
+    usedExports: true,
+    splitChunks: {
+      chunks: 'all',
+      minSize: 30000,
+      minChunks: 1,
+      maxAsyncRequests: 5,
+      maxInitialRequests: 3,
+      automaticeNameDelimiter: '~',
+      name: true,
+      cacheGroups: {
+        vendors: {
+          priority: 1,
+          filename: 'vendors.js',
+          chunks: 'initital',
+          minSize: 0,
+          minChunks: 2,
+          test: /[\\/]node_modules[\\/]/
+        },
+        default: {
+          priority: -1,
+          filename: 'common.js',
+          chunks: 'initial',
+          minSize: 0,
+          minChunks: 2,
+          reuseExistingChunk: true
+        }
       }
-    }
+    },
     minimizer: [
-      new MinicssExtractPlugin(),
+      new OptimizeCssAssetsWebpackPlugin(),
       new UglifyJsWebpackPlugin({
         sourceMap: true,
         cache: true,
@@ -70,12 +77,12 @@ module.exports = {
     ignored: /node_modules/
   },
   resolve: {
-    modules: [path.resolve('node_modules')],
+    modules: [path.resole('node_modules')],
     extensions: ['.js'],
-    mainFileds: ['style'],
-    mainFields: ['index'],
+    mainFields: ['style'],
+    mainFiles: ['index'],
     alias: {
-      boostrap: ''
+      bootstrap: ''
     }
   },
   devtool: 'cheap-module-source-map',
@@ -105,7 +112,7 @@ module.exports = {
         target: '',
         changeOrigin: true,
         headers: {
-          Cookie
+          Cookie: ''
         },
         logLevel: 'debug',
         pathRewrite: {
@@ -115,7 +122,7 @@ module.exports = {
     },
     before(app) {
       app.get('/user', (req, res) => {
-        res.json({name: 'gan'})
+        res.json({name: ''})
       })
     }
   },
@@ -123,12 +130,12 @@ module.exports = {
     jquery: '$'
   },
   module: {
-    noParse: /jquery/
+    noParse: /jquery/,
     rules: [
       {
         test: /\.css$/,
         use: [
-          MinicssExtractPlugin.loader,
+          MiniCssExtractPlugin.loader,
           {
             loader: 'css-loader'
           },
@@ -149,8 +156,8 @@ module.exports = {
         test: /\.js$/,
         use: [
           {
-            loader: 'Happypack?loader$id=js',
-            include: path.resolve(__dirname, 'src'),
+            loader: 'Happypack/loader?id=js',
+            include: path.resole(__dirname, 'src'),
             exclude: /node_modules/
           }
         ]
@@ -191,12 +198,12 @@ module.exports = {
         ]
       },
       {
-        test: /\.(png|jpg|jpeg|gif)$/,
+        test: /\.(png|jpg|jpeg|png)$/,
         use: [
           {
             loader: 'url-loader',
             options: {
-              name: '[name]-[hash:5].[ext]',
+              name: '[name].[hash:5].[ext]',
               limit: 2048,
               publicPath: '',
               outputPath: 'dist/',
@@ -214,12 +221,12 @@ module.exports = {
         ]
       },
       {
-        test: /\.(eot|woff2?|ttf|svg$)/,
+        test: /\.(eot|woff2?|ttf|svg)$/,
         use: [
           {
             loader: 'url-loader',
             options: {
-              name: '[name]-[hash:5].[ext]',
+              name: '[name].[hash:5].[ext]',
               limit: 5000,
               outputPath: ''
             }
@@ -249,25 +256,25 @@ module.exports = {
       template: '',
       filename: 'index.html',
       minify: {
-        removeAttributequotes: true,
+        removeAttributeQuotes: true,
         collapseWhitespace: true
       },
       hash: true
     }),
-    new MinicssExtractPlugin({
-      filename: './css/main.css',
+    new MiniCssExtractPlugin({
+      filename: 'main.css',
       chunkFilename: '[name].chunk.css'
     }),
-    new webpack.HotModuleReplacemenetPlugin(),
+    new webpack.HotModuleReplacementPlugin(),
     new webpack.NameModulesPlugin(),
-    new webpack.NameChunksPlugin(),
-    new webpack.BannerPlugin(),
-    new webpack.IgnorePlugin({
-      resourceRegExp: /^\.\/locale$/,
-      contextRegExp: /moment$/
-    }),
+    new webpack.nameChunksPlugin(),
     new webpack.DefinePlugin({
-      FLAG: 'true'
+      DEV: 'true'
+    }),
+    new webpack.BannerPlugin(''),
+    new webpack.IgnorePlugin({
+      resourceRegExp: /^\.\/locale/,
+      contextRegExp: /moment$/
     }),
     new webpack.ProvidePlugin({
       $: 'jquery'
@@ -279,10 +286,10 @@ module.exports = {
           loader: 'babel-loader',
           options: {
             presets: [
-              []
+              ['@babel/preset-env']
             ],
             plugins: [
-              []
+              ['']
             ]
           }
         },

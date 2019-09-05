@@ -3,7 +3,7 @@
  * @Author: GanEhank
  * @Date: 2019-08-26 19:31:22
  * @LastEditors: GanEhank
- * @LastEditTime: 2019-08-27 11:30:07
+ * @LastEditTime: 2019-09-03 23:15:44
  */
 module.exports = {
 	 devServer: { // 开发服务器
@@ -30,7 +30,7 @@ module.exports = {
     proxy: { // 请求代理到服务上
       '/react/api': { // axios.get('/react/api/header.json')
         target: '', // 远端服务器
-        changeOrigin: true, // 不保留主机头原点
+        changeOrigin: true, // 不保留主机头原点, 设置这个参数可以避免跨域
         headers: { // http 请求头
           Cookie: ''
         },
